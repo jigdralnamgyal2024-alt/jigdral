@@ -445,17 +445,18 @@
             renderMessages();
 
             try {
-                // Check if process exists to avoid crash in environments without it
-                if (typeof process === 'undefined') {
-                   // This assumes the environment MIGHT inject API_KEY differently, 
-                   // or we just need to fail gracefully.
-                   throw new Error("Environment 'process' is not defined. API Key cannot be accessed.");
+                // 2. Safe API Key Access
+                let apiKey = '';
+                try {
+                    // This attempt will succeed if a bundler replaces process.env.API_KEY with a string.
+                    // It will throw ReferenceError if process is undefined.
+                    apiKey = process.env.API_KEY;
+                } catch (e) {
+                    console.warn("process.env.API_KEY access failed (likely raw browser environment):", e);
                 }
 
-                // 2. Call API
-                const apiKey = process.env.API_KEY;
                 if (!apiKey) {
-                    throw new Error("API Key is missing in process.env.API_KEY");
+                    throw new Error("API Key is missing. Please ensure the environment provides process.env.API_KEY.");
                 }
 
                 const ai = new GoogleGenAI({ apiKey });
@@ -485,13 +486,13 @@
                 let errorMessage = "Sorry, I can't connect right now.";
                 if (error.message.includes("API Key")) {
                     errorMessage = "Error: API Key missing. Please check configuration.";
-                } else if (error.message.includes("process")) {
-                    errorMessage = "Error: System configuration issue (process not defined).";
                 }
                 chatHistory.push({ role: 'model', text: errorMessage });
             } finally {
                 isLoading = false;
                 renderMessages();
+                // Focus back on input
+                setTimeout(() => chatInput.focus(), 100);
             }
         };
 
