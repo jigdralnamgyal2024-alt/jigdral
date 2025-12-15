@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Jigdral Namgyal - Portfolio</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -34,17 +33,12 @@
       }
     </script>
     
-    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
-    <!-- Import Map for Google GenAI SDK -->
     <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://esm.sh/@google/genai",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+    "@google/genai": "https://esm.sh/@google/genai"
   }
 }
 </script>
@@ -68,25 +62,19 @@
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans">
 
-    <!-- Header -->
     <header id="main-header" class="fixed w-full top-0 z-50 transition-all duration-300 bg-transparent py-4">
         <div class="container mx-auto px-6 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-bhutan-dark tracking-tighter">
-                JN<span class="text-bhutan-red">.</span>
-            </a>
-
+            <a href="#" class="text-2xl font-bold text-bhutan-dark tracking-tighter">JN<span class="text-bhutan-red">.</span></a>
             <nav class="hidden md:flex space-x-8">
                 <a href="#hero" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">Home</a>
                 <a href="#about" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">About</a>
                 <a href="#experience" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">Experience</a>
                 <a href="#hobbies" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">Hobbies</a>
             </nav>
-            
             <button id="mobile-menu-btn" class="md:hidden text-gray-800 focus:outline-none">
                 <i class="fas fa-bars text-xl"></i>
             </button>
         </div>
-        <!-- Mobile Menu (Hidden by default) -->
         <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute w-full left-0 top-full p-4 flex flex-col space-y-4">
             <a href="#hero" class="text-sm font-medium text-gray-800 hover:text-bhutan-red">Home</a>
             <a href="#about" class="text-sm font-medium text-gray-800 hover:text-bhutan-red">About</a>
@@ -95,190 +83,23 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
     <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden bg-slate-50">
-        <!-- Decorative Background Elements -->
-        <div class="absolute top-0 right-0 w-1/2 h-full bg-bhutan-yellow/10 skew-x-12 translate-x-20"></div>
-        <div class="absolute bottom-0 left-0 w-1/3 h-1/2 bg-bhutan-red/5 -skew-x-12 -translate-x-10"></div>
+        </section>
 
-        <div class="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center pt-20">
-            <div class="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">
-                <h2 class="text-bhutan-red font-bold uppercase tracking-widest text-sm mb-2">
-                    Trashi Yangtse, Bhutan
-                </h2>
-                <h1 class="text-5xl md:text-7xl font-bold text-bhutan-dark mb-4 leading-tight">
-                    Hello, I'm <br/>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-bhutan-red to-bhutan-orange">
-                        Jigdral Namgyal
-                    </span>
-                </h1>
-                <p class="text-xl text-gray-600 mb-8 max-w-lg mx-auto md:mx-0">
-                    A 15-year-old researcher and culture enthusiast dedicated to preserving traditions and exploring new knowledge.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                    <a href="#about" class="px-8 py-3 bg-bhutan-dark text-white rounded-full font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl">
-                        My Story
-                    </a>
-                    <a href="#experience" class="px-8 py-3 border-2 border-bhutan-dark text-bhutan-dark rounded-full font-semibold hover:bg-bhutan-dark hover:text-white transition-all">
-                        My Work
-                    </a>
-                </div>
-            </div>
-
-            <div class="md:w-1/2 flex justify-center relative">
-                <div class="relative w-72 h-72 md:w-96 md:h-96">
-                    <div class="absolute inset-0 bg-bhutan-orange rounded-full opacity-20 animate-pulse"></div>
-                    <img src="https://picsum.photos/seed/jigdral/400/400" alt="Jigdral Namgyal" class="rounded-full w-full h-full object-cover border-4 border-white shadow-2xl relative z-10" />
-                    <!-- Decorative Icon -->
-                    <div class="absolute -bottom-4 -right-4 bg-white p-4 rounded-full shadow-lg z-20">
-                        <i class="fas fa-dragon text-bhutan-red text-2xl"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
     <section id="about" class="py-20 bg-white">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-bhutan-dark mb-4">About Me</h2>
-                <div class="w-20 h-1 bg-bhutan-red mx-auto"></div>
-            </div>
+        </section>
 
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2">
-                    <img src="https://picsum.photos/seed/bhutan/600/400" alt="Scenery of Bhutan" class="rounded-lg shadow-xl w-full hover:scale-[1.02] transition-transform duration-500" />
-                </div>
-                <div class="md:w-1/2">
-                    <h3 class="text-2xl font-semibold text-gray-800 mb-4">From Trashi Yangtse to the World</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Tashi Delek! I am Jigdral Namgyal, a dedicated 15-year-old from the beautiful eastern Bhutanese region of Trashi Yangtse. Growing up amidst the serene mountains and rich heritage of my homeland has deeply influenced who I am today.
-                    </p>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        I believe in the perfect balance between modern education and traditional values. While I am passionate about academic research and professional growth, I hold a special place in my heart for the customs that define our unique Bhutanese identity.
-                    </p>
-                    
-                    <div class="grid grid-cols-2 gap-4 mt-8">
-                        <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-bhutan-yellow hover:bg-yellow-50 transition-colors">
-                            <span class="block text-3xl font-bold text-bhutan-dark mb-1">15</span>
-                            <span class="text-sm text-gray-500 uppercase tracking-wide">Years Old</span>
-                        </div>
-                        <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-bhutan-red hover:bg-red-50 transition-colors">
-                            <span class="block text-3xl font-bold text-bhutan-dark mb-1">2025</span>
-                            <span class="text-sm text-gray-500 uppercase tracking-wide">Research Start</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
     <section id="experience" class="py-20 bg-slate-50">
-        <div class="container mx-auto px-6">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-bhutan-dark mb-4">My Journey</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Starting young, aiming high. Here is my professional path so far.</p>
-            </div>
+        </section>
 
-            <div class="max-w-3xl mx-auto">
-                <!-- Experience Item 1 -->
-                <div class="relative pl-8 pb-12 border-l-2 border-bhutan-orange last:border-0 last:pb-0">
-                    <div class="absolute top-0 left-[-9px] w-4 h-4 bg-bhutan-red rounded-full border-2 border-white shadow-md"></div>
-                    <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-2">
-                            <h3 class="text-xl font-bold text-gray-800">Researcher</h3>
-                            <span class="text-sm text-bhutan-red font-medium bg-red-50 px-3 py-1 rounded-full">Dec 2025 - Present</span>
-                        </div>
-                        <h4 class="text-lg text-bhutan-orange mb-4">EduLink</h4>
-                        <p class="text-gray-600 leading-relaxed">
-                            Conducting in-depth research to support educational initiatives. Engaging in data analysis and content development to foster learning opportunities.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hobbies Section -->
     <section id="hobbies" class="py-20 bg-bhutan-dark text-white relative overflow-hidden">
-        <!-- Background Pattern -->
-        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 30px 30px;"></div>
+        </section>
 
-        <div class="container mx-auto px-6 relative z-10">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
-                <div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Passions & Hobbies</h2>
-                    <div class="w-20 h-1 bg-bhutan-yellow"></div>
-                </div>
-                <p class="text-gray-300 mt-4 md:mt-0 max-w-md text-right">"Preserving our culture is not just a duty, but a joy."</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Hobby 1 -->
-                <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:bg-white/20 transition-all group">
-                    <div class="w-12 h-12 bg-bhutan-orange rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-bullseye text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Traditional Games</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">Playing Bhutanese games like Khuru (darts) and Digor fosters community.</p>
-                </div>
-                <!-- Hobby 2 -->
-                <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:bg-white/20 transition-all group">
-                    <div class="w-12 h-12 bg-bhutan-orange rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-music text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Dancing</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">Expressing joy and storytelling through traditional Cham and folk dances.</p>
-                </div>
-                <!-- Hobby 3 -->
-                <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:bg-white/20 transition-all group">
-                    <div class="w-12 h-12 bg-bhutan-orange rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-microphone text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Singing</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">Preserving the oral traditions of our ancestors through song (Zhungdra, Boedra).</p>
-                </div>
-                <!-- Hobby 4 -->
-                <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:bg-white/20 transition-all group">
-                    <div class="w-12 h-12 bg-bhutan-orange rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-headphones text-white text-xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">Music</h3>
-                    <p class="text-gray-300 text-sm leading-relaxed">Relaxing and finding inspiration by listening to a diverse range of music.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-2xl font-bold mb-6">Let's Connect</h2>
-            <div class="flex justify-center space-x-6 mb-8">
-                <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-bhutan-red transition-colors">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-bhutan-red transition-colors">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-                <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-bhutan-red transition-colors">
-                    <i class="fab fa-instagram"></i>
-                </a>
-            </div>
-            <p class="text-gray-500 text-sm">
-                &copy; <span id="year"></span> Jigdral Namgyal. All rights reserved. <br/>
-                Made with ❤️ in Trashi Yangtse.
-            </p>
-        </div>
-    </footer>
+        </footer>
 
-    <!-- Chat Widget -->
     <div id="chat-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        <!-- Chat Window (Hidden by default) -->
         <div id="chat-window" class="hidden mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex-col h-[500px] animate-fade-in-up">
-            <!-- Header -->
             <div class="bg-bhutan-dark p-4 flex justify-between items-center text-white">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
@@ -289,15 +110,12 @@
                 </button>
             </div>
 
-            <!-- Messages Area -->
             <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-4 chat-scroll">
-                <!-- Messages will be injected here via JS -->
-            </div>
+                </div>
 
-            <!-- Input Area -->
             <div class="p-3 bg-white border-t border-gray-200">
                 <div class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="Ask me about Bhutan..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-bhutan-red focus:ring-1 focus:ring-bhutan-red text-sm" />
+                    <input type="text" id="chat-input" placeholder="Ask me about his research or hobbies..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-bhutan-red focus:ring-1 focus:ring-bhutan-red text-sm" />
                     <button id="send-btn" class="w-10 h-10 bg-bhutan-dark text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition-colors">
                         <i class="fas fa-paper-plane text-xs"></i>
                     </button>
@@ -305,15 +123,17 @@
             </div>
         </div>
 
-        <!-- Toggle Button -->
         <button id="chat-toggle" class="w-14 h-14 bg-bhutan-red text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-600 transition-transform hover:scale-105 focus:outline-none">
             <i id="toggle-icon" class="fas fa-comment-alt text-2xl"></i>
         </button>
     </div>
 
-    <!-- Application Logic -->
     <script type="module">
         import { GoogleGenAI } from "@google/genai";
+
+        // IMPORTANT: Replace 'YOUR_GEMINI_API_KEY' with your actual key.
+        // For production, you should use a secure backend for API calls.
+        const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; 
 
         // --- Configuration ---
         const JIGDRAL_BIO = `
@@ -340,6 +160,7 @@
         ];
         let isChatOpen = false;
         let isLoading = false;
+        let chatSession = null; // To hold the active chat session
 
         // --- DOM Elements ---
         const header = document.getElementById('main-header');
@@ -356,7 +177,109 @@
 
         // --- Initialization ---
         yearSpan.textContent = new Date().getFullYear();
+        initializeChatSession();
         renderMessages();
+
+        // --- Chat Utility Functions ---
+        
+        function initializeChatSession() {
+            if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY' || !GEMINI_API_KEY) {
+                console.error("API Key not configured. Chat will not work.");
+                return;
+            }
+
+            try {
+                const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+                chatSession = ai.chats.create({
+                    model: 'gemini-2.5-flash', // Using a fast model for chat
+                    config: {
+                        systemInstruction: `You are Jigdral Namgyal's AI assistant. 
+                        Speak in the first person as if you are Jigdral.
+                        Base your answers on this profile: ${JIGDRAL_BIO}.
+                        Be polite, humble, and enthusiastic about Bhutanese culture. 
+                        Keep answers relatively short and conversational (2-3 sentences max).`,
+                    },
+                    history: chatHistory.map(h => ({
+                        role: h.role === 'model' ? 'model' : 'user',
+                        parts: [{ text: h.text }],
+                    })),
+                });
+            } catch (error) {
+                console.error("Failed to initialize Gemini AI:", error);
+            }
+        }
+
+        const scrollToBottom = () => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        };
+
+        const renderMessages = () => {
+            chatMessages.innerHTML = '';
+            chatHistory.forEach(msg => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`;
+                
+                const bubble = document.createElement('div');
+                bubble.className = `max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-wrap ${
+                    msg.role === 'user' 
+                      ? 'bg-bhutan-red text-white rounded-tr-none' 
+                      : 'bg-white text-gray-800 border border-gray-200 rounded-tl-none shadow-sm'
+                }`;
+                bubble.textContent = msg.text;
+                
+                wrapper.appendChild(bubble);
+                chatMessages.appendChild(wrapper);
+            });
+
+            if (isLoading) {
+                const loadingWrapper = document.createElement('div');
+                loadingWrapper.className = 'flex justify-start';
+                loadingWrapper.innerHTML = `
+                    <div class="bg-white border border-gray-200 p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
+                    </div>
+                `;
+                chatMessages.appendChild(loadingWrapper);
+            }
+            scrollToBottom();
+        };
+
+        const handleSend = async () => {
+            const text = chatInput.value.trim();
+            if (!text || isLoading || !chatSession) return;
+
+            // 1. Add User Message
+            chatHistory.push({ role: 'user', text: text });
+            chatInput.value = '';
+            isLoading = true;
+            renderMessages();
+            sendBtn.disabled = true;
+
+            try {
+                // 2. Send Message to Gemini
+                const result = await chatSession.sendMessage({ message: text });
+                const responseText = result.text || "I'm having trouble thinking right now. Could you ask me something else?";
+
+                // 3. Add Model Response
+                chatHistory.push({ role: 'model', text: responseText });
+
+            } catch (error) {
+                console.error("Gemini Error:", error);
+                let errorMessage = "Sorry, I can't connect right now. There might be an issue with the API service.";
+                if (error.message.includes("API Key")) {
+                    errorMessage = "Error: API Key is missing or invalid. Please check your configuration.";
+                }
+                chatHistory.push({ role: 'model', text: errorMessage });
+            } finally {
+                isLoading = false;
+                sendBtn.disabled = false;
+                renderMessages();
+                // Focus back on input
+                setTimeout(() => chatInput.focus(), 100);
+            }
+        };
 
         // --- Event Listeners ---
         
@@ -385,6 +308,7 @@
                 toggleIcon.classList.remove('fa-comment-alt');
                 toggleIcon.classList.add('fa-times');
                 scrollToBottom();
+                chatInput.focus();
             } else {
                 chatWindow.classList.add('hidden');
                 chatWindow.classList.remove('flex');
@@ -397,108 +321,12 @@
         closeChatBtn.addEventListener('click', toggleChat);
 
         // Chat Interaction
-        const scrollToBottom = () => {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
-
-        const renderMessages = () => {
-            chatMessages.innerHTML = '';
-            chatHistory.forEach(msg => {
-                const wrapper = document.createElement('div');
-                wrapper.className = `flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`;
-                
-                const bubble = document.createElement('div');
-                bubble.className = `max-w-[80%] p-3 rounded-2xl text-sm ${
-                    msg.role === 'user' 
-                      ? 'bg-bhutan-red text-white rounded-tr-none' 
-                      : 'bg-white text-gray-800 border border-gray-200 rounded-tl-none shadow-sm'
-                }`;
-                bubble.textContent = msg.text;
-                
-                wrapper.appendChild(bubble);
-                chatMessages.appendChild(wrapper);
-            });
-
-            if (isLoading) {
-                const loadingWrapper = document.createElement('div');
-                loadingWrapper.className = 'flex justify-start';
-                loadingWrapper.innerHTML = `
-                    <div class="bg-white border border-gray-200 p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
-                    </div>
-                `;
-                chatMessages.appendChild(loadingWrapper);
-            }
-            scrollToBottom();
-        };
-
-        const handleSend = async () => {
-            const text = chatInput.value.trim();
-            if (!text || isLoading) return;
-
-            // 1. Add User Message
-            chatHistory.push({ role: 'user', text: text });
-            chatInput.value = '';
-            isLoading = true;
-            renderMessages();
-
-            try {
-                // 2. Safe API Key Access
-                let apiKey = '';
-                try {
-                    // This attempt will succeed if a bundler replaces process.env.API_KEY with a string.
-                    // It will throw ReferenceError if process is undefined.
-                    apiKey = process.env.API_KEY;
-                } catch (e) {
-                    console.warn("process.env.API_KEY access failed (likely raw browser environment):", e);
-                }
-
-                if (!apiKey) {
-                    throw new Error("API Key is missing. Please ensure the environment provides process.env.API_KEY.");
-                }
-
-                const ai = new GoogleGenAI({ apiKey });
-                const chat = ai.chats.create({
-                    model: 'gemini-3-pro-preview',
-                    config: {
-                        systemInstruction: `You are Jigdral Namgyal's AI assistant. 
-                        Speak in the first person as if you are Jigdral.
-                        Base your answers on this profile: ${JIGDRAL_BIO}.
-                        Be polite, humble, and enthusiastic about Bhutanese culture. 
-                        Keep answers relatively short and conversational.`,
-                    },
-                    history: chatHistory.slice(0, -1).map(h => ({
-                        role: h.role,
-                        parts: [{ text: h.text }],
-                    })),
-                });
-
-                const result = await chat.sendMessage({ message: text });
-                const responseText = result.text || "I'm having trouble thinking right now.";
-
-                // 3. Add Model Response
-                chatHistory.push({ role: 'model', text: responseText });
-
-            } catch (error) {
-                console.error("Gemini Error:", error);
-                let errorMessage = "Sorry, I can't connect right now.";
-                if (error.message.includes("API Key")) {
-                    errorMessage = "Error: API Key missing. Please check configuration.";
-                }
-                chatHistory.push({ role: 'model', text: errorMessage });
-            } finally {
-                isLoading = false;
-                renderMessages();
-                // Focus back on input
-                setTimeout(() => chatInput.focus(), 100);
-            }
-        };
-
         sendBtn.addEventListener('click', handleSend);
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent default form submission if input was in a form
+                handleSend();
+            }
         });
 
     </script>
