@@ -1,334 +1,325 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jigdral Namgyal - Portfolio</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              bhutan: {
-                red: '#FF5733',
-                yellow: '#FFC300',
-                orange: '#FF8F1C',
-                dark: '#2C3E50',
-                light: '#ECF0F1',
-              }
-            },
-            animation: {
-              'fade-in-up': 'fadeInUp 0.3s ease-out forwards',
-            },
-            keyframes: {
-              fadeInUp: {
-                '0%': { opacity: '0', transform: 'translateY(10px)' },
-                '100%': { opacity: '1', transform: 'translateY(0)' },
-              }
-            }
-          }
-        }
-      }
-    </script>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-
-    <script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://esm.sh/@google/genai"
-  }
-}
-</script>
-
     <style>
-        /* Custom scrollbar for chat */
-        .chat-scroll::-webkit-scrollbar {
-            width: 6px;
+        /* CSS for Light Theme and Layout */
+        :root {
+            --primary-color: #ffaa33; /* A warm saffron/gold, inspired by Bhutanese colors */
+            --background-light: #ffffff;
+            --text-dark: #2c3e50;
+            --accent-light: #f4f6f9;
+            --font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .chat-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--accent-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
-        .chat-scroll::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 30px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
         }
-        .chat-scroll::-webkit-scrollbar-thumb:hover {
-            background: #999;
+
+        header, .card {
+            background-color: var(--background-light);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        header {
+            grid-column: 1 / 3; /* Header spans both columns */
+            text-align: center;
+            padding: 40px 25px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            margin: 0 0 5px;
+            font-size: 2.5em;
+        }
+
+        header p {
+            color: #6c7a89;
+            font-size: 1.1em;
+            font-weight: 300;
+        }
+
+        .sidebar {
+            grid-column: 1 / 2;
+        }
+
+        .main-content {
+            grid-column: 2 / 3;
+        }
+
+        .card h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-light);
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-weight: 600;
+        }
+
+        .detail-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .detail-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .detail-list li strong {
+            font-weight: 600;
+            display: block;
+            color: #4b6584;
+        }
+
+        .detail-list li:before {
+            content: '•';
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+            font-size: 1.2em;
+        }
+
+        /* Chatbot Styles */
+        #chatbot-container {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: #fcfdff;
+        }
+
+        #chat-window {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            color: var(--background-light);
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        .bot-message {
+            background-color: var(--accent-light);
+            color: var(--text-dark);
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+        
+        #chat-input-container {
+            display: flex;
+            padding: 10px;
+            background-color: var(--background-light);
+        }
+
+        #chat-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            margin-right: 10px;
+            font-size: 1em;
+        }
+
+        #send-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #send-button:hover {
+            background-color: #e0992a;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 800px) {
+            .container {
+                grid-template-columns: 1fr;
+                margin: 15px;
+                gap: 15px;
+            }
+            header {
+                grid-column: 1 / 2;
+            }
+            .sidebar, .main-content {
+                grid-column: 1 / 2;
+            }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans">
+<body>
 
-    <header id="main-header" class="fixed w-full top-0 z-50 transition-all duration-300 bg-transparent py-4">
-        <div class="container mx-auto px-6 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-bhutan-dark tracking-tighter">JN<span class="text-bhutan-red">.</span></a>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#hero" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">Home</a>
-                <a href="#about" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">About</a>
-                <a href="#experience" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">Experience</a>
-                <a href="#hobbies" class="text-sm font-medium text-gray-800 hover:text-bhutan-red transition-colors">Hobbies</a>
-            </nav>
-            <button id="mobile-menu-btn" class="md:hidden text-gray-800 focus:outline-none">
-                <i class="fas fa-bars text-xl"></i>
-            </button>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg absolute w-full left-0 top-full p-4 flex flex-col space-y-4">
-            <a href="#hero" class="text-sm font-medium text-gray-800 hover:text-bhutan-red">Home</a>
-            <a href="#about" class="text-sm font-medium text-gray-800 hover:text-bhutan-red">About</a>
-            <a href="#experience" class="text-sm font-medium text-gray-800 hover:text-bhutan-red">Experience</a>
-            <a href="#hobbies" class="text-sm font-medium text-gray-800 hover:text-bhutan-red">Hobbies</a>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <h1>Jigdral Namgyal</h1>
+            <p>15-year-old Researcher & Dedicated Preserver of Bhutanese Culture from Trashi Yangtse</p>
+        </header>
 
-    <section id="hero" class="relative h-screen flex items-center justify-center overflow-hidden bg-slate-50">
-        </section>
-
-    <section id="about" class="py-20 bg-white">
-        </section>
-
-    <section id="experience" class="py-20 bg-slate-50">
-        </section>
-
-    <section id="hobbies" class="py-20 bg-bhutan-dark text-white relative overflow-hidden">
-        </section>
-
-    <footer class="bg-gray-900 text-white py-12 border-t border-gray-800">
-        </footer>
-
-    <div id="chat-container" class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-        <div id="chat-window" class="hidden mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex-col h-[500px] animate-fade-in-up">
-            <div class="bg-bhutan-dark p-4 flex justify-between items-center text-white">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <h3 class="font-semibold">Chat with Jigdral AI</h3>
-                </div>
-                <button id="close-chat" class="text-gray-300 hover:text-white focus:outline-none">
-                    <i class="fas fa-times"></i>
-                </button>
+        <div class="sidebar">
+            <div class="card">
+                <h2>Profile Details</h2>
+                <ul class="detail-list">
+                    <li><strong>Age:</strong> 15 years old</li>
+                    <li><strong>Hometown:</strong> Trashi Yangtse, Eastern Bhutan 🇧🇹</li>
+                    <li><strong>Role:</strong> Researcher</li>
+                    <li><strong>Organization:</strong> EduLink</li>
+                    <li><strong>Start Date:</strong> December 5, 2025</li>
+                </ul>
             </div>
 
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-4 chat-scroll">
-                </div>
-
-            <div class="p-3 bg-white border-t border-gray-200">
-                <div class="flex gap-2">
-                    <input type="text" id="chat-input" placeholder="Ask me about his research or hobbies..." class="flex-1 px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:border-bhutan-red focus:ring-1 focus:ring-bhutan-red text-sm" />
-                    <button id="send-btn" class="w-10 h-10 bg-bhutan-dark text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition-colors">
-                        <i class="fas fa-paper-plane text-xs"></i>
-                    </button>
-                </div>
+            <div class="card" style="margin-top: 30px;">
+                <h2>Cultural Interests</h2>
+                <ul class="detail-list">
+                    <li><strong>Traditional Games:</strong> Playing Bhutanese games (e.g., Archery, Khuru).</li>
+                    <li><strong>Performing Arts:</strong> Dancing and Singing.</li>
+                    <li><strong>Leisure:</strong> Listening to music.</li>
+                    <li><strong>Core Passion:</strong> Preservation of Bhutanese culture.</li>
+                </ul>
             </div>
         </div>
 
-        <button id="chat-toggle" class="w-14 h-14 bg-bhutan-red text-white rounded-full shadow-lg flex items-center justify-center hover:bg-orange-600 transition-transform hover:scale-105 focus:outline-none">
-            <i id="toggle-icon" class="fas fa-comment-alt text-2xl"></i>
-        </button>
+        <div class="main-content">
+            <div class="card">
+                <h2>Ask Jigdral</h2>
+                <p>Hello! I'm Jigdral. Ask me about my work, my hometown, or my cultural hobbies!</p>
+                <div id="chatbot-container">
+                    <div id="chat-window">
+                        <div class="message bot-message">
+                            Kuzuzangpo la! I am Jigdral. I'm a young researcher and I'm happy to tell you about my work at EduLink or my passions like dancing! How can I help you?
+                        </div>
+                    </div>
+                    <div id="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type your question here...">
+                        <button id="send-button" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script type="module">
-        import { GoogleGenAI } from "@google/genai";
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
 
-        // IMPORTANT: Replace 'YOUR_GEMINI_API_KEY' with your actual key.
-        // For production, you should use a secure backend for API calls.
-        const GEMINI_API_KEY = 'YOUR_GEMINI_API_KEY'; 
-
-        // --- Configuration ---
-        const JIGDRAL_BIO = `
-        Name: Jigdral Namgyal
-        Age: 15
-        Location: Trashi Yangtse, Eastern Bhutan
-        Current Role: Researcher at EduLink (Started Dec 5, 2025)
-        Personality: Dedicated, passionate about culture, professional yet youthful.
-        Interests:
-        - Preserving Bhutanese culture
-        - Traditional Bhutanese games (Khuru, Digor)
-        - Dancing (Cham, traditional folk dances)
-        - Singing (Zhungdra, Boedra)
-        - Listening to music (relaxing)
-        Background: Jigdral is from the beautiful eastern region of Trashi Yangtse. Despite his young age, he is already gaining professional experience.
+        // Core profile information for the AI prompt
+        const JIGDRAL_PROFILE = `
+            You are Jigdral Namgyal, a dedicated 15-year-old from Trashi Yangtse, Eastern Bhutan. 
+            You are a professional Researcher at EduLink, a role you started on December 5, 2025. 
+            Your deep passions are preserving and enjoying Bhutanese culture, including playing traditional Bhutanese games (like Archery or Khuru), dancing, and singing. 
+            You also enjoy relaxing by listening to music. Respond in a friendly, helpful tone, and always refer to yourself as Jigdral. 
+            Keep your answers concise, engaging, and in character.
         `;
 
-        // --- State ---
-        let chatHistory = [
-            {
-                role: 'model',
-                text: "Kuzuzangpo la! I'm Jigdral's AI assistant. Ask me anything about his research or hobbies!"
-            }
-        ];
-        let isChatOpen = false;
-        let isLoading = false;
-        let chatSession = null; // To hold the active chat session
+        // Function to create and append a message element
+        function appendMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            messageDiv.textContent = text;
+            chatWindow.appendChild(messageDiv);
+            // Scroll to the latest message
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
 
-        // --- DOM Elements ---
-        const header = document.getElementById('main-header');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const yearSpan = document.getElementById('year');
-        const chatToggle = document.getElementById('chat-toggle');
-        const chatWindow = document.getElementById('chat-window');
-        const closeChatBtn = document.getElementById('close-chat');
-        const toggleIcon = document.getElementById('toggle-icon');
-        const chatMessages = document.getElementById('chat-messages');
-        const chatInput = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('send-btn');
+        // Main function to handle sending a message
+        async function sendMessage() {
+            const userMessage = chatInput.value.trim();
+            if (userMessage === "") return;
 
-        // --- Initialization ---
-        yearSpan.textContent = new Date().getFullYear();
-        initializeChatSession();
-        renderMessages();
+            // Display user message immediately
+            appendMessage(userMessage, 'user');
+            chatInput.value = ''; // Clear input
 
-        // --- Chat Utility Functions ---
-        
-        function initializeChatSession() {
-            if (GEMINI_API_KEY === 'YOUR_GEMINI_API_KEY' || !GEMINI_API_KEY) {
-                console.error("API Key not configured. Chat will not work.");
-                return;
-            }
+            // Disable input while waiting for response
+            chatInput.disabled = true;
+            sendButton.disabled = true;
+            sendButton.textContent = '...';
+
+            // Construct the Pollinations.AI Text API URL
+            // Pollinations.AI uses a simple GET request for text generation: https://text.pollinations.ai/{prompt}
+            const fullPrompt = `${JIGDRAL_PROFILE} The user asks: ${userMessage}`;
+            const encodedPrompt = encodeURIComponent(fullPrompt);
+            const apiUrl = `https://text.pollinations.ai/${encodedPrompt}?model=gpt-3.5-turbo`; // Using a capable model
 
             try {
-                const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-                chatSession = ai.chats.create({
-                    model: 'gemini-2.5-flash', // Using a fast model for chat
-                    config: {
-                        systemInstruction: `You are Jigdral Namgyal's AI assistant. 
-                        Speak in the first person as if you are Jigdral.
-                        Base your answers on this profile: ${JIGDRAL_BIO}.
-                        Be polite, humble, and enthusiastic about Bhutanese culture. 
-                        Keep answers relatively short and conversational (2-3 sentences max).`,
-                    },
-                    history: chatHistory.map(h => ({
-                        role: h.role === 'model' ? 'model' : 'user',
-                        parts: [{ text: h.text }],
-                    })),
-                });
+                // Fetch the response from the Pollinations API
+                const response = await fetch(apiUrl);
+                let botResponseText;
+
+                if (response.ok) {
+                    botResponseText = await response.text();
+                    // Basic cleanup, as API might return extra characters or just the raw text
+                    botResponseText = botResponseText.trim().replace(/^"/, '').replace(/"$/, ''); 
+                } else {
+                    botResponseText = "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later!";
+                }
+
+                appendMessage(botResponseText, 'bot');
+
             } catch (error) {
-                console.error("Failed to initialize Gemini AI:", error);
+                console.error("Fetch Error:", error);
+                appendMessage("I encountered a network error. My apologies!", 'bot');
+            } finally {
+                // Re-enable input
+                chatInput.disabled = false;
+                sendButton.disabled = false;
+                sendButton.textContent = 'Send';
+                chatInput.focus();
             }
         }
 
-        const scrollToBottom = () => {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
-
-        const renderMessages = () => {
-            chatMessages.innerHTML = '';
-            chatHistory.forEach(msg => {
-                const wrapper = document.createElement('div');
-                wrapper.className = `flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`;
-                
-                const bubble = document.createElement('div');
-                bubble.className = `max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-wrap ${
-                    msg.role === 'user' 
-                      ? 'bg-bhutan-red text-white rounded-tr-none' 
-                      : 'bg-white text-gray-800 border border-gray-200 rounded-tl-none shadow-sm'
-                }`;
-                bubble.textContent = msg.text;
-                
-                wrapper.appendChild(bubble);
-                chatMessages.appendChild(wrapper);
-            });
-
-            if (isLoading) {
-                const loadingWrapper = document.createElement('div');
-                loadingWrapper.className = 'flex justify-start';
-                loadingWrapper.innerHTML = `
-                    <div class="bg-white border border-gray-200 p-3 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-100"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-200"></div>
-                    </div>
-                `;
-                chatMessages.appendChild(loadingWrapper);
+        // Allow sending a message by pressing Enter
+        chatInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
             }
-            scrollToBottom();
-        };
-
-        const handleSend = async () => {
-            const text = chatInput.value.trim();
-            if (!text || isLoading || !chatSession) return;
-
-            // 1. Add User Message
-            chatHistory.push({ role: 'user', text: text });
-            chatInput.value = '';
-            isLoading = true;
-            renderMessages();
-            sendBtn.disabled = true;
-
-            try {
-                // 2. Send Message to Gemini
-                const result = await chatSession.sendMessage({ message: text });
-                const responseText = result.text || "I'm having trouble thinking right now. Could you ask me something else?";
-
-                // 3. Add Model Response
-                chatHistory.push({ role: 'model', text: responseText });
-
-            } catch (error) {
-                console.error("Gemini Error:", error);
-                let errorMessage = "Sorry, I can't connect right now. There might be an issue with the API service.";
-                if (error.message.includes("API Key")) {
-                    errorMessage = "Error: API Key is missing or invalid. Please check your configuration.";
-                }
-                chatHistory.push({ role: 'model', text: errorMessage });
-            } finally {
-                isLoading = false;
-                sendBtn.disabled = false;
-                renderMessages();
-                // Focus back on input
-                setTimeout(() => chatInput.focus(), 100);
-            }
-        };
-
-        // --- Event Listeners ---
+        });
         
-        // Scroll Header Effect
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                header.classList.add('bg-white', 'shadow-md', 'py-2');
-                header.classList.remove('bg-transparent', 'py-4');
-            } else {
-                header.classList.add('bg-transparent', 'py-4');
-                header.classList.remove('bg-white', 'shadow-md', 'py-2');
-            }
+        // Initial focus on the input field
+        document.addEventListener('DOMContentLoaded', () => {
+            chatInput.focus();
         });
-
-        // Mobile Menu
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Chat Widget Toggles
-        const toggleChat = () => {
-            isChatOpen = !isChatOpen;
-            if (isChatOpen) {
-                chatWindow.classList.remove('hidden');
-                chatWindow.classList.add('flex');
-                toggleIcon.classList.remove('fa-comment-alt');
-                toggleIcon.classList.add('fa-times');
-                scrollToBottom();
-                chatInput.focus();
-            } else {
-                chatWindow.classList.add('hidden');
-                chatWindow.classList.remove('flex');
-                toggleIcon.classList.add('fa-comment-alt');
-                toggleIcon.classList.remove('fa-times');
-            }
-        };
-
-        chatToggle.addEventListener('click', toggleChat);
-        closeChatBtn.addEventListener('click', toggleChat);
-
-        // Chat Interaction
-        sendBtn.addEventListener('click', handleSend);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent default form submission if input was in a form
-                handleSend();
-            }
-        });
-
     </script>
+
 </body>
 </html>
