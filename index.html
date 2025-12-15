@@ -3,323 +3,475 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jigdral Namgyal - Portfolio</title>
+    <title>Jigdral Namgyal | Researcher & Cultural Enthusiast</title>
     <style>
-        /* CSS for Light Theme and Layout */
         :root {
-            --primary-color: #ffaa33; /* A warm saffron/gold, inspired by Bhutanese colors */
-            --background-light: #ffffff;
-            --text-dark: #2c3e50;
-            --accent-light: #f4f6f9;
-            --font-stack: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Light Theme Color Palette */
+            --primary-color: #2c3e50; /* Deep Blue/Grey */
+            --accent-color: #e67e22; /* Bhutanese Orange-like accent */
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-secondary: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         body {
-            font-family: var(--font-stack);
-            background-color: var(--accent-light);
-            color: var(--text-dark);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
-            margin: 0;
-            padding: 0;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            background: var(--card-bg);
+            padding: 1.5rem 5%;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 30px;
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
         }
 
-        header, .card {
-            background-color: var(--background-light);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        .logo span {
+            color: var(--accent-color);
         }
 
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- Hero Section --- */
         header {
-            grid-column: 1 / 3; /* Header spans both columns */
+            max-width: 1000px;
+            margin: 4rem auto;
+            padding: 0 20px;
             text-align: center;
-            padding: 40px 25px;
         }
 
-        header h1 {
+        .profile-img-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--card-bg);
+            box-shadow: var(--shadow);
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #aaa;
+        }
+        
+        /* Placeholder for actual image */
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-size: 3rem;
             color: var(--primary-color);
-            margin: 0 0 5px;
-            font-size: 2.5em;
+            margin-bottom: 0.5rem;
         }
 
-        header p {
-            color: #6c7a89;
-            font-size: 1.1em;
-            font-weight: 300;
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
         }
 
-        .sidebar {
-            grid-column: 1 / 2;
+        .bio {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
         }
 
-        .main-content {
-            grid-column: 2 / 3;
+        /* --- Grid Layout --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
-        .card h2 {
+        .card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
             color: var(--primary-color);
-            border-bottom: 3px solid var(--accent-light);
-            padding-bottom: 10px;
-            margin-top: 0;
-            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--bg-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
         }
 
-        .detail-list {
+        .card ul {
             list-style: none;
-            padding: 0;
         }
 
-        .detail-list li {
-            margin-bottom: 10px;
-            padding-left: 20px;
+        .card li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
             position: relative;
+            color: var(--text-secondary);
         }
 
-        .detail-list li strong {
-            font-weight: 600;
-            display: block;
-            color: #4b6584;
-        }
-
-        .detail-list li:before {
-            content: '•';
-            color: var(--primary-color);
+        .card li::before {
+            content: "•";
+            color: var(--accent-color);
+            font-weight: bold;
             position: absolute;
             left: 0;
-            font-size: 1.2em;
         }
 
-        /* Chatbot Styles */
-        #chatbot-container {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            height: 400px;
+        /* --- Chatbot Widget --- */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 350px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.15);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            background-color: #fcfdff;
+            z-index: 2000;
+            border: 1px solid #eee;
+            /* Hidden by default on very small screens if needed, but we keep it */
         }
 
-        #chat-window {
-            flex-grow: 1;
-            padding: 15px;
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .chat-header h4 {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-status {
+            width: 10px;
+            height: 10px;
+            background: #2ecc71;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .chat-body {
+            height: 300px;
+            padding: 20px;
             overflow-y: auto;
-            border-bottom: 1px solid #e0e0e0;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
+            max-width: 85%;
+            padding: 10px 15px;
             border-radius: 15px;
-            max-width: 80%;
+            font-size: 0.9rem;
+            line-height: 1.4;
             word-wrap: break-word;
         }
 
-        .user-message {
-            background-color: var(--primary-color);
-            color: var(--background-light);
-            margin-left: auto;
+        .bot-msg {
+            background: #f1f1f1;
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .user-msg {
+            background: var(--accent-color);
+            color: white;
+            align-self: flex-end;
             border-bottom-right-radius: 2px;
         }
 
-        .bot-message {
-            background-color: var(--accent-light);
-            color: var(--text-dark);
-            margin-right: auto;
-            border-bottom-left-radius: 2px;
-        }
-        
-        #chat-input-container {
+        .chat-input-area {
+            padding: 15px;
+            border-top: 1px solid #eee;
             display: flex;
-            padding: 10px;
-            background-color: var(--background-light);
+            gap: 10px;
+            background: white;
         }
 
-        #chat-input {
-            flex-grow: 1;
+        .chat-input-area input {
+            flex: 1;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             border-radius: 20px;
-            margin-right: 10px;
-            font-size: 1em;
+            outline: none;
+            transition: border 0.3s;
         }
 
-        #send-button {
-            background-color: var(--primary-color);
+        .chat-input-area input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .chat-input-area button {
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 0 15px;
             border-radius: 20px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        #send-button:hover {
-            background-color: #e0992a;
+        .chat-input-area button:hover {
+            background: var(--accent-color);
         }
 
-        /* Responsive Design */
-        @media (max-width: 800px) {
-            .container {
-                grid-template-columns: 1fr;
-                margin: 15px;
-                gap: 15px;
-            }
-            header {
-                grid-column: 1 / 2;
-            }
-            .sidebar, .main-content {
-                grid-column: 1 / 2;
+        .typing-indicator {
+            font-size: 0.75rem;
+            color: #999;
+            margin-left: 10px;
+            display: none;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-top: 1px solid #eee;
+            margin-top: auto;
+            color: var(--text-secondary);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .chat-widget {
+                width: 90%;
+                right: 5%;
+                bottom: 20px;
             }
         }
     </style>
 </head>
 <body>
 
+    <nav>
+        <div class="logo">Jigdral <span>Namgyal</span></div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#experience">Experience</a>
+            <a href="#interests">Interests</a>
+        </div>
+    </nav>
+
+    <header id="about">
+        <div class="profile-img-container">
+            <img src="https://api.dicebear.com/9.x/micah/svg?seed=Jigdral&backgroundColor=f8f9fa" alt="Jigdral Namgyal">
+        </div>
+        <h1>Jigdral Namgyal</h1>
+        <div class="subtitle">Researcher @ EduLink | Trashi Yangtse, Bhutan</div>
+        <p class="bio">
+            A dedicated 15-year-old from the beautiful eastern region of Trashi Yangtse. 
+            Passionate about preserving Bhutanese culture, conducting impactful research, 
+            and exploring the world through music and tradition.
+        </p>
+    </header>
+
     <div class="container">
-        <header>
-            <h1>Jigdral Namgyal</h1>
-            <p>15-year-old Researcher & Dedicated Preserver of Bhutanese Culture from Trashi Yangtse</p>
-        </header>
-
-        <div class="sidebar">
-            <div class="card">
-                <h2>Profile Details</h2>
-                <ul class="detail-list">
-                    <li><strong>Age:</strong> 15 years old</li>
-                    <li><strong>Hometown:</strong> Trashi Yangtse, Eastern Bhutan 🇧🇹</li>
-                    <li><strong>Role:</strong> Researcher</li>
-                    <li><strong>Organization:</strong> EduLink</li>
-                    <li><strong>Start Date:</strong> December 5, 2025</li>
-                </ul>
+        
+        <div class="card" id="experience">
+            <h3>Professional Experience</h3>
+            <div style="margin-bottom: 1rem;">
+                <strong>Researcher</strong> <br>
+                <span style="color: var(--accent-color);">EduLink</span> | <em>Dec 2025 – Present</em>
             </div>
-
-            <div class="card" style="margin-top: 30px;">
-                <h2>Cultural Interests</h2>
-                <ul class="detail-list">
-                    <li><strong>Traditional Games:</strong> Playing Bhutanese games (e.g., Archery, Khuru).</li>
-                    <li><strong>Performing Arts:</strong> Dancing and Singing.</li>
-                    <li><strong>Leisure:</strong> Listening to music.</li>
-                    <li><strong>Core Passion:</strong> Preservation of Bhutanese culture.</li>
-                </ul>
-            </div>
+            <ul>
+                <li>Conducting research and analysis on educational topics.</li>
+                <li>Contributing to data collection and reporting.</li>
+                <li>Collaborating with the team to support project goals.</li>
+            </ul>
         </div>
 
-        <div class="main-content">
-            <div class="card">
-                <h2>Ask Jigdral</h2>
-                <p>Hello! I'm Jigdral. Ask me about my work, my hometown, or my cultural hobbies!</p>
-                <div id="chatbot-container">
-                    <div id="chat-window">
-                        <div class="message bot-message">
-                            Kuzuzangpo la! I am Jigdral. I'm a young researcher and I'm happy to tell you about my work at EduLink or my passions like dancing! How can I help you?
-                        </div>
-                    </div>
-                    <div id="chat-input-container">
-                        <input type="text" id="chat-input" placeholder="Type your question here...">
-                        <button id="send-button" onclick="sendMessage()">Send</button>
-                    </div>
-                </div>
-            </div>
+        <div class="card">
+            <h3>Personal Details</h3>
+            <ul>
+                <li><strong>Age:</strong> 15 Years Old</li>
+                <li><strong>Location:</strong> Trashi Yangtse, Bhutan</li>
+                <li><strong>Language:</strong> Dzongkha, English</li>
+                <li><strong>Status:</strong> Student & Researcher</li>
+            </ul>
+        </div>
+
+        <div class="card" id="interests">
+            <h3>Passions & Hobbies</h3>
+            <ul>
+                <li><strong>Traditional Games:</strong> Keeping Bhutanese heritage alive.</li>
+                <li><strong>Performing Arts:</strong> Traditional dancing and singing.</li>
+                <li><strong>Music:</strong> Relaxing and discovering new tunes.</li>
+                <li><strong>Culture:</strong> Preserving the unique identity of Eastern Bhutan.</li>
+            </ul>
         </div>
     </div>
 
-    <script>
-        const chatWindow = document.getElementById('chat-window');
-        const chatInput = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
+    <div class="chat-widget" id="chatWidget">
+        <div class="chat-header" onclick="toggleChat()">
+            <h4><span class="chat-status"></span> Chat with AI Jigdral</h4>
+            <span>▼</span>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="message bot-msg">
+                Kuzuzangpo! I am Jigdral's AI assistant. Ask me anything about my research at EduLink or my life in Trashi Yangtse!
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">Jigdral is typing...</div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Type a message..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
 
-        // Core profile information for the AI prompt
-        const JIGDRAL_PROFILE = `
-            You are Jigdral Namgyal, a dedicated 15-year-old from Trashi Yangtse, Eastern Bhutan. 
-            You are a professional Researcher at EduLink, a role you started on December 5, 2025. 
-            Your deep passions are preserving and enjoying Bhutanese culture, including playing traditional Bhutanese games (like Archery or Khuru), dancing, and singing. 
-            You also enjoy relaxing by listening to music. Respond in a friendly, helpful tone, and always refer to yourself as Jigdral. 
-            Keep your answers concise, engaging, and in character.
+    <footer>
+        <p>&copy; 2025 Jigdral Namgyal. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // --- Chatbot Logic using Pollinations.AI ---
+
+        const chatBody = document.getElementById('chatBody');
+        const userInput = document.getElementById('userInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // The System Prompt defines the AI's persona
+        const SYSTEM_PROMPT = `
+            You are Jigdral Namgyal, a 15-year-old boy from Trashi Yangtse, Bhutan.
+            You work as a Researcher at EduLink (started Dec 5, 2025).
+            You are polite, humble, and enthusiastic.
+            Your hobbies are playing traditional Bhutanese games, dancing, singing, and listening to music.
+            You love your culture and your country.
+            Keep your answers relatively short (2-3 sentences max) and friendly.
+            If asked about things you don't know, say you are just 15 and still learning!
+            Current context: You are chatting on your personal portfolio website.
         `;
 
-        // Function to create and append a message element
-        function appendMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', `${sender}-message`);
-            messageDiv.textContent = text;
-            chatWindow.appendChild(messageDiv);
-            // Scroll to the latest message
-            chatWindow.scrollTop = chatWindow.scrollHeight;
+        function toggleChat() {
+            const body = document.querySelector('.chat-body');
+            const input = document.querySelector('.chat-input-area');
+            // Simple toggle for minimized view could be added here
+            // For now, we keep it open as a floating widget
         }
 
-        // Main function to handle sending a message
-        async function sendMessage() {
-            const userMessage = chatInput.value.trim();
-            if (userMessage === "") return;
-
-            // Display user message immediately
-            appendMessage(userMessage, 'user');
-            chatInput.value = ''; // Clear input
-
-            // Disable input while waiting for response
-            chatInput.disabled = true;
-            sendButton.disabled = true;
-            sendButton.textContent = '...';
-
-            // Construct the Pollinations.AI Text API URL
-            // Pollinations.AI uses a simple GET request for text generation: https://text.pollinations.ai/{prompt}
-            const fullPrompt = `${JIGDRAL_PROFILE} The user asks: ${userMessage}`;
-            const encodedPrompt = encodeURIComponent(fullPrompt);
-            const apiUrl = `https://text.pollinations.ai/${encodedPrompt}?model=gpt-3.5-turbo`; // Using a capable model
-
-            try {
-                // Fetch the response from the Pollinations API
-                const response = await fetch(apiUrl);
-                let botResponseText;
-
-                if (response.ok) {
-                    botResponseText = await response.text();
-                    // Basic cleanup, as API might return extra characters or just the raw text
-                    botResponseText = botResponseText.trim().replace(/^"/, '').replace(/"$/, ''); 
-                } else {
-                    botResponseText = "Sorry, I'm having trouble connecting to my knowledge base right now. Please try again later!";
-                }
-
-                appendMessage(botResponseText, 'bot');
-
-            } catch (error) {
-                console.error("Fetch Error:", error);
-                appendMessage("I encountered a network error. My apologies!", 'bot');
-            } finally {
-                // Re-enable input
-                chatInput.disabled = false;
-                sendButton.disabled = false;
-                sendButton.textContent = 'Send';
-                chatInput.focus();
-            }
-        }
-
-        // Allow sending a message by pressing Enter
-        chatInput.addEventListener('keypress', function(event) {
+        function handleEnter(event) {
             if (event.key === 'Enter') {
                 sendMessage();
             }
-        });
-        
-        // Initial focus on the input field
-        document.addEventListener('DOMContentLoaded', () => {
-            chatInput.focus();
-        });
-    </script>
+        }
 
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // 1. Add User Message to Chat
+            addMessage(text, 'user-msg');
+            userInput.value = '';
+            
+            // 2. Show Typing Indicator
+            typingIndicator.style.display = 'block';
+            chatBody.scrollTop = chatBody.scrollHeight;
+
+            // 3. Construct the prompt for Pollinations
+            // We prepend the persona instructions to the user's message
+            const finalPrompt = `${SYSTEM_PROMPT}\n\nVisitor says: ${text}\nJigdral answers:`;
+            
+            try {
+                // Using Pollinations.AI Text API (GET request is simplest and free)
+                // We encode the prompt to be URL-safe
+                const encodedPrompt = encodeURIComponent(finalPrompt);
+                
+                // Random seed to get slight variations, though not strictly necessary
+                const seed = Math.floor(Math.random() * 1000);
+                
+                const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.text();
+
+                // 4. Add AI Response to Chat
+                typingIndicator.style.display = 'none';
+                addMessage(data, 'bot-msg');
+
+            } catch (error) {
+                console.error('Error:', error);
+                typingIndicator.style.display = 'none';
+                addMessage("I'm having a little trouble connecting right now. Please try again!", 'bot-msg');
+            }
+        }
+
+        function addMessage(text, className) {
+            const div = document.createElement('div');
+            div.classList.add('message', className);
+            div.textContent = text;
+            chatBody.appendChild(div);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+    </script>
 </body>
 </html>
