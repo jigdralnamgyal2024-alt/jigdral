@@ -42,9 +42,9 @@
 {
   "imports": {
     "@google/genai": "https://esm.sh/@google/genai",
+    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
   }
 }
 </script>
@@ -461,7 +461,7 @@
 
                 const ai = new GoogleGenAI({ apiKey });
                 const chat = ai.chats.create({
-                    model: 'gemini-2.5-flash',
+                    model: 'gemini-3-pro-preview',
                     config: {
                         systemInstruction: `You are Jigdral Namgyal's AI assistant. 
                         Speak in the first person as if you are Jigdral.
