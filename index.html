@@ -115,9 +115,29 @@
 
         .bio {
             max-width: 700px;
-            margin: 0 auto;
+            margin: 0 auto 1.5rem auto;
             color: var(--text-secondary);
             font-size: 1.1rem;
+        }
+
+        /* Youtube Button Style */
+        .yt-btn {
+            display: inline-block;
+            background-color: #ff0000; /* YouTube Red */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+            transition: var(--transition);
+            margin-top: 1rem;
+        }
+
+        .yt-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.3);
+            background-color: #cc0000;
         }
 
         /* --- Grid Layout --- */
@@ -184,7 +204,6 @@
             overflow: hidden;
             z-index: 2000;
             border: 1px solid #eee;
-            /* Hidden by default on very small screens if needed, but we keep it */
         }
 
         .chat-header {
@@ -324,12 +343,19 @@
         <div class="profile-img-container">
             <img src="https://api.dicebear.com/9.x/micah/svg?seed=Jigdral&backgroundColor=f8f9fa" alt="Jigdral Namgyal">
         </div>
+        
         <h1>Jigdral Namgyal</h1>
         <div class="subtitle">Researcher @ EduLink | Trashi Yangtse, Bhutan</div>
+        
         <p class="bio">
-            YouTube channel
-            http://www.youtube.com/@jigdral53
+            A dedicated researcher from the beautiful region of Trashi Yangtse. 
+            Passionate about preserving Bhutanese culture, conducting impactful research, 
+            and exploring the world through music and tradition.
         </p>
+
+        <a href="https://www.youtube.com/@jigdral53" target="_blank" class="yt-btn">
+            Know more about Jigdral Namgyal
+        </a>
     </header>
 
     <div class="container">
@@ -350,7 +376,6 @@
         <div class="card">
             <h3>Personal Details</h3>
             <ul>
-            
                 <li><strong>Location:</strong> Trashi Yangtse, Bhutan</li>
                 <li><strong>Language:</strong> Dzongkha, English</li>
                 <li><strong>Status:</strong> Student & Researcher</li>
@@ -404,7 +429,7 @@
             Your hobbies are playing traditional Bhutanese games, dancing, singing, and listening to music.
             You love your culture and your country.
             Keep your answers relatively short (2-3 sentences max) and friendly.
-            If asked about things you don't know, say you are just 15 and still learning!
+            If asked about things you don't know, say you are young and still learning!
             Current context: You are chatting on your personal portfolio website.
         `;
 
@@ -439,10 +464,7 @@
             
             try {
                 // Using Pollinations.AI Text API (GET request is simplest and free)
-                // We encode the prompt to be URL-safe
                 const encodedPrompt = encodeURIComponent(finalPrompt);
-                
-                // Random seed to get slight variations, though not strictly necessary
                 const seed = Math.floor(Math.random() * 1000);
                 
                 const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`);
