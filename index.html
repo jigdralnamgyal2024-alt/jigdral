@@ -488,13 +488,26 @@
         const widget = document.getElementById('chatWidget');
         const chatIcon = document.getElementById('chatIcon');
 
-        // SYSTEM PROMPT: Defines the AI Persona
+        /* =============================================================
+           STOP LYING SECTION: EDIT THE FACTS BELOW
+           =============================================================
+        */
         const SYSTEM_PROMPT = `
-            You are QuanTra, an advanced AI assistant created by Druk Link.
-            You are helpful, polite, and knowledgeable.
-            You have a deep respect for Bhutanese culture (Druk) but can answer any general questions.
-            Your responses should be concise (2-4 sentences) and friendly.
-            If asked who you are, say "I am QuanTra, powered by Druk Link."
+            You are QuanTra, the AI assistant for Druk Link.
+
+            /// KNOWLEDGE BASE (These are the ONLY facts you know) ///
+            - Company Name: Druk Link
+            - Location: Bhutan
+            - What we do: We provide AI solutions and cultural preservation tools.
+            - Products: QuanTra (AI Assistant).
+            - Contact Email: support@druklink.bt (Please replace this with your real email)
+            - Pricing: QuanTra is currently in free beta.
+
+            /// STRICT RULES ///
+            1. Always greet using "Kuzuzangpo" if appropriate.
+            2. ONLY answer questions based on the "KNOWLEDGE BASE" above.
+            3. IF YOU DO NOT KNOW THE ANSWER: Do NOT guess. Do NOT make up facts.
+            4. Instead, say: "I am not sure about that detail. Please contact our team directly."
         `;
 
         function focusChat() {
@@ -545,11 +558,12 @@
             typingIndicator.style.display = 'block';
             chatBody.scrollTop = chatBody.scrollHeight;
 
-            // 3. Construct Prompt
-            const finalPrompt = `${SYSTEM_PROMPT}\n\nUser says: ${text}\nQuanTra answers:`;
+            // 3. Construct Prompt (Merging Facts + User Question)
+            const finalPrompt = `${SYSTEM_PROMPT}\n\nUser Question: ${text}\nQuanTra Answer:`;
             
             try {
                 const encodedPrompt = encodeURIComponent(finalPrompt);
+                // Random seed to keep conversation slightly natural, but constrained by prompt
                 const seed = Math.floor(Math.random() * 1000);
                 
                 // Using Pollinations API
