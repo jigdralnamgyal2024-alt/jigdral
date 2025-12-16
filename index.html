@@ -3,58 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with QuanTra | Druk Link</title>
+    <title>Druk Link | QuanTra AI</title>
     <style>
+        /* --- GLOBAL STYLES --- */
         :root {
             --primary-color: #2c3e50;
             --accent-color: #e67e22;
-            --bg-color: #f0f2f5;
+            --bg-color: #f8f9fa;
             --card-bg: #ffffff;
             --text-color: #333333;
+            --text-secondary: #666666;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        
-        body {
-            background-color: var(--bg-color);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
 
-        /* Navbar */
+        /* --- NAVIGATION --- */
         nav {
             background: var(--card-bg);
-            padding: 15px 20px;
+            padding: 1rem 5%;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            flex-shrink: 0;
-        }
-        
-        /* Back Button Style */
-        .back-btn { 
-            text-decoration: none; 
-            color: white; 
-            background-color: var(--primary-color);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600; 
-            font-size: 0.9rem; 
-            transition: background 0.3s;
-            display: flex;
             align-items: center;
-            gap: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky; top: 0; z-index: 1000;
         }
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+        .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; }
+        .logo span { color: var(--accent-color); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: var(--transition); cursor: pointer; }
+        .nav-links a:hover { color: var(--accent-color); }
         
-        .back-btn:hover { 
-            background-color: var(--accent-color); 
+        /* Highlighted Nav Button */
+        .nav-btn {
+            background-color: var(--primary-color);
+            color: white !important;
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+        .nav-btn:hover { background-color: var(--accent-color); }
+
+        /* ================= HOME PAGE STYLES ================= */
+        #home-page header { max-width: 1000px; margin: 4rem auto; padding: 0 20px; text-align: center; }
+        .profile-img-container {
+            width: 180px; height: 180px; margin: 0 auto 2rem; border-radius: 50%; overflow: hidden;
+            border: 4px solid var(--card-bg); box-shadow: var(--shadow); background-color: #fff;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
+        h1 { font-size: 3rem; color: var(--primary-color); margin-bottom: 0.5rem; letter-spacing: -1px; }
+        h2 { font-size: 1.5rem; color: var(--accent-color); font-weight: 500; margin-bottom: 1.5rem; }
+        .bio { max-width: 700px; margin: 0 auto 1.5rem auto; color: var(--text-secondary); font-size: 1.1rem; }
+
+        .yt-btn {
+            display: inline-block; background-color: var(--primary-color); color: white;
+            padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: 600;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3); transition: var(--transition); margin-top: 1rem; cursor: pointer;
+        }
+        .yt-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4); background-color: var(--accent-color); }
+
+        .container {
+            max-width: 1200px; margin: 0 auto 4rem; padding: 0 20px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
+        }
+        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow); transition: var(--transition); }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 0.5rem; display: inline-block; }
+        .card ul { list-style: none; }
+        .card li { margin-bottom: 0.8rem; padding-left: 1.5rem; position: relative; color: var(--text-secondary); }
+        .card li::before { content: "•"; color: var(--accent-color); font-weight: bold; position: absolute; left: 0; }
+
+        footer { text-align: center; padding: 2rem; background: var(--card-bg); border-top: 1px solid #eee; margin-top: auto; color: var(--text-secondary); }
+
+        /* ================= CHATBOT PAGE STYLES ================= */
+        /* Initially hidden */
+        #chatbot-page {
+            display: none; 
+            height: calc(100vh - 80px); /* Full height minus navbar */
+            flex-direction: column;
         }
 
-        .nav-right img { height: 35px; width: 35px; border-radius: 50%; }
+        .back-btn { 
+            background-color: var(--primary-color); color: white !important; 
+            padding: 8px 16px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;
+        }
+        .back-btn:hover { background-color: var(--accent-color); }
 
-        /* Chat Container */
         .chat-container {
             flex: 1;
             width: 100%;
@@ -136,9 +173,7 @@
             outline: none;
             transition: border 0.3s;
         }
-
         .input-area input:focus { border-color: var(--accent-color); }
-
         .input-area button {
             background: var(--primary-color);
             color: white;
@@ -149,68 +184,149 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-
         .input-area button:hover { background: var(--accent-color); }
 
         .typing-indicator {
             font-size: 0.8rem; color: #888; margin-left: 20px; margin-bottom: 5px; display: none;
         }
 
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            .chat-container { margin: 0; border-radius: 0; height: 100vh; }
+            .chat-container { margin: 0; border-radius: 0; height: 100%; }
+            #chatbot-page { height: calc(100vh - 70px); }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="index.html" class="back-btn">← Back to Home</a>
-        
-        <div class="nav-right">
+        <div class="logo">
             <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
+            Druk <span>Link</span>
         </div>
+        
+        <div class="nav-links" id="nav-links-home">
+            <a onclick="showHome()">Home</a>
+            <a href="#features" onclick="showHome()">Features</a>
+            <a onclick="showChat()" class="nav-btn">Try QuanTra</a>
+        </div>
+
+        <a onclick="showHome()" class="back-btn" id="nav-back-btn" style="display: none;">← Back to Home</a>
     </nav>
 
-    <div class="chat-container">
-        <div class="chat-header">
-            <img src="https://image2url.com/images/1765884427462-82c8f595-8632-48f6-baaf-95d2f55c02f8.png" class="avatar-large" alt="Bot">
-            <div class="chat-info">
-                <h2>QuanTra</h2>
-                <p><span class="status-dot"></span>Online | AI Assistant</p>
+    <div id="home-page">
+        <header>
+            <div class="profile-img-container">
+                <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
+            </div>
+            
+            <h1>Druk Link</h1>
+            <h2>Empowering the Future with QuanTra</h2>
+            
+            <p class="bio">
+                Welcome to <strong>Druk Link</strong>. We are proud to introduce 
+                <strong>QuanTra</strong>, your intelligent AI companion designed for 
+                speed, creativity, and deep cultural understanding.
+            </p>
+
+            <button onclick="showChat()" class="yt-btn" style="border: none; font-size: 1rem;">
+                Chat with QuanTra Now
+            </button>
+        </header>
+
+        <div class="container" id="features">
+            <div class="card">
+                <h3>QuanTra Intelligence</h3>
+                <p>A smart assistant built to understand your needs.</p>
+                <ul>
+                    <li>Instant answers to complex queries.</li>
+                    <li>Creative writing and brainstorming.</li>
+                    <li>Data analysis and summarization.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Druk Link Ecosystem</h3>
+                <p>Deeply rooted in cultural values and connection.</p>
+                <ul>
+                    <li>Bhutanese history and culture insights.</li>
+                    <li>Preserving local traditions through tech.</li>
+                    <li>Bridging the gap between heritage and AI.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Always Available</h3>
+                <p>QuanTra is ready whenever you are.</p>
+                <ul>
+                    <li>24/7 Operational time.</li>
+                    <li>Fast response speed.</li>
+                    <li>Secure and private conversations.</li>
+                </ul>
             </div>
         </div>
 
-        <div class="chat-body" id="chatBody">
-            <div class="message bot-msg">
-                Kuzuzangpo la! I am QuanTra. I am here to assist you with anything related to Druk Link or general queries. How can I help you today?
-            </div>
-        </div>
-        
-        <div class="typing-indicator" id="typingIndicator">QuanTra is thinking...</div>
+        <footer>
+            <p>&copy; 2025 Druk Link AI. All Rights Reserved.</p>
+        </footer>
+    </div>
 
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleEnter(event)" autofocus>
-            <button onclick="sendMessage()">Send</button>
+    <div id="chatbot-page">
+        <div class="chat-container">
+            <div class="chat-header">
+                <img src="https://image2url.com/images/1765884427462-82c8f595-8632-48f6-baaf-95d2f55c02f8.png" class="avatar-large" alt="Bot">
+                <div class="chat-info">
+                    <h2>QuanTra</h2>
+                    <p><span class="status-dot"></span>Online | AI Assistant</p>
+                </div>
+            </div>
+
+            <div class="chat-body" id="chatBody">
+                <div class="message bot-msg">
+                    Kuzuzangpo la! I am QuanTra. I am here to assist you with anything related to Druk Link or general queries. How can I help you today?
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">QuanTra is thinking...</div>
+
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()">Send</button>
+            </div>
         </div>
     </div>
 
     <script>
+        // --- PAGE SWITCHING LOGIC ---
+        function showChat() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('chatbot-page').style.display = 'flex';
+            
+            // Adjust Nav
+            document.getElementById('nav-links-home').style.display = 'none';
+            document.getElementById('nav-back-btn').style.display = 'flex';
+            
+            // Focus on input
+            setTimeout(() => document.getElementById('userInput').focus(), 100);
+        }
+
+        function showHome() {
+            document.getElementById('chatbot-page').style.display = 'none';
+            document.getElementById('home-page').style.display = 'block';
+
+            // Adjust Nav
+            document.getElementById('nav-links-home').style.display = 'flex';
+            document.getElementById('nav-back-btn').style.display = 'none';
+        }
+
+        // --- CHATBOT LOGIC ---
         const chatBody = document.getElementById('chatBody');
         const userInput = document.getElementById('userInput');
         const typingIndicator = document.getElementById('typingIndicator');
 
         const SYSTEM_PROMPT = `
             You are QuanTra, the AI assistant for Druk Link.
-            
             /// KNOWLEDGE BASE ///
-            1. WHO WE ARE:
-               - Company: Druk Link, based in Bhutan.
-               - Mission: Bridging heritage with AI.
-            2. CONTACT:
-               - Email: jigdral.namgyal2024@academy.bt
-               - Phone: 17927739
-               - Founder: Jigdral Namgyal.
-            
+            1. WHO WE ARE: Company: Druk Link, based in Bhutan. Mission: Bridging heritage with AI.
+            2. CONTACT: Email: jigdral.namgyal2024@academy.bt, Phone: 17927739
             /// BEHAVIOR ///
             - Greeting: "Kuzuzangpo la!"
             - Tone: Polite, Bhutanese cultural context.
