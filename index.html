@@ -52,7 +52,7 @@
             gap: 10px;
         }
 
-        /* Small Logo in Header */
+        /* Small Druk Link Logo in Header */
         .logo img {
             height: 40px;
             width: 40px;
@@ -103,7 +103,7 @@
             justify-content: center;
         }
         
-        /* Main Profile Image Style */
+        /* Main Profile Image Style (Druk Link) */
         .profile-img-container img {
             width: 100%;
             height: 100%;
@@ -208,7 +208,6 @@
             bottom: 30px;
             right: 30px;
             width: 350px;
-            /* Default Height (Auto or enough to fit content up to max) */
             height: 450px; 
             background: var(--card-bg);
             border-radius: 20px;
@@ -218,16 +217,14 @@
             overflow: hidden;
             z-index: 2000;
             border: 1px solid #eee;
-            transition: height 0.4s ease, border 0.3s ease; /* Smooth transition for height */
+            transition: height 0.4s ease, border 0.3s ease; 
         }
 
-        /* --- NEW: Minimized State --- */
         .chat-widget.minimized {
-            height: 55px !important; /* Only shows the header */
-            border-radius: 20px 20px 0 0; /* Optional: squared bottom corners when minimized */
+            height: 60px !important; /* Adjusted slightly for the logo */
+            border-radius: 20px 20px 0 0;
         }
 
-        /* Highlight animation for focus */
         @keyframes pulseHighlight {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7); }
             50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(230, 126, 34, 0); }
@@ -242,8 +239,8 @@
         .chat-header {
             background: var(--primary-color);
             color: white;
-            padding: 15px 20px;
-            height: 55px; /* Fixed header height */
+            padding: 10px 15px;
+            height: 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -251,24 +248,39 @@
             user-select: none;
         }
 
-        .chat-header h4 {
-            font-size: 1rem;
+        /* Styling for the QuanTra Avatar/Logo in Chat Header */
+        .bot-identity {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin: 0;
+            gap: 12px;
         }
 
-        .chat-status {
-            width: 10px;
-            height: 10px;
-            background: #2ecc71;
+        .bot-avatar {
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
+            border: 2px solid white;
+            object-fit: cover;
+            background: white;
+        }
+
+        .chat-header h4 {
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .status-dot {
             display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #2ecc71; /* Green active color */
+            border-radius: 50%;
+            margin-right: 5px;
         }
 
         .chat-body {
-            flex: 1; /* Takes up remaining space */
+            flex: 1;
             padding: 20px;
             overflow-y: auto;
             background: #fdfdfd;
@@ -381,7 +393,7 @@
     <header id="about">
         <div class="profile-img-container">
             <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" 
-                 alt="Druk Link Custom Logo" 
+                 alt="Druk Link Logo" 
                  onerror="this.src='https://cdn-icons-png.flaticon.com/512/1786/1786548.png'">
         </div>
         
@@ -440,8 +452,17 @@
 
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header" onclick="toggleChat()">
-            <h4><span class="chat-status"></span> Chat with QuanTra</h4>
-            <span id="chatIcon">▼</span> </div>
+            <div class="bot-identity">
+                <img src="https://image2url.com/images/1765884427462-82c8f595-8632-48f6-baaf-95d2f55c02f8.png" 
+                     class="bot-avatar" 
+                     alt="QuanTra Avatar">
+                
+                <h4><span class="status-dot"></span>QuanTra</h4>
+            </div>
+            
+            <span id="chatIcon">▼</span>
+        </div>
+        
         <div class="chat-body" id="chatBody">
             <div class="message bot-msg">
                 Kuzuzangpo! I am QuanTra, the AI assistant from Druk Link. How can I help you today?
@@ -494,16 +515,15 @@
             userInput.focus();
         }
 
-        // --- UPDATED TOGGLE FUNCTION ---
+        // --- Toggle Function ---
         function toggleChat() {
-            // Toggle the 'minimized' class on the widget
             widget.classList.toggle('minimized');
             
             // Change the arrow icon based on state
             if (widget.classList.contains('minimized')) {
-                chatIcon.textContent = '▲'; // Up arrow when closed
+                chatIcon.textContent = '▲'; 
             } else {
-                chatIcon.textContent = '▼'; // Down arrow when open
+                chatIcon.textContent = '▼'; 
             }
         }
 
