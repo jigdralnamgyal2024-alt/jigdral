@@ -207,8 +207,10 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            width: 350px;
-            height: 450px; 
+            /* --- CHANGED SIZE HERE --- */
+            width: 400px;  /* Increased from 350px */
+            height: 600px; /* Increased from 450px */
+            /* ------------------------- */
             background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.15);
@@ -372,6 +374,11 @@
                 width: 90%;
                 right: 5%;
                 bottom: 20px;
+                /* --- ADDED DYNAMIC HEIGHT FOR MOBILE --- */
+                height: 70vh; 
+            }
+            .chat-widget.minimized {
+                height: 60px;
             }
         }
     </style>
