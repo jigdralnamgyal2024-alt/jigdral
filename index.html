@@ -78,14 +78,14 @@
         }
 
         .profile-img-container {
-            width: 150px;
-            height: 150px;
+            width: 180px; /* Slightly larger to fit detailed logo */
+            height: 180px;
             margin: 0 auto 2rem;
-            border-radius: 50%;
+            border-radius: 50%; /* Keeps it circular */
             overflow: hidden;
             border: 4px solid var(--card-bg);
             box-shadow: var(--shadow);
-            background-color: #ddd;
+            background-color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -95,7 +95,7 @@
         .profile-img-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Ensures image fills the circle */
         }
 
         h1 {
@@ -354,7 +354,9 @@
 
     <header id="about">
         <div class="profile-img-container">
-            <img src="https://googleusercontent.com/profile/picture/0" alt="Druk Link Logo" onerror="this.src='https://via.placeholder.com/150?text=AI+Logo'">
+            <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" 
+                 alt="Druk Link Custom Logo" 
+                 onerror="this.src='https://cdn-icons-png.flaticon.com/512/1786/1786548.png'">
         </div>
         
         <h1>Druk Link</h1>
@@ -439,7 +441,6 @@
         const typingIndicator = document.getElementById('typingIndicator');
 
         // SYSTEM PROMPT: Defines the AI Persona
-        // It knows it is "QuanTra" created by "Druk Link"
         const SYSTEM_PROMPT = `
             You are QuanTra, an advanced AI assistant created by Druk Link.
             You are helpful, polite, and knowledgeable.
