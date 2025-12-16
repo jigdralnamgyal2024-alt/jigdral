@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Druk Link | Your AI Companion</title>
+    <title>Druk Link | Presenting QuanTra AI</title>
     <style>
         :root {
-            /* Light Theme Color Palette */
+            /* Theme Color Palette */
             --primary-color: #2c3e50; /* Deep Blue/Grey */
             --accent-color: #e67e22; /* Bhutanese Orange-like accent */
             --bg-color: #f8f9fa;
@@ -103,6 +103,13 @@
             color: var(--primary-color);
             margin-bottom: 0.5rem;
             letter-spacing: -1px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-bottom: 1.5rem;
         }
 
         .bio {
@@ -347,29 +354,29 @@
 
     <header id="about">
         <div class="profile-img-container">
-            <img src="https://ibb.co/B2FdZqxT" alt="Druk Link Logo" onerror="this.src='https://via.placeholder.com/150?text=AI+Logo'">
+            <img src="https://googleusercontent.com/profile/picture/0" alt="Druk Link Logo" onerror="this.src='https://via.placeholder.com/150?text=AI+Logo'">
         </div>
         
         <h1>Druk Link</h1>
-        <h2>Your Intelligent Companion for Everyday Tasks</h2>
+        <h2>Empowering the Future with QuanTra</h2>
         
         <p class="bio">
-            Experience the power of next-generation AI tailored for you. 
-            From complex problem-solving to creative writing, Druk Link simplifies your workflow 
-            and amplifies your potential.
+            Welcome to <strong>Druk Link</strong>. We are proud to introduce 
+            <strong>QuanTra</strong>, your intelligent AI companion designed for 
+            speed, creativity, and deep cultural understanding.
         </p>
 
         <a href="javascript:void(0)" onclick="focusChat()" class="yt-btn">
-            Chat with Druk Link
+            Chat with QuanTra Now
         </a>
     </header>
 
     <div class="container" id="features">
         
         <div class="card">
-            <h3>Smart Intelligence</h3>
+            <h3>QuanTra Intelligence</h3>
             <p style="margin-bottom: 1rem; color: var(--text-secondary);">
-                Powered by advanced algorithms to help you learn and create.
+                A smart assistant built to understand your needs.
             </p>
             <ul>
                 <li>Instant answers to complex queries.</li>
@@ -379,21 +386,21 @@
         </div>
 
         <div class="card">
-            <h3>Cultural Knowledge</h3>
+            <h3>Druk Link Ecosystem</h3>
             <p style="margin-bottom: 1rem; color: var(--text-secondary);">
-                Specialized understanding of local contexts and traditions.
+                Deeply rooted in cultural values and connection.
             </p>
             <ul>
-                <li>Bhutanese history and culture.</li>
-                <li>Language support (Dzongkha/English).</li>
-                <li>Local insights and information.</li>
+                <li>Bhutanese history and culture insights.</li>
+                <li>Preserving local traditions through tech.</li>
+                <li>Bridging the gap between heritage and AI.</li>
             </ul>
         </div>
 
         <div class="card">
             <h3>Always Available</h3>
             <p style="margin-bottom: 1rem; color: var(--text-secondary);">
-                Ready to assist you whenever you need help.
+                QuanTra is ready whenever you are.
             </p>
             <ul>
                 <li>24/7 Operational time.</li>
@@ -405,17 +412,17 @@
 
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header" onclick="toggleChat()">
-            <h4><span class="chat-status"></span> Chat with Druk Link</h4>
+            <h4><span class="chat-status"></span> Chat with QuanTra</h4>
             <span>▼</span>
         </div>
         <div class="chat-body" id="chatBody">
             <div class="message bot-msg">
-                Kuzuzangpo! I am Druk Link. How can I assist you today?
+                Kuzuzangpo! I am QuanTra, the AI assistant from Druk Link. How can I help you today?
             </div>
         </div>
-        <div class="typing-indicator" id="typingIndicator">Druk Link is typing...</div>
+        <div class="typing-indicator" id="typingIndicator">QuanTra is typing...</div>
         <div class="chat-input-area">
-            <input type="text" id="userInput" placeholder="Ask me anything..." onkeypress="handleEnter(event)">
+            <input type="text" id="userInput" placeholder="Ask QuanTra anything..." onkeypress="handleEnter(event)">
             <button onclick="sendMessage()">Send</button>
         </div>
     </div>
@@ -431,13 +438,14 @@
         const userInput = document.getElementById('userInput');
         const typingIndicator = document.getElementById('typingIndicator');
 
-        // Updated System Prompt for Druk Link
+        // SYSTEM PROMPT: Defines the AI Persona
+        // It knows it is "QuanTra" created by "Druk Link"
         const SYSTEM_PROMPT = `
-            You are Druk Link, an intelligent AI assistant inspired by Bhutan.
+            You are QuanTra, an advanced AI assistant created by Druk Link.
             You are helpful, polite, and knowledgeable.
-            You can answer general questions, help with writing, and provide information about Bhutanese culture.
-            Keep your answers concise (2-4 sentences) and professional yet friendly.
-            If asked, your purpose is to connect people with knowledge.
+            You have a deep respect for Bhutanese culture (Druk) but can answer any general questions.
+            Your responses should be concise (2-4 sentences) and friendly.
+            If asked who you are, say "I am QuanTra, powered by Druk Link."
         `;
 
         function focusChat() {
@@ -479,7 +487,7 @@
             chatBody.scrollTop = chatBody.scrollHeight;
 
             // 3. Construct Prompt
-            const finalPrompt = `${SYSTEM_PROMPT}\n\nUser says: ${text}\nDruk Link answers:`;
+            const finalPrompt = `${SYSTEM_PROMPT}\n\nUser says: ${text}\nQuanTra answers:`;
             
             try {
                 const encodedPrompt = encodeURIComponent(finalPrompt);
