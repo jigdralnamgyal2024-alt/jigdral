@@ -49,7 +49,7 @@
             color: var(--primary-color);
             display: flex;
             align-items: center;
-            gap: 10px; /* Space between logo image and text */
+            gap: 10px;
         }
 
         /* Small Logo in Header */
@@ -208,6 +208,8 @@
             bottom: 30px;
             right: 30px;
             width: 350px;
+            /* Default Height (Auto or enough to fit content up to max) */
+            height: 450px; 
             background: var(--card-bg);
             border-radius: 20px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.15);
@@ -216,10 +218,16 @@
             overflow: hidden;
             z-index: 2000;
             border: 1px solid #eee;
-            transition: all 0.3s ease; 
+            transition: height 0.4s ease, border 0.3s ease; /* Smooth transition for height */
         }
 
-        /* Animation for when button is clicked */
+        /* --- NEW: Minimized State --- */
+        .chat-widget.minimized {
+            height: 55px !important; /* Only shows the header */
+            border-radius: 20px 20px 0 0; /* Optional: squared bottom corners when minimized */
+        }
+
+        /* Highlight animation for focus */
         @keyframes pulseHighlight {
             0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7); }
             50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(230, 126, 34, 0); }
@@ -235,10 +243,12 @@
             background: var(--primary-color);
             color: white;
             padding: 15px 20px;
+            height: 55px; /* Fixed header height */
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            user-select: none;
         }
 
         .chat-header h4 {
@@ -246,6 +256,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            margin: 0;
         }
 
         .chat-status {
@@ -257,7 +268,7 @@
         }
 
         .chat-body {
-            height: 300px;
+            flex: 1; /* Takes up remaining space */
             padding: 20px;
             overflow-y: auto;
             background: #fdfdfd;
@@ -430,8 +441,7 @@
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header" onclick="toggleChat()">
             <h4><span class="chat-status"></span> Chat with QuanTra</h4>
-            <span>▼</span>
-        </div>
+            <span id="chatIcon">▼</span> </div>
         <div class="chat-body" id="chatBody">
             <div class="message bot-msg">
                 Kuzuzangpo! I am QuanTra, the AI assistant from Druk Link. How can I help you today?
@@ -454,6 +464,8 @@
         const chatBody = document.getElementById('chatBody');
         const userInput = document.getElementById('userInput');
         const typingIndicator = document.getElementById('typingIndicator');
+        const widget = document.getElementById('chatWidget');
+        const chatIcon = document.getElementById('chatIcon');
 
         // SYSTEM PROMPT: Defines the AI Persona
         const SYSTEM_PROMPT = `
@@ -465,8 +477,10 @@
         `;
 
         function focusChat() {
-            const widget = document.getElementById('chatWidget');
-            const input = document.getElementById('userInput');
+            // If chat is minimized, open it first
+            if (widget.classList.contains('minimized')) {
+                toggleChat();
+            }
             
             // Add highlight class
             widget.classList.add('highlight-chat');
@@ -477,11 +491,20 @@
             }, 600);
 
             // Put cursor in the input box
-            input.focus();
+            userInput.focus();
         }
 
+        // --- UPDATED TOGGLE FUNCTION ---
         function toggleChat() {
-            // Logic to minimize/maximize could go here if needed
+            // Toggle the 'minimized' class on the widget
+            widget.classList.toggle('minimized');
+            
+            // Change the arrow icon based on state
+            if (widget.classList.contains('minimized')) {
+                chatIcon.textContent = '▲'; // Up arrow when closed
+            } else {
+                chatIcon.textContent = '▼'; // Down arrow when open
+            }
         }
 
         function handleEnter(event) {
