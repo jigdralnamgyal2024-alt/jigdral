@@ -8,7 +8,7 @@
         :root {
             --primary-color: #2c3e50;
             --accent-color: #e67e22;
-            --bg-color: #f0f2f5; /* Slightly darker bg for contrast */
+            --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-color: #333333;
         }
@@ -22,10 +22,10 @@
             height: 100vh;
         }
 
-        /* Navbar for simple navigation back */
+        /* --- Navigation Bar --- */
         nav {
             background: var(--card-bg);
-            padding: 10px 20px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -33,12 +33,37 @@
             flex-shrink: 0;
         }
         
-        .nav-left { display: flex; align-items: center; gap: 10px; font-weight: bold; color: var(--primary-color); }
-        .nav-left img { height: 30px; width: 30px; border-radius: 50%; }
-        .back-btn { text-decoration: none; color: var(--primary-color); font-weight: 500; font-size: 0.9rem; }
-        .back-btn:hover { color: var(--accent-color); }
+        .nav-left { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-weight: bold; 
+            color: var(--primary-color); 
+        }
+        
+        .nav-left img { 
+            height: 30px; 
+            width: 30px; 
+            border-radius: 50%; 
+        }
 
-        /* Main Chat Container - Centered and Large */
+        /* --- BACK BUTTON STYLE --- */
+        .back-btn { 
+            text-decoration: none; 
+            color: white; 
+            background-color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500; 
+            font-size: 0.9rem; 
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover { 
+            background-color: var(--accent-color); 
+        }
+
+        /* --- Chat Container --- */
         .chat-container {
             flex: 1;
             width: 100%;
@@ -142,7 +167,7 @@
 
         @media (max-width: 768px) {
             .chat-container { margin: 0; border-radius: 0; height: 100vh; }
-            .nav-left { display: none; } /* Hide top branding on mobile to save space */
+            .nav-left { display: none; } 
         }
     </style>
 </head>
@@ -150,6 +175,7 @@
 
     <nav>
         <a href="index.html" class="back-btn">← Back to Home</a>
+        
         <div class="nav-left">
             <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
             Druk Link
@@ -180,7 +206,6 @@
     </div>
 
     <script>
-        // --- Shared Logic ---
         const chatBody = document.getElementById('chatBody');
         const userInput = document.getElementById('userInput');
         const typingIndicator = document.getElementById('typingIndicator');
@@ -190,7 +215,7 @@
             
             /// KNOWLEDGE BASE ///
             1. WHO WE ARE:
-               - Company: Druk Link.
+               - Company: Druk Link, based in Bhutan.
                - Mission: Bridging heritage with AI.
             2. CONTACT:
                - Email: jigdral.namgyal2024@academy.bt
