@@ -1,375 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Druk Link | QuanTra AI</title>
-    <style>
-        /* --- GLOBAL STYLES --- */
-        :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e67e22;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --text-secondary: #666666;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jigdral Namgyal - Portfolio</title>
+    
+    <style>
+        /* Define color variables (Bhutanese Flag inspired) */
+        :root {
+            --primary-color: #ffda00; /* Yellow-Orange (Driglam Namzha) */
+            --secondary-color: #e53935; /* Red (Druk) */
+            --text-color: #333;
+            --bg-light: #f4f6f9;
+            --bg-dark: #2c3e50; /* Dark for footer */
+        }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
 
-        /* --- NAVIGATION --- */
-        nav {
-            background: var(--card-bg);
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
-        .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; }
-        .logo span { color: var(--accent-color); }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: var(--transition); cursor: pointer; }
-        .nav-links a:hover { color: var(--accent-color); }
-        
-        /* Highlighted Nav Button */
-        .nav-btn {
-            background-color: var(--primary-color);
-            color: white !important;
-            padding: 8px 20px;
-            border-radius: 20px;
-        }
-        .nav-btn:hover { background-color: var(--accent-color); }
+        /* Header / Hero Section */
+        .hero {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--primary-color);
+        }
 
-        /* ================= HOME PAGE STYLES ================= */
-        #home-page header { max-width: 1000px; margin: 4rem auto; padding: 0 20px; text-align: center; }
-        .profile-img-container {
-            width: 180px; height: 180px; margin: 0 auto 2rem; border-radius: 50%; overflow: hidden;
-            border: 4px solid var(--card-bg); box-shadow: var(--shadow); background-color: #fff;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        h1 { font-size: 3rem; color: var(--primary-color); margin-bottom: 0.5rem; letter-spacing: -1px; }
-        h2 { font-size: 1.5rem; color: var(--accent-color); font-weight: 500; margin-bottom: 1.5rem; }
-        .bio { max-width: 700px; margin: 0 auto 1.5rem auto; color: var(--text-secondary); font-size: 1.1rem; }
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
 
-        .yt-btn {
-            display: inline-block; background-color: var(--primary-color); color: white;
-            padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3); transition: var(--transition); margin-top: 1rem; cursor: pointer;
-        }
-        .yt-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4); background-color: var(--accent-color); }
+        .hero p {
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
 
-        .container {
-            max-width: 1200px; margin: 0 auto 4rem; padding: 0 20px;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
-        }
-        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow); transition: var(--transition); }
-        .card:hover { transform: translateY(-5px); }
-        .card h3 { color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 0.5rem; display: inline-block; }
-        .card ul { list-style: none; }
-        .card li { margin-bottom: 0.8rem; padding-left: 1.5rem; position: relative; color: var(--text-secondary); }
-        .card li::before { content: "•"; color: var(--accent-color); font-weight: bold; position: absolute; left: 0; }
+        /* Main Content Container */
+        .container {
+            max-width: 960px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
 
-        footer { text-align: center; padding: 2rem; background: var(--card-bg); border-top: 1px solid #eee; margin-top: auto; color: var(--text-secondary); }
+        /* Card Styling for Sections */
+        .card {
+            background: white;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--secondary-color);
+        }
 
-        /* ================= CHATBOT PAGE STYLES ================= */
-        /* Initially hidden */
-        #chatbot-page {
-            display: none; 
-            height: calc(100vh - 80px); /* Full height minus navbar */
-            flex-direction: column;
-        }
+        .card h2 {
+            color: var(--secondary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h2 span {
+            margin-right: 10px;
+        }
 
-        .back-btn { 
-            background-color: var(--primary-color); color: white !important; 
-            padding: 8px 16px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;
-        }
-        .back-btn:hover { background-color: var(--accent-color); }
+        /* List Styling for Hobbies */
+        .hobbies-list {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
 
-        .chat-container {
-            flex: 1;
-            width: 100%;
-            max-width: 900px;
-            margin: 20px auto;
-            background: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        .hobbies-list li {
+            background-color: #ffe680; /* Light Primary Color */
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .hobbies-list li:hover {
+            background-color: var(--primary-color);
+        }
 
-        .chat-header {
-            background: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        /* JavaScript Interactive Section */
+        .interactive-area {
+            text-align: center;
+            padding-top: 20px;
+        }
 
-        .avatar-large {
-            width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; object-fit: cover; background: #fff;
-        }
+        .interactive-area button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: opacity 0.3s;
+        }
 
-        .chat-info h2 { font-size: 1.2rem; margin: 0; }
-        .chat-info p { font-size: 0.85rem; opacity: 0.9; margin: 0; }
-        .status-dot { display: inline-block; width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; margin-right: 5px; }
+        .interactive-area button:hover {
+            opacity: 0.9;
+        }
 
-        .chat-body {
-            flex: 1;
-            padding: 30px;
-            overflow-y: auto;
-            background-color: #fdfdfd;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+        #fact-output {
+            margin-top: 15px;
+            font-style: italic;
+            min-height: 20px;
+            color: var(--secondary-color);
+        }
 
-        .message {
-            max-width: 80%;
-            padding: 15px 20px;
-            border-radius: 18px;
-            font-size: 1rem;
-            line-height: 1.5;
-            position: relative;
-        }
-
-        .bot-msg {
-            background: #f1f3f4;
-            color: var(--text-color);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .user-msg {
-            background: var(--accent-color);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 5px rgba(230, 126, 34, 0.2);
-        }
-
-        .input-area {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 15px;
-        }
-
-        .input-area input {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            font-size: 1rem;
-            outline: none;
-            transition: border 0.3s;
-        }
-        .input-area input:focus { border-color: var(--accent-color); }
-        .input-area button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0 25px;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .input-area button:hover { background: var(--accent-color); }
-
-        .typing-indicator {
-            font-size: 0.8rem; color: #888; margin-left: 20px; margin-bottom: 5px; display: none;
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .chat-container { margin: 0; border-radius: 0; height: 100%; }
-            #chatbot-page { height: calc(100vh - 70px); }
-        }
-    </style>
+        /* Footer */
+        .footer {
+            background-color: var(--bg-dark);
+            color: #bdc3c7;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">
-            <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
-            Druk <span>Link</span>
-        </div>
-        
-        <div class="nav-links" id="nav-links-home">
-            <a onclick="showHome()">Home</a>
-            <a href="#features" onclick="showHome()">Features</a>
-            <a onclick="showChat()" class="nav-btn">Try QuanTra</a>
-        </div>
+    <header class="hero">
+        <h1>Jigdral Namgyal</h1>
+        <p>Researcher & Cultural Enthusiast from Trashi Yangtse, Bhutan</p>
+    </header>
 
-        <a onclick="showHome()" class="back-btn" id="nav-back-btn" style="display: none;">← Back to Home</a>
-    </nav>
+    <div class="container">
 
-    <div id="home-page">
-        <header>
-            <div class="profile-img-container">
-                <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
-            </div>
-            
-            <h1>Druk Link</h1>
-            <h2>Empowering the Future with QuanTra</h2>
-            
-            <p class="bio">
-                Welcome to <strong>Druk Link</strong>. We are proud to introduce 
-                <strong>QuanTra</strong>, your intelligent AI companion designed for 
-                speed, creativity, and deep cultural understanding.
-            </p>
+        <div class="card">
+            <h2><span>👤</span> About Me</h2>
+            <p>I am a 15-year-old individual hailing from the eastern part of Bhutan, **Trashi Yangtse**. My interests lie at the intersection of focused research and rich cultural expression, reflecting a dedication to both intellectual and traditional pursuits.</p>
+            <p><strong>Age:</strong> 15 years old</p>
+            <p><strong>Hometown:</strong> Trashi Yangtse, Eastern Bhutan</p>
+        </div>
 
-            <button onclick="showChat()" class="yt-btn" style="border: none; font-size: 1rem;">
-                Chat with QuanTra Now
-            </button>
-        </header>
+        <div class="card">
+            <h2><span>🔬</span> Professional Experience</h2>
+            <p>I currently serve as a **Researcher** under the **EduLink** organization.</p>
+            <p>My work in this role has been ongoing since **December 5, 2025**. This experience is focused on developing core skills in information management, data compilation, and critical analysis within an educational framework.</p>
+        </div>
 
-        <div class="container" id="features">
-            <div class="card">
-                <h3>QuanTra Intelligence</h3>
-                <p>A smart assistant built to understand your needs.</p>
-                <ul>
-                    <li>Instant answers to complex queries.</li>
-                    <li>Creative writing and brainstorming.</li>
-                    <li>Data analysis and summarization.</li>
-                </ul>
-            </div>
-            <div class="card">
-                <h3>Druk Link Ecosystem</h3>
-                <p>Deeply rooted in cultural values and connection.</p>
-                <ul>
-                    <li>Bhutanese history and culture insights.</li>
-                    <li>Preserving local traditions through tech.</li>
-                    <li>Bridging the gap between heritage and AI.</li>
-                </ul>
-            </div>
-            <div class="card">
-                <h3>Always Available</h3>
-                <p>QuanTra is ready whenever you are.</p>
-                <ul>
-                    <li>24/7 Operational time.</li>
-                    <li>Fast response speed.</li>
-                    <li>Secure and private conversations.</li>
-                </ul>
-            </div>
-        </div>
+        <div class="card">
+            <h2><span>🎶</span> Interests & Hobbies</h2>
+            <p>When I'm not engaged in research, I find great joy in activities that connect me to my cultural roots and offer creative expression:</p>
+            <ul class="hobbies-list">
+                <li>Playing Bhutanese traditional games</li>
+                <li>Dancing</li>
+                <li>Singing</li>
+                <li>Listening to music</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2><span>💡</span> Interactive Fun Fact</h2>
+            <div class="interactive-area">
+                <p>Click the button below to display a random fact about my interests!</p>
+                <button onclick="displayRandomFact()">
+                    Tell me a fact!
+                </button>
+                <p id="fact-output">...</p>
+            </div>
+        </div>
 
-        <footer>
-            <p>&copy; 2025 Druk Link AI. All Rights Reserved.</p>
-        </footer>
-    </div>
+    </div>
 
-    <div id="chatbot-page">
-        <div class="chat-container">
-            <div class="chat-header">
-                <img src="https://image2url.com/images/1765884427462-82c8f595-8632-48f6-baaf-95d2f55c02f8.png" class="avatar-large" alt="Bot">
-                <div class="chat-info">
-                    <h2>QuanTra</h2>
-                    <p><span class="status-dot"></span>Online | AI Assistant</p>
-                </div>
-            </div>
+    <footer class="footer">
+        Portfolio of Jigdral Namgyal | Created in a single HTML, CSS, and JS file.
+    </footer>
 
-            <div class="chat-body" id="chatBody">
-                <div class="message bot-msg">
-                    Kuzuzangpo la! I am QuanTra. I am here to assist you with anything related to Druk Link or general queries. How can I help you today?
-                </div>
-            </div>
-            
-            <div class="typing-indicator" id="typingIndicator">QuanTra is thinking...</div>
+    <script>
+        const facts = [
+            "Bhutanese traditional games often involve strong community participation and focus on skill and precision.",
+            "Singing and dancing are integral parts of Bhutanese festivals (Tsechus) and community life.",
+            "Trashi Yangtse is known for its beautiful Dzong and is culturally rich.",
+            "The role of a researcher requires sharp attention to detail and strong organizational skills.",
+            "Music listening is a great way to relax and gain inspiration after a focused research session."
+        ];
 
-            <div class="input-area">
-                <input type="text" id="userInput" placeholder="Type your message here..." onkeypress="handleEnter(event)">
-                <button onclick="sendMessage()">Send</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- PAGE SWITCHING LOGIC ---
-        function showChat() {
-            document.getElementById('home-page').style.display = 'none';
-            document.getElementById('chatbot-page').style.display = 'flex';
-            
-            // Adjust Nav
-            document.getElementById('nav-links-home').style.display = 'none';
-            document.getElementById('nav-back-btn').style.display = 'flex';
-            
-            // Focus on input
-            setTimeout(() => document.getElementById('userInput').focus(), 100);
-        }
-
-        function showHome() {
-            document.getElementById('chatbot-page').style.display = 'none';
-            document.getElementById('home-page').style.display = 'block';
-
-            // Adjust Nav
-            document.getElementById('nav-links-home').style.display = 'flex';
-            document.getElementById('nav-back-btn').style.display = 'none';
-        }
-
-        // --- CHATBOT LOGIC ---
-        const chatBody = document.getElementById('chatBody');
-        const userInput = document.getElementById('userInput');
-        const typingIndicator = document.getElementById('typingIndicator');
-
-        const SYSTEM_PROMPT = `
-            You are QuanTra, the AI assistant for Druk Link.
-            /// KNOWLEDGE BASE ///
-            1. WHO WE ARE: Company: Druk Link. Mission: Bridging heritage with AI. Founder: Jigdral Namgyal.
-            2. CONTACT: Email: jigdral.namgyal2024@academy.bt, Phone number: 17927739
-            /// BEHAVIOR ///
-            - Greeting: "Kuzuzangpo la!"
-            - Tone: Polite, Bhutanese cultural context.
-        `;
-
-        function handleEnter(event) {
-            if (event.key === 'Enter') sendMessage();
-        }
-
-        async function sendMessage() {
-            const text = userInput.value.trim();
-            if (!text) return;
-
-            addMessage(text, 'user-msg');
-            userInput.value = '';
-            
-            typingIndicator.style.display = 'block';
-            chatBody.scrollTop = chatBody.scrollHeight;
-
-            const finalPrompt = `${SYSTEM_PROMPT}\n\nUser Question: ${text}\nQuanTra Answer:`;
-            
-            try {
-                const encodedPrompt = encodeURIComponent(finalPrompt);
-                const seed = Math.floor(Math.random() * 1000);
-                const response = await fetch(`https://text.pollinations.ai/${encodedPrompt}?model=openai&seed=${seed}`);
-                if (!response.ok) throw new Error('Network error');
-                const data = await response.text();
-                
-                typingIndicator.style.display = 'none';
-                addMessage(data, 'bot-msg');
-            } catch (error) {
-                typingIndicator.style.display = 'none';
-                addMessage("I'm having trouble connecting right now. Please check your internet connection.", 'bot-msg');
-            }
-        }
-
-        function addMessage(text, className) {
-            const div = document.createElement('div');
-            div.classList.add('message', className);
-            div.textContent = text;
-            chatBody.appendChild(div);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
-    </script>
+        function displayRandomFact() {
+            const randomIndex = Math.floor(Math.random() * facts.length);
+            document.getElementById('fact-output').textContent = facts[randomIndex];
+        }
+        
+        // Initialize the fact output on load
+        window.onload = function() {
+            document.getElementById('fact-output').textContent = "Click to learn something interesting!";
+        }
+    </script>
 </body>
 </html>
