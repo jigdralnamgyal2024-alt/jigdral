@@ -2,15 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DrukLink</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #fafafa;
             --border-color: #dbdbdb;
-            --text-color: #262626;
+            --text-color: #000000;
+            --text-secondary: #737373;
             --blue-color: #0095f6;
+            --blue-hover: #1877f2;
+            --sidebar-hover: rgba(0, 0, 0, 0.05);
         }
 
         * {
@@ -23,6 +26,7 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
+            overflow-x: hidden;
         }
 
         /* --- Login Screen --- */
@@ -32,212 +36,198 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
-            background: #fff;
+            background: #fafafa;
         }
 
         .login-box {
             border: 1px solid var(--border-color);
-            padding: 40px;
+            padding: 50px 40px;
             text-align: center;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 1px;
+            width: 350px;
         }
 
         .login-box h1 {
             font-family: 'Brush Script MT', cursive;
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 30px;
+            font-weight: normal;
         }
 
         .google-btn {
             background-color: var(--blue-color);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 14px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
+            width: 100%;
         }
+        .google-btn:hover { background-color: var(--blue-hover); }
 
-        .google-btn:hover { background-color: #0077c5; }
-
-        /* --- Main App UI --- */
+        /* --- Main App Layout --- */
         #app-screen {
             display: none;
-            padding-bottom: 60px; /* Space for bottom nav */
+            display: flex; /* Will be applied via JS when logged in */
+            height: 100vh;
         }
 
-        /* Header */
-        header {
+        /* Sidebar (Instagram Web Style) */
+        .sidebar {
+            width: 244px;
+            border-right: 1px solid var(--border-color);
+            padding: 20px 12px;
             position: fixed;
-            top: 0;
-            width: 100%;
+            height: 100vh;
             background: white;
-            height: 60px;
-            border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            z-index: 1000;
+            flex-direction: column;
+            z-index: 100;
         }
 
-        header h1 {
+        .sidebar-logo {
             font-family: 'Brush Script MT', cursive;
-            font-size: 1.8rem;
-        }
-
-        .header-icons i {
-            font-size: 1.4rem;
-            margin-left: 15px;
+            font-size: 2rem;
+            padding: 10px 12px;
+            margin-bottom: 20px;
             cursor: pointer;
         }
 
-        /* Feed */
-        .feed-container {
-            max-width: 470px;
-            margin: 80px auto 0;
-            padding-bottom: 20px;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 16px;
         }
 
+        .nav-item:hover { background: var(--sidebar-hover); }
+        .nav-item i { font-size: 24px; margin-right: 16px; width: 24px; text-align: center; transition: transform 0.2s;}
+        .nav-item:hover i { transform: scale(1.05); }
+        
+        .nav-item img.profile-pic {
+            width: 24px; height: 24px; border-radius: 50%; margin-right: 16px; border: 1px solid var(--border-color);
+        }
+
+        /* Feed Container */
+        .main-content {
+            flex-grow: 1;
+            margin-left: 244px; /* Offset for sidebar */
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+            overflow-y: auto;
+        }
+
+        .feed {
+            width: 100%;
+            max-width: 470px;
+            padding-bottom: 60px;
+        }
+
+        /* Post Styling */
         .post {
             background: white;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            border-radius: 0;
+        }
+        /* Only apply border and radius if screen is slightly larger */
+        @media (min-width: 768px) {
+            .post { border: 1px solid var(--border-color); border-radius: 4px; }
         }
 
         .post-header {
             display: flex;
             align-items: center;
-            padding: 12px;
+            padding: 14px;
         }
 
         .post-header img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-right: 10px;
+            width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; border: 1px solid var(--border-color);
         }
 
-        .post-header strong {
-            font-size: 0.9rem;
+        .post-header .username { font-weight: 600; font-size: 14px; cursor: pointer; }
+        .post-header .options { margin-left: auto; cursor: pointer; }
+
+        .post-image img { width: 100%; display: block; object-fit: cover; }
+
+        .post-actions { padding: 12px 14px 8px; display: flex; font-size: 24px; }
+        .post-actions .action-icons { display: flex; gap: 16px; }
+        .post-actions .bookmark-icon { margin-left: auto; }
+        
+        .post-actions i { cursor: pointer; transition: color 0.1s; }
+        .post-actions i:hover { color: var(--text-secondary); }
+        .post-actions i.liked { color: #ed4956; animation: pop 0.2s; }
+        .post-actions i.liked:hover { color: #ed4956; }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
-        .post-image img {
-            width: 100%;
-            display: block;
-        }
+        .post-likes { padding: 0 14px; font-weight: 600; font-size: 14px; margin-bottom: 8px; }
 
-        .post-actions {
-            padding: 12px;
-            font-size: 1.4rem;
-        }
+        .post-caption { padding: 0 14px; font-size: 14px; margin-bottom: 8px; }
+        .post-caption .username { font-weight: 600; margin-right: 5px; }
 
-        .post-actions i {
-            margin-right: 15px;
-            cursor: pointer;
-        }
+        .post-comments { padding: 0 14px; font-size: 14px; margin-bottom: 10px; }
+        .comment { margin-bottom: 4px; }
+        .comment .username { font-weight: 600; margin-right: 5px; }
 
-        .post-actions i.liked {
-            color: #ed4956;
+        .post-add-comment {
+            padding: 10px 14px; border-top: 1px solid var(--border-color); display: flex; align-items: center;
         }
-
-        .post-likes {
-            padding: 0 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
+        .post-add-comment i { font-size: 24px; margin-right: 12px; cursor: pointer; }
+        .post-add-comment input {
+            border: none; outline: none; flex-grow: 1; font-size: 14px; padding: 8px 0; background: transparent;
         }
-
-        .post-caption {
-            padding: 0 12px 12px;
-            font-size: 0.9rem;
+        .post-add-comment button {
+            border: none; background: none; color: var(--blue-color); font-weight: 600; cursor: pointer; font-size: 14px;
         }
-
-        /* Bottom Nav (Mobile) */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: white;
-            height: 60px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .bottom-nav i {
-            font-size: 1.4rem;
-            cursor: pointer;
-        }
-
-        .bottom-nav img {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
+        .post-add-comment button:disabled { color: #b3dbff; cursor: default; }
 
         /* Create Post Modal */
         #create-modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.65); z-index: 2000; justify-content: center; align-items: center;
         }
 
         .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            background: white; width: 100%; max-width: 500px; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column;
         }
 
         .modal-header {
-            padding: 15px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
+            padding: 10px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 16px;
         }
 
-        .modal-body { padding: 15px; }
+        .share-btn { color: var(--blue-color); cursor: pointer; border: none; background: none; font-weight: 600; font-size: 14px; }
         
-        .modal-body input[type="file"] { margin-bottom: 10px; }
-        .modal-body textarea {
-            width: 100%;
-            border: none;
-            outline: none;
-            resize: none;
-            height: 80px;
-            margin-top: 10px;
+        .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .modal-body .file-label {
+            background: var(--blue-color); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-bottom: 15px; font-size: 14px;
         }
-
-        .share-btn {
-            color: var(--blue-color);
-            cursor: pointer;
-            font-weight: 600;
+        .modal-body input[type="file"] { display: none; }
+        #preview-image { max-width: 100%; max-height: 300px; margin-bottom: 15px; border-radius: 4px; display: none; object-fit: contain; }
+        
+        .modal-body textarea {
+            width: 100%; border: none; outline: none; resize: none; height: 80px; font-size: 16px;
         }
 
         #loading-overlay {
-            display: none;
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.8);
-            justify-content: center; align-items: center;
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8); justify-content: center; align-items: center; font-weight: 600; font-size: 18px; z-index: 10;
         }
     </style>
 </head>
@@ -246,57 +236,58 @@
     <div id="login-screen">
         <div class="login-box">
             <h1>DrukLink</h1>
-            <p style="margin-bottom: 20px; color: #8e8e8e;">Connect with friends and the world around you.</p>
+            <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 14px; font-weight: 600;">Sign in to see photos and videos from your friends.</p>
             <button class="google-btn" id="login-btn">
-                <i class="fab fa-google"></i> Continue with Google
+                <i class="fab fa-google"></i> Log in with Google
             </button>
         </div>
     </div>
 
     <div id="app-screen">
-        <header>
-            <h1>DrukLink</h1>
-            <div class="header-icons">
-                <i class="far fa-heart" title="Notifications"></i>
-                <i class="fab fa-facebook-messenger" title="Messages"></i>
-            </div>
-        </header>
+        
+        <aside class="sidebar">
+            <div class="sidebar-logo">DrukLink</div>
+            <div class="nav-item"><i class="fas fa-home"></i> Home</div>
+            <div class="nav-item"><i class="fas fa-search"></i> Search</div>
+            <div class="nav-item"><i class="far fa-compass"></i> Explore</div>
+            <div class="nav-item"><i class="fas fa-video"></i> Reels</div>
+            <div class="nav-item"><i class="fab fa-facebook-messenger"></i> Messages</div>
+            <div class="nav-item"><i class="far fa-heart"></i> Notifications</div>
+            <div class="nav-item" id="nav-create-btn"><i class="far fa-plus-square"></i> Create</div>
+            <div class="nav-item"><img src="" alt="Profile" id="nav-profile-pic" class="profile-pic"> Profile</div>
+            
+            <div class="nav-item" id="logout-btn" style="margin-top: auto; color: #ed4956;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </aside>
 
-        <div class="feed-container" id="feed">
-            </div>
-
-        <div class="bottom-nav">
-            <i class="fas fa-home"></i>
-            <i class="fas fa-search"></i>
-            <i class="far fa-plus-square" id="nav-create-btn"></i>
-            <i class="fas fa-video" title="Reels"></i>
-            <img src="https://via.placeholder.com/150" alt="Profile" id="nav-profile-pic">
-        </div>
+        <main class="main-content">
+            <div class="feed" id="feed">
+                </div>
+        </main>
     </div>
 
     <div id="create-modal">
         <div class="modal-content" style="position: relative;">
-            <div id="loading-overlay">Uploading...</div>
+            <div id="loading-overlay">Sharing...</div>
             <div class="modal-header">
-                <span style="cursor:pointer;" id="close-modal"><i class="fas fa-times"></i></span>
+                <i class="fas fa-arrow-left" style="cursor:pointer; font-size: 20px;" id="close-modal"></i>
                 <span>Create new post</span>
-                <span class="share-btn" id="share-btn">Share</span>
+                <button class="share-btn" id="share-btn">Share</button>
             </div>
             <div class="modal-body">
+                <label for="image-upload" class="file-label">Select from computer</label>
                 <input type="file" id="image-upload" accept="image/*">
+                <img id="preview-image" src="" alt="Preview">
                 <textarea id="post-caption" placeholder="Write a caption..."></textarea>
             </div>
         </div>
     </div>
 
     <script type="module">
-        // Import Firebase v12
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-analytics.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, increment } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-        // Firebase Configuration (From User)
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -307,159 +298,204 @@
             measurementId: "G-R8JKT9DE48"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
-        // ImgHippo API Key
         const imgHippoKey = "b5f2098fa836fe7090138a418d294866";
 
-        // Global User Variable
         let currentUser = null;
 
-        // UI Elements
+        // UI DOM Elements
         const loginScreen = document.getElementById('login-screen');
         const appScreen = document.getElementById('app-screen');
-        const loginBtn = document.getElementById('login-btn');
         const feedContainer = document.getElementById('feed');
         const navProfilePic = document.getElementById('nav-profile-pic');
         
-        // Modal Elements
-        const createModal = document.getElementById('create-modal');
-        const navCreateBtn = document.getElementById('nav-create-btn');
-        const closeModal = document.getElementById('close-modal');
-        const shareBtn = document.getElementById('share-btn');
-        const imageUpload = document.getElementById('image-upload');
-        const postCaption = document.getElementById('post-caption');
-        const loadingOverlay = document.getElementById('loading-overlay');
-
-        // --- AUTHENTICATION ---
-        loginBtn.addEventListener('click', () => {
-            const provider = new GoogleAuthProvider();
-            signInWithPopup(auth, provider).catch(error => alert("Login failed: " + error.message));
+        // --- AUTH ---
+        document.getElementById('login-btn').addEventListener('click', () => {
+            signInWithPopup(auth, new GoogleAuthProvider()).catch(err => alert("Login failed: " + err.message));
         });
+
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
                 loginScreen.style.display = 'none';
-                appScreen.style.display = 'block';
+                appScreen.style.display = 'flex'; // Changed to flex for sidebar layout
                 navProfilePic.src = user.photoURL;
-                loadFeed(); // Load real-time posts
+                loadFeed();
             } else {
                 loginScreen.style.display = 'flex';
                 appScreen.style.display = 'none';
+                feedContainer.innerHTML = '';
             }
         });
 
-        // --- MODAL LOGIC ---
-        navCreateBtn.addEventListener('click', () => createModal.style.display = 'flex');
-        closeModal.addEventListener('click', () => createModal.style.display = 'none');
+        // --- CREATE POST UI LOGIC ---
+        const createModal = document.getElementById('create-modal');
+        const imageUpload = document.getElementById('image-upload');
+        const previewImage = document.getElementById('preview-image');
+        
+        document.getElementById('nav-create-btn').addEventListener('click', () => createModal.style.display = 'flex');
+        document.getElementById('close-modal').addEventListener('click', () => {
+            createModal.style.display = 'none';
+            imageUpload.value = '';
+            previewImage.style.display = 'none';
+        });
 
-        // --- CREATE POST (Upload to ImgHippo, save to Firestore) ---
-        shareBtn.addEventListener('click', async () => {
-            const file = imageUpload.files[0];
-            if (!file) {
-                alert("Please select an image first!");
-                return;
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
             }
+        });
 
-            loadingOverlay.style.display = 'flex';
+        // --- POSTING TO DB ---
+        document.getElementById('share-btn').addEventListener('click', async () => {
+            const file = imageUpload.files[0];
+            const caption = document.getElementById('post-caption').value;
+            if (!file) return alert("Select an image!");
+
+            document.getElementById('loading-overlay').style.display = 'flex';
 
             try {
-                // 1. Upload to ImgHippo
+                // Upload Image
                 const formData = new FormData();
                 formData.append('api_key', imgHippoKey);
                 formData.append('file', file);
-
-                const response = await fetch('https://api.imghippo.com/v1/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-                
+                const response = await fetch('https://api.imghippo.com/v1/upload', { method: 'POST', body: formData });
                 const imgData = await response.json();
-                
-                if (!imgData.success) throw new Error("Image upload failed");
+                if (!imgData.success) throw new Error("Upload failed");
 
-                const imageUrl = imgData.data.url;
-
-                // 2. Save to Firestore Database
+                // Save Post logic changed to support User IDs for likes
                 await addDoc(collection(db, "posts"), {
                     userId: currentUser.uid,
                     userName: currentUser.displayName,
                     userPic: currentUser.photoURL,
-                    imageUrl: imageUrl,
-                    caption: postCaption.value,
-                    likes: 0,
+                    imageUrl: imgData.data.url,
+                    caption: caption,
+                    likedBy: [], // Array of UIDs instead of a number
+                    comments: [], // Array of comment objects
                     createdAt: serverTimestamp()
                 });
 
-                // Reset and close modal
-                imageUpload.value = '';
-                postCaption.value = '';
-                createModal.style.display = 'none';
-
+                // Reset
+                document.getElementById('close-modal').click();
+                document.getElementById('post-caption').value = '';
             } catch (error) {
-                console.error("Error posting:", error);
-                alert("An error occurred while posting.");
+                console.error(error);
+                alert("Error sharing post.");
             } finally {
-                loadingOverlay.style.display = 'none';
+                document.getElementById('loading-overlay').style.display = 'none';
             }
         });
 
-        // --- REAL-TIME FEED ---
+        // --- REAL-TIME FEED & LIKE TOGGLE ---
         function loadFeed() {
             const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
             
-            // Listen for real-time changes
             onSnapshot(q, (snapshot) => {
-                feedContainer.innerHTML = ''; // Clear feed
+                feedContainer.innerHTML = ''; 
                 
                 snapshot.forEach((docSnap) => {
                     const post = docSnap.data();
                     const postId = docSnap.id;
                     
-                    const postElement = document.createElement('div');
-                    postElement.className = 'post';
-                    postElement.innerHTML = `
+                    // Fallbacks for older posts
+                    const likedBy = post.likedBy || [];
+                    const comments = post.comments || [];
+                    const isLiked = likedBy.includes(currentUser.uid);
+                    
+                    const heartClass = isLiked ? "fas fa-heart liked" : "far fa-heart";
+                    
+                    let commentsHTML = comments.map(c => `<div class="comment"><span class="username">${c.userName}</span> ${c.text}</div>`).join('');
+
+                    const postEl = document.createElement('article');
+                    postEl.className = 'post';
+                    postEl.innerHTML = `
                         <div class="post-header">
                             <img src="${post.userPic}" alt="User">
-                            <strong>${post.userName}</strong>
+                            <span class="username">${post.userName}</span>
+                            <i class="fas fa-ellipsis-h options"></i>
                         </div>
                         <div class="post-image">
                             <img src="${post.imageUrl}" alt="Post image">
                         </div>
                         <div class="post-actions">
-                            <i class="far fa-heart like-btn" data-id="${postId}"></i>
-                            <i class="far fa-comment"></i>
-                            <i class="far fa-paper-plane"></i>
+                            <div class="action-icons">
+                                <i class="${heartClass} like-btn" data-id="${postId}" data-liked="${isLiked}"></i>
+                                <i class="far fa-comment"></i>
+                                <i class="far fa-paper-plane"></i>
+                            </div>
+                            <div class="bookmark-icon"><i class="far fa-bookmark"></i></div>
                         </div>
-                        <div class="post-likes">${post.likes || 0} likes</div>
+                        <div class="post-likes">${likedBy.length} likes</div>
                         <div class="post-caption">
-                            <strong>${post.userName}</strong> ${post.caption}
+                            <span class="username">${post.userName}</span>${post.caption}
+                        </div>
+                        <div class="post-comments">${commentsHTML}</div>
+                        <div class="post-add-comment">
+                            <i class="far fa-smile"></i>
+                            <input type="text" placeholder="Add a comment..." class="comment-input" data-id="${postId}">
+                            <button class="post-comment-btn" data-id="${postId}" disabled>Post</button>
                         </div>
                     `;
-                    feedContainer.appendChild(postElement);
+                    feedContainer.appendChild(postEl);
                 });
 
-                // Attach Like Button Listeners
-                document.querySelectorAll('.like-btn').forEach(btn => {
-                    btn.addEventListener('click', async (e) => {
-                        const icon = e.target;
-                        const pId = icon.getAttribute('data-id');
-                        
-                        // Optimistic UI update
-                        icon.classList.remove('far');
-                        icon.classList.add('fas', 'liked');
-                        
-                        // Update Firestore
-                        const postRef = doc(db, "posts", pId);
+                attachPostListeners();
+            });
+        }
+
+        function attachPostListeners() {
+            // LIKE TOGGLE LOGIC
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const postId = e.target.getAttribute('data-id');
+                    const isLiked = e.target.getAttribute('data-liked') === 'true';
+                    const postRef = doc(db, "posts", postId);
+
+                    // If currently liked, remove user ID. If not liked, add user ID.
+                    if (isLiked) {
+                        await updateDoc(postRef, { likedBy: arrayRemove(currentUser.uid) });
+                    } else {
+                        await updateDoc(postRef, { likedBy: arrayUnion(currentUser.uid) });
+                    }
+                });
+            });
+
+            // COMMENT INPUT LOGIC (Enable/Disable 'Post' button)
+            document.querySelectorAll('.comment-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const btn = document.querySelector(`.post-comment-btn[data-id="${e.target.dataset.id}"]`);
+                    btn.disabled = e.target.value.trim().length === 0;
+                });
+            });
+
+            // SUBMIT COMMENT LOGIC
+            document.querySelectorAll('.post-comment-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const postId = e.target.getAttribute('data-id');
+                    const inputField = document.querySelector(`.comment-input[data-id="${postId}"]`);
+                    const commentText = inputField.value.trim();
+                    
+                    if (commentText) {
+                        const postRef = doc(db, "posts", postId);
                         await updateDoc(postRef, {
-                            likes: increment(1)
+                            comments: arrayUnion({
+                                uid: currentUser.uid,
+                                userName: currentUser.displayName,
+                                text: commentText
+                            })
                         });
-                    });
+                        inputField.value = ''; // clear input immediately
+                    }
                 });
             });
         }
