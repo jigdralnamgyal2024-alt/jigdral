@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrukLink - Dark Mode</title>
+    <title>DrukLink - Advanced Dark Mode</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -38,7 +38,7 @@
         
         /* SIDEBAR */
         .sidebar { width: var(--sidebar-width); border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; background: var(--bg-color); display: flex; flex-direction: column; z-index: 100; transition: width 0.3s; flex-shrink: 0; }
-        .sidebar.narrow { width: 72px; } /* When panels are open */
+        .sidebar.narrow { width: 72px; }
         .sidebar.narrow .nav-text, .sidebar.narrow .sidebar-logo-text { display: none; }
         .sidebar-logo { font-family: 'Brush Script MT', cursive; font-size: 2rem; padding: 10px 12px; margin-bottom: 20px; cursor: pointer; display: flex; align-items: center; }
         .sidebar.narrow .sidebar-logo i { display: block; font-size: 24px; }
@@ -55,7 +55,7 @@
         
         .notif-badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; position: absolute; left: 24px; top: 6px; border: 2px solid var(--bg-color); display: none; }
 
-        /* SLIDE PANELS (Search & Notifications) */
+        /* SLIDE PANELS */
         .slide-panel { width: var(--panel-width); height: 100vh; background: var(--bg-color); border-right: 1px solid var(--border-color); position: fixed; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 90; padding: 24px 16px; display: flex; flex-direction: column; }
         .slide-panel.open { transform: translateX(0); }
         .panel-title { font-size: 24px; font-weight: 600; margin-bottom: 24px; }
@@ -70,69 +70,35 @@
         /* --- FEED POSTS --- */
         .post { background: var(--bg-color); margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;}
         .post-header { display: flex; align-items: center; padding: 14px 0; }
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; border: 1px solid var(--border-color); object-fit: cover; cursor: pointer;}
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; border: 1px solid var(--border-color); object-fit: cover; }
         .post-header .username { font-weight: 600; font-size: 14px; cursor: pointer; }
-        .post-image img { width: 100%; display: block; object-fit: cover; cursor: pointer; border-radius: 4px; border: 1px solid var(--border-color); }
-        .post-actions { padding: 12px 0 8px; display: flex; font-size: 24px; }
+        .post-image img { width: 100%; display: block; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color); }
+        
+        .post-actions { padding: 12px 0 8px; display: flex; justify-content: space-between; align-items: center; font-size: 24px; }
         .post-actions .action-icons { display: flex; gap: 16px; }
         .post-actions i { cursor: pointer; transition: color 0.1s; color: var(--text-color); }
+        
         .post-actions i.liked { color: #ff3040; animation: pop 0.2s; }
+        .post-actions i.saved { color: var(--text-color); }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        
         .post-likes { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
         .post-caption { font-size: 14px; margin-bottom: 8px; }
         .post-caption .username { font-weight: 600; margin-right: 5px; }
-        .view-all-comments { color: var(--text-secondary); font-size: 14px; margin-bottom: 8px; cursor: pointer;}
 
-        /* --- SEARCH PANEL UI --- */
+        /* --- SEARCH PANEL & NOTIFICATIONS --- */
         .search-input-box { background: #262626; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; margin-bottom: 24px; }
         .search-input-box input { background: transparent; border: none; color: var(--text-color); flex-grow: 1; margin-left: 10px; font-size: 16px; }
-        .search-results-list { flex-grow: 1; overflow-y: auto; }
-        .search-item { display: flex; align-items: center; padding: 12px 0; cursor: pointer; }
-        .search-item img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
+        .search-results-list, .notif-list { flex-grow: 1; overflow-y: auto; }
+        
+        .search-item, .notification-item { display: flex; align-items: center; padding: 12px 0; font-size: 14px; cursor: pointer; }
+        .notification-item:hover { background: var(--sidebar-hover); border-radius: 8px; padding: 12px 8px; margin: 0 -8px; }
+        .search-item img, .notification-item img.user-pic { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
         .search-item .info { display: flex; flex-direction: column; }
         .search-item .title { font-weight: 600; font-size: 14px; }
         .search-item .subtitle { font-size: 14px; color: var(--text-secondary); }
-
-        /* --- NOTIFICATIONS PANEL UI --- */
-        .notif-list { flex-grow: 1; overflow-y: auto; }
-        .notification-item { display: flex; align-items: center; padding: 12px 0; font-size: 14px; cursor: pointer; }
-        .notification-item:hover { background: var(--sidebar-hover); border-radius: 8px; padding: 12px 8px; margin: 0 -8px; }
-        .notification-item img.user-pic { width: 44px; height: 44px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
         .notification-item span.notif-text { flex-grow: 1; }
         .notification-item img.post-pic { width: 44px; height: 44px; border-radius: 4px; object-fit: cover; margin-left: 15px; }
-
-        /* --- MESSAGES (DM) UI --- */
-        .chats-list-sidebar { width: 397px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background: var(--bg-color);}
-        .chats-header { padding: 36px 24px 20px; font-weight: 700; font-size: 20px; display: flex; justify-content: space-between; align-items: center;}
-        .chats-list { flex-grow: 1; overflow-y: auto; }
-        .chat-item { display: flex; align-items: center; padding: 12px 24px; cursor: pointer; transition: background 0.2s; }
-        .chat-item:hover, .chat-item.active-chat { background: var(--sidebar-hover); }
-        .chat-item img { width: 56px; height: 56px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
-        .chat-details { flex-grow: 1; overflow: hidden; }
-        .chat-details .username { display: block; font-size: 14px; font-weight: 400; color: var(--text-color);}
-        .chat-details .last-msg { display: block; font-size: 14px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        .chat-window { flex-grow: 1; display: flex; flex-direction: column; background: var(--bg-color);}
-        .chat-window-header { padding: 20px; display: flex; align-items: center; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 16px;}
-        .chat-window-header img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover;}
-        .messages-container { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
-        
-        .msg-row { display: flex; max-width: 65%; }
-        .msg-row.sent { align-self: flex-end; justify-content: flex-end; }
-        .msg-row.received { align-self: flex-start; align-items: flex-end;}
-        .msg-row.received img { width: 28px; height: 28px; border-radius: 50%; margin-right: 8px; object-fit: cover;}
-        .msg-bubble { padding: 10px 16px; border-radius: 22px; font-size: 14px; line-height: 1.4; word-wrap: break-word;}
-        .msg-row.sent .msg-bubble { background-color: var(--blue-color); color: white; border-bottom-right-radius: 4px; }
-        .msg-row.received .msg-bubble { background-color: #262626; color: var(--text-color); border-bottom-left-radius: 4px; }
-
-        .message-input-wrapper { padding: 20px; }
-        .message-input-area { display: flex; align-items: center; border: 1px solid var(--border-color); border-radius: 24px; padding: 8px 16px; background: var(--bg-color); }
-        .message-input-area input { flex-grow: 1; border: none; outline: none; font-size: 14px; padding: 5px; background: transparent; color: var(--text-color);}
-        .message-input-area button { color: var(--blue-color); font-weight: 600; font-size: 14px; margin-left: 10px; background: none;}
-        
-        .empty-chat-state { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-color); }
-        .empty-chat-state .icon-circle { width: 96px; height: 96px; border: 2px solid var(--text-color); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin-bottom: 16px; }
-        .empty-chat-state i { font-size: 48px; }
 
         /* --- PROFILE --- */
         .profile-header { display: flex; align-items: center; padding: 30px 0 40px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
@@ -145,9 +111,11 @@
         .profile-stats span { font-weight: 600; }
         .profile-bio p { font-size: 14px; white-space: pre-wrap; margin-top: 5px;}
         
+        /* Profile Tabs */
         .profile-tabs { display: flex; justify-content: center; gap: 50px; border-top: 1px solid var(--border-color); margin-top: -21px; padding-top: 15px;}
-        .profile-tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 5px;}
+        .profile-tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: color 0.2s;}
         .profile-tab.active { color: var(--text-color); border-top: 1px solid var(--text-color); margin-top: -16px; padding-top: 16px;}
+        .profile-tab:hover { color: var(--text-color); }
 
         .profile-posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 20px;}
         .grid-item { aspect-ratio: 1/1; background: #262626; cursor: pointer; position: relative; }
@@ -159,7 +127,7 @@
         .close-overlay { position: absolute; top: 20px; right: 20px; color: white; font-size: 24px; cursor: pointer; }
         .modal-content { background: #262626; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; color: var(--text-color); }
         
-        /* Create Post */
+        /* Create Post Modal */
         #create-modal-inner { width: 100%; max-width: 500px; }
         .modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 16px; text-align: center;}
         .share-btn { color: var(--blue-color); font-weight: 600; font-size: 14px; }
@@ -170,16 +138,27 @@
         #preview-image-container { display: none; width: 100%; text-align: center; }
         #create-preview-img { max-width: 100%; max-height: 300px; border-radius: 4px; object-fit: contain; margin-bottom: 15px;}
         #create-post-caption { width: 100%; border: 1px solid var(--border-color); border-radius: 8px; outline: none; resize: none; height: 80px; font-size: 14px; padding: 10px; display: none; background: #121212; color: white;}
-        
-        /* Edit Profile */
-        #edit-modal-inner { width: 400px; padding: 20px; }
-        #edit-modal-inner input, #edit-modal-inner textarea { width: 100%; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px; background: #121212;}
-        #edit-modal-inner textarea { resize: none; height: 80px; }
-        .edit-actions { display: flex; justify-content: flex-end; gap: 10px; }
-        .btn-cancel { color: var(--text-color); font-weight: 600; padding: 8px 12px;}
-        .btn-save { background: var(--blue-color); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
 
-        #loading-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; font-weight: 600; font-size: 16px; z-index: 10; color: white;}
+        /* NEW SHARE OVERLAY (Matches Screenshot perfectly) */
+        #share-modal-inner { width: 100%; max-width: 450px; background: #262626; border-radius: 16px; display: flex; flex-direction: column; }
+        .share-header { padding: 16px; display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 1px solid #363636; font-weight: 600; font-size: 16px; }
+        .share-header i { position: absolute; left: 16px; font-size: 20px; cursor: pointer; color: var(--text-color); }
+        
+        .share-search-bar { margin: 16px; background: #121212; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; }
+        .share-search-bar input { background: transparent; border: none; color: white; font-size: 15px; margin-left: 10px; width: 100%; outline: none; }
+        
+        .share-users-list { display: flex; overflow-x: auto; padding: 0 16px 20px; gap: 20px; border-bottom: 1px solid #363636; scrollbar-width: none; }
+        .share-users-list::-webkit-scrollbar { display: none; }
+        .share-user-card { display: flex; flex-direction: column; align-items: center; min-width: 70px; cursor: pointer; }
+        .share-user-card img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
+        .share-user-card span { font-size: 12px; color: var(--text-color); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70px; }
+        
+        .share-bottom-actions { display: flex; overflow-x: auto; padding: 20px 16px; gap: 24px; scrollbar-width: none; }
+        .share-bottom-actions::-webkit-scrollbar { display: none; }
+        .share-action-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
+        .share-action-circle { width: 50px; height: 50px; background: #363636; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 8px; transition: background 0.2s;}
+        .share-action-btn:hover .share-action-circle { background: #4a4a4a; }
+        .share-action-btn span { font-size: 12px; color: var(--text-secondary); text-align: center; }
 
     </style>
 </head>
@@ -204,6 +183,7 @@
                 <div class="nav-item nav-link active-nav" data-section="feed"><i class="fas fa-home"></i> <span class="nav-text">Home</span></div>
                 <div class="nav-item panel-trigger" data-panel="search-panel"><i class="fas fa-search"></i> <span class="nav-text">Search</span></div>
                 <div class="nav-item nav-link" data-section="messages"><i class="fab fa-facebook-messenger"></i> <span class="nav-text">Messages</span></div>
+                
                 <div class="nav-item panel-trigger" data-panel="notifications-panel">
                     <i class="far fa-heart"></i> <span class="nav-text">Notifications</span>
                     <span id="notif-badge" class="notif-badge">0</span>
@@ -221,7 +201,6 @@
             <div class="search-input-box">
                 <i class="fas fa-search" style="color: var(--text-secondary);"></i>
                 <input type="text" id="main-search-input" placeholder="Search users or posts...">
-                <i class="fas fa-times-circle" id="clear-search" style="color: var(--text-secondary); cursor: pointer; display: none;"></i>
             </div>
             <div class="search-results-list" id="search-results-list">
                 <div style="color: var(--text-secondary); text-align: center; margin-top: 20px;">No recent searches.</div>
@@ -240,19 +219,12 @@
             </section>
 
             <section id="messages-section">
-                <div class="chats-list-sidebar">
-                    <div class="chats-header">
-                        <span id="dm-username-header">Messages</span>
-                        <i class="far fa-edit" style="font-size: 24px; cursor: pointer;"></i>
+                <div style="flex:1; display:flex; justify-content:center; align-items:center; flex-direction:column; color: var(--text-color);">
+                    <div style="width:96px; height:96px; border:2px solid var(--text-color); border-radius:50%; display:flex; justify-content:center; align-items:center; margin-bottom:16px;">
+                        <i class="fab fa-telegram-plane" style="font-size:48px;"></i>
                     </div>
-                    <div class="chats-list" id="chats-list-container"></div>
-                </div>
-                <div class="chat-window" id="active-chat-window">
-                    <div class="empty-chat-state">
-                        <div class="icon-circle"><i class="fab fa-telegram-plane"></i></div>
-                        <h2 style="margin-bottom: 10px;">Your messages</h2>
-                        <p style="color: var(--text-secondary);">Send a message to start a chat.</p>
-                    </div>
+                    <h2>Your messages</h2>
+                    <p style="color:var(--text-secondary); margin-top:10px;">Send private photos and messages to a friend or group.</p>
                 </div>
             </section>
 
@@ -262,8 +234,6 @@
                     <div class="profile-info">
                         <div class="profile-info-row-1">
                             <span id="profile-username" style="font-size: 20px;"></span>
-                            <button class="edit-profile-btn" id="open-edit-profile">Edit profile</button>
-                            <i class="fas fa-cog" style="font-size: 20px; cursor: pointer;"></i>
                         </div>
                         <div class="profile-stats">
                             <span><span id="profile-post-count">0</span> posts</span>
@@ -272,14 +242,15 @@
                         </div>
                         <div class="profile-bio">
                             <strong id="profile-fullname" style="font-size: 14px;"></strong>
-                            <p id="profile-bio-text"></p>
+                            <p id="profile-bio-text">Welcome to DrukLink!</p>
                         </div>
                     </div>
                 </div>
+                
                 <div class="profile-tabs">
-                    <div class="profile-tab active"><i class="fas fa-th"></i> POSTS</div>
-                    <div class="profile-tab"><i class="far fa-bookmark"></i> SAVED</div>
-                    <div class="profile-tab"><i class="fas fa-user-tag"></i> TAGGED</div>
+                    <div class="profile-tab active" data-tab="posts"><i class="fas fa-th"></i> POSTS</div>
+                    <div class="profile-tab" data-tab="saved"><i class="far fa-bookmark"></i> SAVED</div>
+                    <div class="profile-tab" data-tab="tagged"><i class="fas fa-user-tag"></i> TAGGED</div>
                 </div>
                 <div class="profile-posts-grid" id="profile-posts-content"></div>
             </section>
@@ -290,13 +261,13 @@
     <div id="create-overlay" class="overlay-bg">
         <i class="fas fa-times close-overlay" id="close-create"></i>
         <div class="modal-content" id="create-modal-inner">
-            <div id="loading-overlay">Sharing...</div>
             <div class="modal-header">
-                <div style="width: 40px;"></div> <span>Create new post</span>
+                <div style="width: 40px;"></div>
+                <span>Create new post</span>
                 <button class="share-btn" id="share-btn" disabled>Share</button>
             </div>
             <div class="modal-body">
-                <i class="far fa-images" id="create-icon-placeholder" style="font-size: 60px; margin-bottom: 20px; display: block;"></i>
+                <i class="far fa-images" id="create-icon-placeholder" style="font-size: 60px; margin-bottom: 20px;"></i>
                 <label for="create-image-input" class="file-label" id="file-label">Select from computer</label>
                 <input type="file" id="create-image-input" accept="image/*">
                 <div id="preview-image-container">
@@ -307,24 +278,58 @@
         </div>
     </div>
 
-    <div id="edit-profile-overlay" class="overlay-bg">
-        <div class="modal-content" id="edit-modal-inner">
-            <h3 style="margin-bottom: 20px;">Edit Profile</h3>
-            <label style="font-size: 14px; font-weight: 600; margin-bottom: 5px; display: block;">Name</label>
-            <input type="text" id="edit-display-name">
-            <label style="font-size: 14px; font-weight: 600; margin-bottom: 5px; display: block;">Bio</label>
-            <textarea id="edit-bio"></textarea>
-            <div class="edit-actions">
-                <button class="btn-cancel" id="cancel-edit">Cancel</button>
-                <button class="btn-save" id="save-edit-btn">Save</button>
+    <div id="share-overlay" class="overlay-bg" style="z-index: 3000;">
+        <div class="modal-content" id="share-modal-inner">
+            <div class="share-header">
+                <i class="fas fa-times" id="close-share-modal"></i>
+                <span>Share</span>
+            </div>
+            
+            <div class="share-search-bar">
+                <i class="fas fa-search" style="color: var(--text-secondary);"></i>
+                <input type="text" id="share-search-input" placeholder="Search">
+            </div>
+            
+            <div class="share-users-list" id="share-users-list">
+                </div>
+
+            <div class="share-bottom-actions">
+                <div class="share-action-btn" onclick="alert('Link copied to clipboard!')">
+                    <div class="share-action-circle"><i class="fas fa-link"></i></div>
+                    <span>Copy link</span>
+                </div>
+                <div class="share-action-btn">
+                    <div class="share-action-circle"><i class="fab fa-facebook-f"></i></div>
+                    <span>Facebook</span>
+                </div>
+                <div class="share-action-btn">
+                    <div class="share-action-circle"><i class="fab fa-facebook-messenger"></i></div>
+                    <span>Messenger</span>
+                </div>
+                <div class="share-action-btn">
+                    <div class="share-action-circle"><i class="fab fa-whatsapp"></i></div>
+                    <span>WhatsApp</span>
+                </div>
+                <div class="share-action-btn">
+                    <div class="share-action-circle"><i class="far fa-envelope"></i></div>
+                    <span>Email</span>
+                </div>
+                <div class="share-action-btn">
+                    <div class="share-action-circle"><i class="fab fa-threads"></i></div>
+                    <span>Threads</span>
+                </div>
+                <div class="share-action-btn">
+                    <div class="share-action-circle"><i class="fab fa-twitter"></i></div>
+                    <span>X</span>
+                </div>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where, deleteDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
@@ -338,11 +343,11 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const imgHippoKey = "b5f2098fa836fe7090138a418d294866"; // Free Image Upload API
+        const imgHippoKey = "b5f2098fa836fe7090138a418d294866";
 
         let currentUser = null;
+        let currentUserData = null; // Store user data (like saved posts)
         let activeFeedListener = null;
-        let activeChatListener = null;
 
         // --- AUTH ---
         document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
@@ -354,7 +359,6 @@
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('app-screen').style.display = 'flex';
                 document.getElementById('nav-profile-pic').src = user.photoURL;
-                document.getElementById('dm-username-header').innerText = user.displayName;
                 
                 await initUser(user);
                 listenForUnreadNotifications();
@@ -363,7 +367,6 @@
                 currentUser = null;
                 document.getElementById('login-screen').style.display = 'flex';
                 document.getElementById('app-screen').style.display = 'none';
-                if(activeFeedListener) activeFeedListener();
             }
         });
 
@@ -371,16 +374,19 @@
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
             if (!userDoc.exists()) {
-                await setDoc(userRef, { displayName: user.displayName, photoURL: user.photoURL, bio: "", createdAt: serverTimestamp() });
+                await setDoc(userRef, { displayName: user.displayName, photoURL: user.photoURL, savedPosts: [], createdAt: serverTimestamp() });
+                currentUserData = { savedPosts: [] };
+            } else {
+                currentUserData = userDoc.data();
+                if(!currentUserData.savedPosts) currentUserData.savedPosts = [];
             }
         }
 
         // --- NAVIGATION & PANELS ---
         const sidebar = document.getElementById('main-sidebar');
-        const slidePanels = document.querySelectorAll('.slide-panel');
         
         function closeAllPanels() {
-            slidePanels.forEach(p => p.classList.remove('open'));
+            document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open'));
             sidebar.classList.remove('narrow');
         }
 
@@ -395,11 +401,9 @@
             trigger.addEventListener('click', (e) => {
                 const panelId = e.currentTarget.dataset.panel;
                 const panel = document.getElementById(panelId);
-                
-                if (panel.classList.contains('open')) {
-                    closeAllPanels(); // Toggle off
-                } else {
-                    closeAllPanels(); // Close others
+                if (panel.classList.contains('open')) { closeAllPanels(); } 
+                else {
+                    closeAllPanels();
                     panel.classList.add('open');
                     sidebar.classList.add('narrow');
                     if(panelId === 'notifications-panel') loadNotifications();
@@ -407,165 +411,34 @@
             });
         });
 
-        // Click outside panels to close them
-        document.getElementById('main-content-area').addEventListener('click', () => { closeAllPanels(); });
+        document.getElementById('main-content-area').addEventListener('click', closeAllPanels);
 
         function switchSection(sectionId) {
             document.querySelectorAll('.content-area > section').forEach(s => s.style.display = 'none');
-            const sec = document.getElementById(`${sectionId}-section`);
-            sec.style.display = sectionId === 'messages' ? 'flex' : 'block';
-
+            document.getElementById(`${sectionId}-section`).style.display = 'block';
             document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active-nav'));
             const activeNav = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
             if(activeNav) activeNav.classList.add('active-nav');
 
             if(sectionId === 'feed') loadFeed();
-            if(sectionId === 'profile') loadProfile();
-            if(sectionId === 'messages') loadChatsList();
+            if(sectionId === 'profile') loadProfile('posts'); // Default to posts tab
         }
 
-        // --- SEARCH PANEL LOGIC (Users AND Posts) ---
-        const searchInput = document.getElementById('main-search-input');
-        const clearSearch = document.getElementById('clear-search');
-        const searchResultsList = document.getElementById('search-results-list');
-
-        searchInput.addEventListener('input', async (e) => {
-            const q = e.target.value.toLowerCase().trim();
-            if(!q) { 
-                clearSearch.style.display = 'none'; 
-                searchResultsList.innerHTML = '<div style="color: var(--text-secondary); text-align: center; margin-top: 20px;">No recent searches.</div>'; 
-                return; 
-            }
-            clearSearch.style.display = 'block';
-            searchResultsList.innerHTML = '<div style="padding: 10px; color: var(--text-secondary);">Searching...</div>';
-
-            try {
-                // 1. Search Users
-                const usersSnap = await getDocs(collection(db, "users"));
-                // 2. Search Posts (Captions)
-                const postsSnap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc")));
-                
-                searchResultsList.innerHTML = '';
-                let found = false;
-
-                // Render Users
-                usersSnap.forEach(d => {
-                    const u = d.data();
-                    if(u.displayName && u.displayName.toLowerCase().includes(q) && d.id !== currentUser.uid) {
-                        found = true;
-                        const el = document.createElement('div');
-                        el.className = 'search-item';
-                        el.innerHTML = `<img src="${u.photoURL}"><div class="info"><span class="title">${u.displayName}</span><span class="subtitle">User</span></div>`;
-                        el.onclick = () => { closeAllPanels(); startChat(d.id, u); };
-                        searchResultsList.appendChild(el);
-                    }
-                });
-
-                // Render Posts matching caption
-                postsSnap.forEach(d => {
-                    const p = d.data();
-                    if(p.caption && p.caption.toLowerCase().includes(q)) {
-                        found = true;
-                        const el = document.createElement('div');
-                        el.className = 'search-item';
-                        el.innerHTML = `<img src="${p.imageUrl}" style="border-radius: 4px;"><div class="info"><span class="title">${p.userName}'s Post</span><span class="subtitle">${p.caption.substring(0, 30)}...</span></div>`;
-                        el.onclick = () => { closeAllPanels(); switchSection('feed'); /* Ideally jump to post, but simple feed refresh works for now */ };
-                        searchResultsList.appendChild(el);
-                    }
-                });
-
-                if(!found) searchResultsList.innerHTML = '<div style="padding: 10px; color: var(--text-secondary);">No results found.</div>';
-
-            } catch (err) { console.error(err); }
-        });
-
-        clearSearch.onclick = () => { searchInput.value = ''; searchInput.dispatchEvent(new Event('input')); };
-
-        async function startChat(otherUid, otherUser) {
-            const eChats = await getDocs(query(collection(db, "chats"), where("participantUids", "array_contains", currentUser.uid)));
-            let found = null;
-            eChats.forEach(c => { if(c.data().participantUids.includes(otherUid)) found = c; });
-            
-            if(found) { switchSection('messages'); openChat(found.id, otherUser); }
-            else {
-                const nc = await addDoc(collection(db, "chats"), { participantUids: [currentUser.uid, otherUid], lastMessageText: "Chat started", lastMessageTime: serverTimestamp() });
-                switchSection('messages'); openChat(nc.id, otherUser);
-            }
-        }
-
-        // --- CREATE POST (Fixed ImgHippo) ---
-        const createOverlay = document.getElementById('create-overlay');
-        const imgInput = document.getElementById('create-image-input');
-        const shareBtn = document.getElementById('share-btn');
-        
-        document.getElementById('nav-create-btn').addEventListener('click', () => { closeAllPanels(); createOverlay.style.display = 'flex'; });
-        document.getElementById('close-create').addEventListener('click', closeCreate);
-
-        function closeCreate() {
-            createOverlay.style.display = 'none';
-            imgInput.value = '';
-            document.getElementById('create-preview-img').src = '';
-            document.getElementById('preview-image-container').style.display = 'none';
-            document.getElementById('file-label').style.display = 'block';
-            document.getElementById('create-icon-placeholder').style.display = 'block';
-            document.getElementById('create-post-caption').style.display = 'none';
-            document.getElementById('create-post-caption').value = '';
-            shareBtn.disabled = true;
-        }
-
-        imgInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const r = new FileReader();
-                r.onload = (ev) => {
-                    document.getElementById('create-preview-img').src = ev.target.result;
-                    document.getElementById('preview-image-container').style.display = 'block';
-                    document.getElementById('file-label').style.display = 'none';
-                    document.getElementById('create-icon-placeholder').style.display = 'none';
-                    document.getElementById('create-post-caption').style.display = 'block';
-                    shareBtn.disabled = false;
-                };
-                r.readAsDataURL(file);
-            }
-        });
-
-        shareBtn.addEventListener('click', async () => {
-            const file = imgInput.files[0];
-            if (!file) return;
-            document.getElementById('loading-overlay').style.display = 'flex';
-            shareBtn.disabled = true;
-
-            try {
-                const fd = new FormData();
-                fd.append('api_key', imgHippoKey);
-                fd.append('file', file);
-                
-                // Actual request to ImgHippo API
-                const res = await fetch('https://api.imghippo.com/v1/upload', { method: 'POST', body: fd });
-                const data = await res.json();
-                
-                if (!data.success) throw new Error("Image Upload Failed");
-
-                await addDoc(collection(db, "posts"), {
-                    userId: currentUser.uid, userName: currentUser.displayName, userPic: currentUser.photoURL,
-                    imageUrl: data.data.url, caption: document.getElementById('create-post-caption').value,
-                    likedBy: [], comments: [], createdAt: serverTimestamp()
-                });
-                closeCreate();
-                switchSection('feed');
-            } catch (err) { alert(err.message); shareBtn.disabled = false;} 
-            finally { document.getElementById('loading-overlay').style.display = 'none'; }
-        });
-
-        // --- FEED & LIKES ---
+        // --- FEED & POSTS ---
         function loadFeed() {
             if(activeFeedListener) activeFeedListener();
-            activeFeedListener = onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snap) => {
+            activeFeedListener = onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), async (snap) => {
+                // Refresh user data to get accurate saved posts array
+                const uDoc = await getDoc(doc(db, "users", currentUser.uid));
+                currentUserData = uDoc.data();
+                if(!currentUserData.savedPosts) currentUserData.savedPosts = [];
+
                 const container = document.getElementById('feed-content');
                 container.innerHTML = '';
                 snap.forEach(docSnap => {
                     const post = docSnap.data();
                     const isLiked = post.likedBy?.includes(currentUser.uid);
+                    const isSaved = currentUserData.savedPosts.includes(docSnap.id);
                     
                     const el = document.createElement('article');
                     el.className = 'post';
@@ -576,8 +449,9 @@
                             <div class="action-icons">
                                 <i class="${isLiked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${docSnap.id}', '${post.userId}')"></i>
                                 <i class="far fa-comment"></i>
-                                <i class="far fa-paper-plane" onclick="alert('Share link copied!')"></i>
+                                <i class="far fa-paper-plane" onclick="openShareModal()"></i>
                             </div>
+                            <i class="${isSaved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${docSnap.id}')"></i>
                         </div>
                         <div class="post-likes">${post.likedBy?.length || 0} likes</div>
                         <div class="post-caption"><span class="username">${post.userName}</span> ${post.caption}</div>
@@ -587,6 +461,7 @@
             });
         }
 
+        // Like feature
         window.toggleLike = async (postId, ownerId) => {
             const ref = doc(db, "posts", postId);
             const snap = await getDoc(ref);
@@ -597,8 +472,23 @@
                 await updateDoc(ref, { likedBy: arrayRemove(currentUser.uid) });
             } else {
                 await updateDoc(ref, { likedBy: arrayUnion(currentUser.uid) });
+                // NOTIFICATION: "This user liked your post" logic
                 if(ownerId !== currentUser.uid) sendNotification(ownerId, 'like', postId);
             }
+        };
+
+        // NEW: Save (Bookmark) feature
+        window.toggleSave = async (postId) => {
+            const userRef = doc(db, "users", currentUser.uid);
+            const isSaved = currentUserData.savedPosts.includes(postId);
+            if (isSaved) {
+                await updateDoc(userRef, { savedPosts: arrayRemove(postId) });
+                currentUserData.savedPosts = currentUserData.savedPosts.filter(id => id !== postId);
+            } else {
+                await updateDoc(userRef, { savedPosts: arrayUnion(postId) });
+                currentUserData.savedPosts.push(postId);
+            }
+            loadFeed(); // Refresh UI to show filled bookmark
         };
 
         // --- NOTIFICATIONS ---
@@ -625,7 +515,9 @@
                 
                 snap.forEach(docSnap => {
                     const n = docSnap.data();
-                    let txt = n.type === 'like' ? 'liked your photo.' : `started following you.`;
+                    // Custom text exactly as requested:
+                    let txt = n.type === 'like' ? 'liked your post.' : `started following you.`;
+                    
                     const el = document.createElement('div');
                     el.className = 'notification-item';
                     el.innerHTML = `<img src="${n.senderPic}" class="user-pic"><span class="notif-text"><strong>${n.senderName}</strong> ${txt}</span>`;
@@ -644,118 +536,132 @@
             });
         }
 
-        // --- MESSAGES (DMs) ---
-        let currentChatId = null;
+        // --- NEW: SHARE OVERLAY LOGIC ---
+        const shareOverlay = document.getElementById('share-overlay');
+        const shareSearchInput = document.getElementById('share-search-input');
+        const shareUsersList = document.getElementById('share-users-list');
 
-        function loadChatsList() {
-            onSnapshot(query(collection(db, "chats"), where("participantUids", "array_contains", currentUser.uid), orderBy("lastMessageTime", "desc")), async (snap) => {
-                const list = document.getElementById('chats-list-container');
-                list.innerHTML = '';
-                for (const docSnap of snap.docs) {
-                    const chat = docSnap.data();
-                    const otherUid = chat.participantUids.find(id => id !== currentUser.uid);
-                    const otherUserSnap = await getDoc(doc(db, "users", otherUid));
-                    const otherUser = otherUserSnap.data();
+        window.openShareModal = async () => {
+            shareOverlay.style.display = 'flex';
+            shareSearchInput.value = '';
+            await renderShareUsers(''); // Render all initially
+        };
 
+        document.getElementById('close-share-modal').onclick = () => shareOverlay.style.display = 'none';
+
+        // Search users inside share modal
+        shareSearchInput.addEventListener('input', (e) => renderShareUsers(e.target.value.toLowerCase()));
+
+        async function renderShareUsers(queryText) {
+            shareUsersList.innerHTML = '';
+            const usersSnap = await getDocs(collection(db, "users"));
+            
+            usersSnap.forEach(d => {
+                const u = d.data();
+                if(d.id !== currentUser.uid && (!queryText || u.displayName.toLowerCase().includes(queryText))) {
                     const el = document.createElement('div');
-                    el.className = `chat-item ${currentChatId === docSnap.id ? 'active-chat' : ''}`;
-                    el.innerHTML = `<img src="${otherUser.photoURL}"><div class="chat-details"><span class="username">${otherUser.displayName}</span><span class="last-msg">${chat.lastMessageText}</span></div>`;
-                    el.onclick = () => openChat(docSnap.id, otherUser);
-                    list.appendChild(el);
+                    el.className = 'share-user-card';
+                    // Using a checkmark icon to simulate sending
+                    el.innerHTML = `<img src="${u.photoURL}"> <span>${u.displayName.split(' ')[0]}</span>`;
+                    el.onclick = () => {
+                        el.innerHTML = `<img src="${u.photoURL}" style="opacity: 0.5;"> <span style="color: #0095f6;">Sent</span>`;
+                        setTimeout(() => shareOverlay.style.display = 'none', 800);
+                    };
+                    shareUsersList.appendChild(el);
                 }
             });
+            if(shareUsersList.innerHTML === '') shareUsersList.innerHTML = '<span style="color:var(--text-secondary); font-size:14px; margin:auto;">No users found.</span>';
         }
 
-        function openChat(chatId, otherUser) {
-            currentChatId = chatId;
-            document.querySelectorAll('.chat-item').forEach(i => i.classList.remove('active-chat'));
-            
-            const win = document.getElementById('active-chat-window');
-            win.innerHTML = `
-                <div class="chat-window-header"><img src="${otherUser.photoURL}"> <span>${otherUser.displayName}</span></div>
-                <div class="messages-container" id="messages-container"></div>
-                <div class="message-input-wrapper">
-                    <div class="message-input-area">
-                        <i class="far fa-smile" style="font-size:24px; margin-right:10px; color: var(--text-secondary);"></i>
-                        <input type="text" id="dm-input" placeholder="Message...">
-                        <button id="send-dm">Send</button>
-                    </div>
-                </div>
-            `;
-
-            if(activeChatListener) activeChatListener();
-            activeChatListener = onSnapshot(query(collection(db, "chats", chatId, "messages"), orderBy("timestamp", "asc")), (snap) => {
-                const mc = document.getElementById('messages-container');
-                mc.innerHTML = '';
-                snap.forEach(d => {
-                    const msg = d.data();
-                    const isSent = msg.senderId === currentUser.uid;
-                    mc.innerHTML += `<div class="msg-row ${isSent ? 'sent' : 'received'}">${!isSent ? `<img src="${otherUser.photoURL}">` : ''}<div class="msg-bubble">${msg.text}</div></div>`;
-                });
-                mc.scrollTop = mc.scrollHeight;
+        // --- NEW: PROFILE TABS (POSTS, SAVED, TAGGED) ---
+        document.querySelectorAll('.profile-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                loadProfile(e.currentTarget.dataset.tab);
             });
+        });
 
-            document.getElementById('send-dm').onclick = async () => {
-                const txt = document.getElementById('dm-input').value.trim();
-                if(!txt) return;
-                await addDoc(collection(db, "chats", chatId, "messages"), { senderId: currentUser.uid, text: txt, timestamp: serverTimestamp() });
-                await updateDoc(doc(db, "chats", chatId), { lastMessageText: txt, lastMessageTime: serverTimestamp() });
-                document.getElementById('dm-input').value = '';
-            };
-            
-            // Add Enter key to send
-            document.getElementById('dm-input').addEventListener("keypress", function(event) {
-                if (event.key === "Enter") { event.preventDefault(); document.getElementById('send-dm').click(); }
-            });
-        }
-
-        // --- PROFILE & EDIT ---
-        function loadProfile() {
+        async function loadProfile(tabType) {
             document.getElementById('profile-pic-large').src = currentUser.photoURL;
             document.getElementById('profile-username').innerText = currentUser.displayName;
             document.getElementById('profile-fullname').innerText = currentUser.displayName;
-            getDoc(doc(db, "users", currentUser.uid)).then(d => { if(d.exists()) document.getElementById('profile-bio-text').innerText = d.data().bio || ""; });
+            
+            const grid = document.getElementById('profile-posts-content');
+            grid.innerHTML = '';
 
-            onSnapshot(query(collection(db, "posts"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc")), (snap) => {
-                const grid = document.getElementById('profile-posts-content');
+            if (tabType === 'posts') {
+                const snap = await getDocs(query(collection(db, "posts"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc")));
                 document.getElementById('profile-post-count').innerText = snap.size;
-                grid.innerHTML = '';
                 if(snap.empty) {
-                    grid.innerHTML = `
-                        <div class="empty-posts">
-                            <div style="border: 2px solid var(--text-color); border-radius: 50%; width: 62px; height: 62px; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-                                <i class="fas fa-camera" style="font-size: 32px;"></i>
-                            </div>
-                            <h2>Share Photos</h2>
-                            <p style="margin-top: 10px; color: var(--text-secondary);">When you share photos, they will appear on your profile.</p>
-                        </div>
-                    `;
+                    grid.innerHTML = `<div class="empty-posts"><h2>Share Photos</h2><p style="color: var(--text-secondary);">When you share photos, they will appear here.</p></div>`;
                 } else {
-                    snap.forEach(d => {
-                        const p = d.data();
-                        grid.innerHTML += `<div class="grid-item"><img src="${p.imageUrl}"></div>`;
-                    });
+                    snap.forEach(d => grid.innerHTML += `<div class="grid-item"><img src="${d.data().imageUrl}"></div>`);
                 }
-            });
+            } 
+            else if (tabType === 'saved') {
+                if(!currentUserData.savedPosts || currentUserData.savedPosts.length === 0) {
+                    grid.innerHTML = `<div class="empty-posts"><h2>Save your favorite photos</h2><p style="color: var(--text-secondary);">Tap the bookmark icon to save.</p></div>`;
+                } else {
+                    for(let postId of currentUserData.savedPosts) {
+                        const postDoc = await getDoc(doc(db, "posts", postId));
+                        if(postDoc.exists()) {
+                            grid.innerHTML += `<div class="grid-item"><img src="${postDoc.data().imageUrl}"></div>`;
+                        }
+                    }
+                }
+            }
+            else if (tabType === 'tagged') {
+                grid.innerHTML = `<div class="empty-posts"><h2>Photos of you</h2><p style="color: var(--text-secondary);">When people tag you in photos, they'll appear here.</p></div>`;
+            }
         }
 
-        const editOverlay = document.getElementById('edit-profile-overlay');
-        document.getElementById('open-edit-profile').onclick = () => {
-            document.getElementById('edit-display-name').value = currentUser.displayName;
-            document.getElementById('edit-bio').value = document.getElementById('profile-bio-text').innerText;
-            editOverlay.style.display = 'flex';
-        };
-        document.getElementById('cancel-edit').onclick = () => editOverlay.style.display = 'none';
+        // --- CREATE POST (ImgHippo logic) ---
+        const createOverlay = document.getElementById('create-overlay');
+        const imgInput = document.getElementById('create-image-input');
+        const shareBtn = document.getElementById('share-btn');
         
-        document.getElementById('save-edit-btn').onclick = async () => {
-            const nName = document.getElementById('edit-display-name').value.trim();
-            const nBio = document.getElementById('edit-bio').value.trim();
-            if(!nName) return;
-            await updateProfile(auth.currentUser, { displayName: nName });
-            await updateDoc(doc(db, "users", currentUser.uid), { displayName: nName, bio: nBio });
-            editOverlay.style.display = 'none';
-            loadProfile();
-        };
+        document.getElementById('nav-create-btn').addEventListener('click', () => { closeAllPanels(); createOverlay.style.display = 'flex'; });
+        document.getElementById('close-create').addEventListener('click', () => { createOverlay.style.display = 'none'; });
+
+        imgInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const r = new FileReader();
+                r.onload = (ev) => {
+                    document.getElementById('create-preview-img').src = ev.target.result;
+                    document.getElementById('preview-image-container').style.display = 'block';
+                    document.getElementById('file-label').style.display = 'none';
+                    document.getElementById('create-icon-placeholder').style.display = 'none';
+                    document.getElementById('create-post-caption').style.display = 'block';
+                    shareBtn.disabled = false;
+                };
+                r.readAsDataURL(file);
+            }
+        });
+
+        shareBtn.addEventListener('click', async () => {
+            const file = imgInput.files[0];
+            if (!file) return;
+            shareBtn.innerText = "Sharing..."; shareBtn.disabled = true;
+
+            try {
+                const fd = new FormData(); fd.append('api_key', imgHippoKey); fd.append('file', file);
+                const res = await fetch('https://api.imghippo.com/v1/upload', { method: 'POST', body: fd });
+                const data = await res.json();
+                
+                if (!data.success) throw new Error("Image Upload Failed");
+
+                await addDoc(collection(db, "posts"), {
+                    userId: currentUser.uid, userName: currentUser.displayName, userPic: currentUser.photoURL,
+                    imageUrl: data.data.url, caption: document.getElementById('create-post-caption').value,
+                    likedBy: [], comments: [], createdAt: serverTimestamp()
+                });
+                createOverlay.style.display = 'none';
+                switchSection('feed');
+                shareBtn.innerText = "Share";
+            } catch (err) { alert(err.message); shareBtn.disabled = false; shareBtn.innerText = "Share";} 
+        });
 
     </script>
 </body>
