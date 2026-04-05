@@ -8,227 +8,162 @@
     <style>
         :root {
             --bg-color: #000000;
-            --panel-bg: #121212;
             --border-color: #262626;
             --text-color: #f5f5f5;
             --text-secondary: #a8a8a8;
             --blue-color: #0095f6;
-            --blue-hover: #1877f2;
             --sidebar-hover: #1a1a1a;
-            --sidebar-width: 244px;
-            --panel-width: 397px;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
         body { background-color: var(--bg-color); color: var(--text-color); overflow: hidden; }
-        button, input { border: none; background: none; outline: none; color: var(--text-color); }
+        button, input, textarea { border: none; background: none; outline: none; color: var(--text-color); }
         .hidden { display: none !important; }
 
-        /* --- LAYOUT --- */
-        #app { display: flex; height: 100vh; }
+        /* LOGIN SCREEN */
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); }
+        .login-box { border: 1px solid var(--border-color); padding: 50px 40px; text-align: center; width: 350px; border-radius: 4px; }
+        .login-box h1 { font-family: 'Brush Script MT', cursive; font-size: 3.5rem; margin-bottom: 20px; font-weight: normal; }
+        .google-btn { background-color: var(--blue-color); color: white; padding: 10px 16px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;}
+
+        /* APP LAYOUT */
+        #app { display: none; height: 100vh; }
         
         /* SIDEBAR */
-        .sidebar { width: var(--sidebar-width); border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; background: var(--bg-color); display: flex; flex-direction: column; z-index: 100; transition: width 0.2s; flex-shrink: 0; }
+        .sidebar { width: 244px; border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; display: flex; flex-direction: column; z-index: 100; transition: width 0.2s; background: black; position: relative;}
         .sidebar.narrow { width: 72px; }
         .sidebar.narrow .nav-text, .sidebar.narrow .logo-text { display: none; }
         .sidebar.narrow .logo-icon { display: block; }
         
-        .logo { font-size: 1.5rem; padding: 10px 12px; margin-bottom: 30px; cursor: pointer; display: flex; align-items: center; font-weight: 600; font-family: 'Brush Script MT', cursive; font-size: 28px; }
-        .logo-icon { display: none; font-size: 24px; }
+        .logo { font-size: 28px; padding: 10px 12px; margin-bottom: 30px; cursor: pointer; display: flex; align-items: center; font-family: 'Brush Script MT', cursive; }
+        .logo-icon { display: none; font-size: 24px; font-family: "Font Awesome 6 Free"; font-style: normal; font-weight: 900;}
         
-        .nav-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 16px; position: relative; transition: background 0.2s;}
+        .nav-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: background 0.2s; position: relative;}
         .nav-item:hover { background: var(--sidebar-hover); }
-        .nav-item.active { font-weight: 700; }
         .nav-item i { font-size: 24px; margin-right: 16px; width: 24px; text-align: center; transition: transform 0.2s; }
         .nav-item:hover i { transform: scale(1.05); }
         .sidebar.narrow .nav-item i { margin-right: 0; }
         .profile-pic-small { width: 24px; height: 24px; border-radius: 50%; margin-right: 16px; object-fit: cover; }
         .sidebar.narrow .profile-pic-small { margin-right: 0; }
-        
-        .badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; position: absolute; left: 24px; top: 6px; border: 2px solid var(--bg-color); }
+        .badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; position: absolute; left: 24px; top: 6px; border: 2px solid black; }
 
-        /* SLIDE PANELS */
-        .slide-panel { width: var(--panel-width); height: 100vh; background: var(--bg-color); border-right: 1px solid var(--border-color); position: fixed; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 90; display: flex; flex-direction: column; border-radius: 0 16px 16px 0; box-shadow: 4px 0 24px rgba(0,0,0,0.5);}
-        .slide-panel.open { transform: translateX(0); }
+        /* PANELS (Search/Notif) */
+        .slide-panel { width: 397px; height: 100vh; background: black; border-right: 1px solid var(--border-color); position: absolute; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: -1; display: flex; flex-direction: column; border-radius: 0 16px 16px 0; }
+        .slide-panel.open { transform: translateX(0); z-index: 90;}
         .panel-header { padding: 24px; font-size: 24px; font-weight: 600; border-bottom: 1px solid var(--border-color);}
         
-        /* SEARCH PANEL */
         .search-box { background: #262626; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; margin: 20px 24px; }
         .search-box input { flex-grow: 1; margin-left: 10px; font-size: 16px; }
-        .search-results { flex-grow: 1; overflow-y: auto; padding: 0 16px; }
-        .user-item { display: flex; align-items: center; padding: 12px 8px; cursor: pointer; border-radius: 8px; }
-        .user-item:hover { background: var(--sidebar-hover); }
-        .user-item img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover;}
-        .user-item .info { display: flex; flex-direction: column; }
-        .user-item .info strong { font-size: 14px; }
-        .user-item .info span { font-size: 14px; color: var(--text-secondary); }
-
-        /* NOTIFICATION PANEL */
-        .notif-section { padding: 16px 24px; border-bottom: 1px solid var(--border-color); }
-        .notif-section h4 { margin-bottom: 16px; font-size: 16px; }
-        .notif-item { display: flex; align-items: center; margin-bottom: 16px; font-size: 14px;}
-        .notif-item img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover;}
-        .notif-item .text { flex-grow: 1; line-height: 1.3; }
-        .notif-item .actions { display: flex; gap: 8px; margin-left: 10px;}
-        .btn-blue { background: var(--blue-color); color: white; padding: 6px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;}
-        .btn-grey { background: #363636; color: white; padding: 6px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer;}
-
-        /* CONTENT AREA */
-        .content { flex-grow: 1; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 40px; position: relative;}
+        .list-container { flex-grow: 1; overflow-y: auto; padding: 0 16px; }
+        .list-item { display: flex; align-items: center; padding: 12px 8px; cursor: pointer; border-radius: 8px; }
+        .list-item:hover { background: var(--sidebar-hover); }
+        .list-item img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover;}
+        
+        /* CONTENT */
+        .content { flex-grow: 1; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
         .section { width: 100%; max-width: 935px; display: none; padding-bottom: 60px;}
         .section.active { display: block; }
 
         /* FEED */
         #feed { max-width: 470px; }
         .post { margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;}
-        .post-header { display: flex; align-items: center; padding: 12px 0; }
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; margin-right: 10px; object-fit: cover;}
-        .post-header strong { font-size: 14px; }
-        .post-header span { color: var(--text-secondary); font-size: 14px; margin-left: 8px; }
-        .post-img { width: 100%; border: 1px solid var(--border-color); border-radius: 4px; object-fit: cover; cursor: pointer;}
+        .post-header { display: flex; align-items: center; padding: 12px 0; gap: 10px; font-weight: 600; font-size: 14px;}
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover;}
+        .post-img { width: 100%; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; object-fit: cover; max-height: 585px;}
         .post-actions { padding: 12px 0; display: flex; justify-content: space-between; font-size: 24px; }
         .post-actions i { cursor: pointer; transition: color 0.2s; color: var(--text-color); }
-        .post-actions i:hover { color: var(--text-secondary); }
         .post-actions i.liked { color: #ff3040; animation: pop 0.3s; }
         .post-actions i.saved { color: white; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        .post-likes { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
-        .post-caption { font-size: 14px; margin-bottom: 8px; }
-        .view-comments { font-size: 14px; color: var(--text-secondary); cursor: pointer; }
+        .post-text { font-size: 14px; margin-bottom: 8px; line-height: 1.4;}
 
         /* PROFILE */
-        .profile-header { display: flex; align-items: flex-start; padding: 30px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        .profile-header img { width: 150px; height: 150px; border-radius: 50%; margin: 0 80px 0 60px; object-fit: cover; border: 1px solid var(--border-color);}
+        .profile-header { display: flex; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .profile-header img { width: 150px; height: 150px; border-radius: 50%; margin: 0 80px 0 60px; object-fit: cover;}
         .profile-info { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
-        .profile-name-row { display: flex; align-items: center; gap: 20px; font-size: 20px; }
         .profile-stats { display: flex; gap: 40px; font-size: 16px; }
-        .profile-bio { font-size: 14px; white-space: pre-wrap; line-height: 1.5; }
-        
         .profile-tabs { display: flex; justify-content: center; gap: 60px; border-top: 1px solid var(--border-color); }
-        .tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; padding: 15px 0; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-top: -1px; border-top: 1px solid transparent; }
+        .tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; padding: 15px 0; cursor: pointer; display: flex; gap: 6px; border-top: 1px solid transparent; margin-top:-1px;}
         .tab.active { color: var(--text-color); border-top-color: var(--text-color); }
 
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
         .grid-item { aspect-ratio: 1/1; background: #121212; position: relative; cursor: pointer; overflow: hidden;}
         .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        
-        /* HOVER OVERLAY (From Screenshot) */
-        .grid-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; gap: 30px; font-size: 20px; font-weight: bold; color: white; }
+        .grid-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; gap: 30px; font-size: 20px; font-weight: bold; }
         .grid-item:hover .grid-overlay { display: flex; }
-        .grid-overlay div { display: flex; align-items: center; gap: 8px; }
 
-        /* MODALS (Post, Create, Share) */
+        /* MODALS */
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; color: white; cursor: pointer; z-index: 1001; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
+        .modal { background: #262626; border-radius: 12px; display: flex; overflow: hidden; max-height: 90vh; }
         
-        .modal { background: #262626; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; color: var(--text-color); max-height: 90vh; }
-        
-        /* Post Modal */
-        #post-modal .modal { flex-direction: row; width: 900px; height: 600px; background: black; }
-        .modal-img { width: 60%; display: flex; justify-content: center; align-items: center; border-right: 1px solid var(--border-color); }
-        .modal-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .modal-sidebar { width: 40%; background: var(--bg-color); display: flex; flex-direction: column; }
-        .modal-header { padding: 14px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; font-weight: 600;}
-        .modal-header img { width: 32px; height: 32px; border-radius: 50%; }
-        .comments-list { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-        .comment { display: flex; gap: 12px; font-size: 14px; }
-        .comment img { width: 32px; height: 32px; border-radius: 50%; }
-        .comment span { display: block; line-height: 1.4; }
-        .modal-actions { padding: 12px 16px; border-top: 1px solid var(--border-color); }
+        #post-modal .modal { width: 900px; height: 600px; background: black; }
+        .modal-img { width: 60%; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;}
+        .modal-img img { max-width: 100%; max-height: 100%; }
+        .modal-sidebar { width: 40%; display: flex; flex-direction: column; background: black;}
         .modal-input { padding: 16px; border-top: 1px solid var(--border-color); display: flex; }
-        .modal-input input { flex-grow: 1; background: transparent; }
+        .modal-input input { flex-grow: 1; }
         .modal-input button { color: var(--blue-color); font-weight: 600; cursor: pointer; }
-        .modal-input button:disabled { opacity: 0.5; }
 
-        /* Share Modal (From Screenshot) */
-        #share-modal .modal { width: 400px; background: #262626; }
-        .share-header { padding: 16px; text-align: center; border-bottom: 1px solid #363636; font-weight: 600; position: relative; }
-        .share-apps { display: flex; padding: 24px 16px; gap: 20px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #363636;}
-        .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 70px; cursor: pointer; }
-        .app-icon .circle { width: 60px; height: 60px; border-radius: 50%; background: #363636; display: flex; justify-content: center; align-items: center; font-size: 24px; }
-        .app-icon span { font-size: 12px; color: var(--text-secondary); text-align: center;}
-        
-        /* Create Modal */
-        #create-modal .modal { width: 500px; background: #262626; }
-        .create-body { padding: 40px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        #create-preview { max-width: 100%; max-height: 300px; border-radius: 8px; display: none; }
-        #caption-input { width: 100%; background: #121212; border: 1px solid #363636; padding: 12px; color: white; border-radius: 8px; display: none; resize: none; height: 80px;}
-
+        #create-modal .modal { width: 500px; flex-direction: column; }
+        .btn-blue { background: var(--blue-color); color: white; padding: 6px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;}
     </style>
 </head>
 <body>
 
+    <div id="login-screen">
+        <div class="login-box">
+            <h1>DrukLink</h1>
+            <p style="margin-bottom: 30px; color: var(--text-secondary);">Log in for real to see photos and videos.</p>
+            <button class="google-btn" id="login-btn"><i class="fab fa-google"></i> Log in with Google</button>
+        </div>
+    </div>
+
     <div id="app">
         <aside class="sidebar" id="sidebar">
-            <div class="logo nav-btn" data-target="home">
-                <i class="fab fa-instagram logo-icon"></i> <span class="logo-text">DrukLink</span>
-            </div>
-            <div class="nav-item active nav-btn" data-target="home">
-                <i class="fas fa-home"></i> <span class="nav-text">Home</span>
-            </div>
-            <div class="nav-item panel-btn" data-panel="search">
-                <i class="fas fa-search"></i> <span class="nav-text">Search</span>
-            </div>
+            <div class="logo nav-btn" data-target="home"><i class="fab fa-instagram logo-icon"></i><span class="logo-text">DrukLink</span></div>
+            <div class="nav-item nav-btn active" data-target="home"><i class="fas fa-home"></i><span class="nav-text">Home</span></div>
+            <div class="nav-item panel-btn" data-panel="search"><i class="fas fa-search"></i><span class="nav-text">Search</span></div>
             <div class="nav-item panel-btn" data-panel="notifications">
-                <i class="far fa-heart"></i> <span class="nav-text">Notifications</span>
+                <i class="far fa-heart"></i><span class="nav-text">Notifications</span>
                 <div class="badge hidden" id="notif-badge">0</div>
             </div>
-            <div class="nav-item" onclick="openModal('create-modal')">
-                <i class="far fa-plus-square"></i> <span class="nav-text">Create</span>
-            </div>
-            <div class="nav-item nav-btn" data-target="profile">
-                <img src="https://i.ibb.co/h7gMZ4t/default.png" id="my-pic" class="profile-pic-small"> 
-                <span class="nav-text">Profile</span>
-            </div>
+            <div class="nav-item" onclick="openModal('create-modal')"><i class="far fa-plus-square"></i><span class="nav-text">Create</span></div>
+            <div class="nav-item nav-btn" data-target="profile"><img src="" id="my-pic" class="profile-pic-small"><span class="nav-text">Profile</span></div>
+            <div class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff3040;"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span></div>
         </aside>
 
         <div class="slide-panel" id="search-panel">
             <div class="panel-header">Search</div>
-            <div class="search-box">
-                <input type="text" id="search-input" placeholder="Search...">
-                <i class="fas fa-times-circle" style="color:#a8a8a8; cursor:pointer;" onclick="document.getElementById('search-input').value=''; renderSearch();"></i>
-            </div>
-            <div class="search-results" id="search-results"></div>
+            <div class="search-box"><input type="text" id="search-input" placeholder="Search real users..."></div>
+            <div class="list-container" id="search-results"></div>
         </div>
 
         <div class="slide-panel" id="notifications-panel">
             <div class="panel-header">Notifications</div>
-            <div class="notif-section">
-                <h4>Follow requests</h4>
-                <div id="follow-requests"></div>
-            </div>
-            <div class="notif-section" style="border:none;">
-                <h4>Earlier</h4>
-                <div id="general-notifs"></div>
-            </div>
+            <div class="list-container" id="notif-list" style="padding-top:16px;"></div>
         </div>
 
         <main class="content" onclick="closePanels()">
-            
             <div class="section active" id="home-section">
                 <div id="feed-container"></div>
             </div>
 
             <div class="section" id="profile-section">
                 <div class="profile-header">
-                    <img src="https://i.ibb.co/h7gMZ4t/default.png" id="prof-pic">
+                    <img src="" id="prof-pic">
                     <div class="profile-info">
-                        <div class="profile-name-row">
-                            <strong id="prof-name">jigdralnamgyal</strong>
-                            <button class="btn-grey">Edit profile</button>
-                        </div>
+                        <h2 id="prof-name"></h2>
                         <div class="profile-stats">
-                            <span><strong id="prof-posts">0</strong> posts</span>
-                            <span><strong>128</strong> followers</span>
-                            <span><strong>150</strong> following</span>
+                            <span><strong id="prof-posts-count">0</strong> posts</span>
+                            <span><strong>0</strong> followers</span>
                         </div>
-                        <div class="profile-bio">Jigdral Namgyal<br>Welcome to my profile.</div>
                     </div>
                 </div>
                 <div class="profile-tabs">
-                    <div class="tab active" onclick="switchProfileTab('posts')" id="tab-posts"><i class="fas fa-th"></i> POSTS</div>
-                    <div class="tab" onclick="switchProfileTab('saved')" id="tab-saved"><i class="far fa-bookmark"></i> SAVED</div>
+                    <div class="tab active" onclick="switchTab('posts')" id="tab-posts"><i class="fas fa-th"></i> POSTS</div>
+                    <div class="tab" onclick="switchTab('saved')" id="tab-saved"><i class="far fa-bookmark"></i> SAVED</div>
                 </div>
                 <div class="grid" id="profile-grid"></div>
             </div>
@@ -240,47 +175,19 @@
         <div class="modal">
             <div class="modal-img"><img id="pm-img" src=""></div>
             <div class="modal-sidebar">
-                <div class="modal-header">
-                    <img id="pm-avatar" src=""> <span id="pm-username"></span>
-                </div>
-                <div class="comments-list" id="pm-comments"></div>
-                <div class="modal-actions">
-                    <div style="display:flex; gap:16px; font-size:24px; margin-bottom:12px;">
+                <div class="post-header" style="padding:16px; border-bottom:1px solid var(--border-color);"><img id="pm-avatar" src=""><span id="pm-user"></span></div>
+                <div class="list-container" id="pm-comments" style="padding:16px; display:flex; flex-direction:column; gap:16px;"></div>
+                <div style="padding:16px; border-top:1px solid var(--border-color);">
+                    <div style="font-size:24px; display:flex; gap:16px; margin-bottom:8px;">
                         <i class="far fa-heart" id="pm-like-btn"></i>
                         <i class="far fa-comment"></i>
-                        <i class="far fa-paper-plane" onclick="openShareModal()"></i>
                         <i class="far fa-bookmark" id="pm-save-btn" style="margin-left:auto;"></i>
                     </div>
-                    <strong id="pm-likes-text">0 likes</strong>
+                    <strong id="pm-likes-count">0 likes</strong>
                 </div>
                 <div class="modal-input">
                     <input type="text" id="pm-input" placeholder="Add a comment...">
-                    <button id="pm-post-btn" disabled>Post</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="overlay" id="share-modal" style="z-index: 2000;">
-        <div class="modal">
-            <div class="share-header">
-                Share <i class="fas fa-times" style="position:absolute; right:16px; cursor:pointer;" onclick="closeModal('share-modal')"></i>
-            </div>
-            <div class="share-apps">
-                <div class="app-icon" onclick="copyLink()">
-                    <div class="circle"><i class="fas fa-link"></i></div><span>Copy link</span>
-                </div>
-                <div class="app-icon">
-                    <div class="circle" style="background:#1877f2;"><i class="fab fa-facebook-f"></i></div><span>Facebook</span>
-                </div>
-                <div class="app-icon">
-                    <div class="circle" style="background:#0095f6;"><i class="fab fa-facebook-messenger"></i></div><span>Messenger</span>
-                </div>
-                <div class="app-icon">
-                    <div class="circle" style="background:#25d366;"><i class="fab fa-whatsapp"></i></div><span>WhatsApp</span>
-                </div>
-                <div class="app-icon">
-                    <div class="circle"><i class="fas fa-envelope"></i></div><span>Email</span>
+                    <button id="pm-post-btn">Post</button>
                 </div>
             </div>
         </div>
@@ -288,291 +195,233 @@
 
     <div class="overlay" id="create-modal">
         <i class="fas fa-times close-btn" onclick="closeModal('create-modal')"></i>
-        <div class="modal">
-            <div class="share-header" style="display:flex; justify-content:space-between;">
-                <span></span><span>Create new post</span><button class="btn-blue" id="create-share-btn" style="padding:4px 12px; display:none;">Share</button>
+        <div class="modal" style="padding:20px; align-items:center;">
+            <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:20px; font-weight:bold;">
+                <span>Create post</span><button class="btn-blue hidden" id="create-share-btn">Share</button>
             </div>
-            <div class="create-body">
-                <i class="far fa-images" style="font-size:60px;" id="create-icon"></i>
-                <label class="btn-blue" id="create-label" style="cursor:pointer;">
-                    Select from computer <input type="file" id="create-file" accept="image/*" class="hidden">
-                </label>
-                <img id="create-preview">
-                <textarea id="caption-input" placeholder="Write a caption..."></textarea>
-            </div>
+            <label class="btn-blue" id="create-label" style="cursor:pointer; margin: 40px 0;">
+                Select Image <input type="file" id="create-file" accept="image/*" class="hidden">
+            </label>
+            <img id="create-preview" style="max-width:100%; max-height:300px; display:none; margin-bottom:15px; border-radius:8px;">
+            <textarea id="create-caption" placeholder="Write a caption..." style="width:100%; height:80px; background:#121212; padding:10px; border-radius:8px; display:none; resize:none;"></textarea>
         </div>
     </div>
 
-    <script>
-        // --- DATABASE INIT (Local Storage) ---
-        const MY_USER = { id: 'me', username: 'jigdralnamgyal', pic: 'https://i.ibb.co/h7gMZ4t/default.png' };
-        
-        let db = JSON.parse(localStorage.getItem('drukDB'));
-        if (!db) {
-            db = {
-                posts: [
-                    { id: 'p1', userId: 'u1', username: 'jurgojudo', pic: 'https://i.ibb.co/0V8q8jM/user1.jpg', img: 'https://i.ibb.co/7z0X0rY/jackfruit.jpg', caption: 'Chittagong Hill Tracts specialty!', likes: ['me'], comments: [], saves: [] },
-                    { id: 'p2', userId: 'u2', username: 'khandu.13', pic: 'https://i.ibb.co/2Z58j1T/user2.jpg', img: 'https://i.ibb.co/pXqL3yZ/bhutan.jpg', caption: 'Beautiful day in Bhutan 🇧🇹', likes: [], comments: [{user: 'jigdralnamgyal', text: 'Amazing view!'}], saves: ['me'] }
-                ],
-                users: [
-                    { id: 'u1', username: 'jurgojudo', pic: 'https://i.ibb.co/0V8q8jM/user1.jpg', subtitle: 'Jurgo' },
-                    { id: 'u2', username: 'khandu.13', pic: 'https://i.ibb.co/2Z58j1T/user2.jpg', subtitle: 'Khandu' },
-                    { id: 'u3', username: 'merchenga', pic: 'https://i.ibb.co/4T4pXZX/user3.jpg', subtitle: 'Merchenga' }
-                ],
-                notifs: {
-                    requests: [
-                        { id: 'n1', user: 'merchenga', pic: 'https://i.ibb.co/4T4pXZX/user3.jpg', text: 'requested to follow you.' },
-                        { id: 'n2', user: 'khandu.13', pic: 'https://i.ibb.co/2Z58j1T/user2.jpg', text: 'requested to follow you.' }
-                    ],
-                    general: []
-                },
-                unread: 2
-            };
-            saveDB();
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        function saveDB() { localStorage.setItem('drukDB', JSON.stringify(db)); }
+        // YOU MUST REPLACE THIS WITH YOUR REAL CONFIG
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
+        };
 
-        // --- NAVIGATION & PANELS ---
-        function closePanels() {
-            document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open'));
-            document.getElementById('sidebar').classList.remove('narrow');
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const imgBBKey = "b5f2098fa836fe7090138a418d294866"; // Free image hosting API
 
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+        let me = null;
+        let mySaved = [];
+        let activePostId = null;
+        let currentTab = 'posts';
+
+        // AUTH
+        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                me = user;
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app').style.display = 'flex';
+                document.getElementById('my-pic').src = user.photoURL;
+                document.getElementById('prof-pic').src = user.photoURL;
+                document.getElementById('prof-name').innerText = user.displayName;
+
+                // Create/Get User in Real DB
+                const uRef = doc(db, "users", user.uid);
+                const uDoc = await getDoc(uRef);
+                if (!uDoc.exists()) { await setDoc(uRef, { name: user.displayName, pic: user.photoURL, saves: [] }); } 
+                else { mySaved = uDoc.data().saves || []; }
+
+                loadFeed(); loadNotifs(); loadProfile();
+            } else {
+                me = null;
+                document.getElementById('login-screen').style.display = 'flex';
+                document.getElementById('app').style.display = 'none';
+            }
+        });
+
+        // UI LOGIC
+        window.closePanels = () => { document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open')); document.getElementById('sidebar').classList.remove('narrow'); };
+        window.openModal = id => document.getElementById(id).style.display = 'flex';
+        window.closeModal = id => document.getElementById(id).style.display = 'none';
+
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            b.onclick = (e) => {
                 closePanels();
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 if(e.currentTarget.classList.contains('nav-item')) e.currentTarget.classList.add('active');
-                
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
                 document.getElementById(e.currentTarget.dataset.target + '-section').classList.add('active');
-                
-                if(e.currentTarget.dataset.target === 'home') renderFeed();
-                if(e.currentTarget.dataset.target === 'profile') { currentTab = 'posts'; renderProfile(); }
-            });
+                if(e.currentTarget.dataset.target === 'profile') loadProfile();
+            }
         });
 
-        document.querySelectorAll('.panel-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const panel = document.getElementById(e.currentTarget.dataset.panel + '-panel');
-                if (panel.classList.contains('open')) { closePanels(); } 
-                else {
-                    closePanels();
-                    panel.classList.add('open');
-                    document.getElementById('sidebar').classList.add('narrow');
-                    if(e.currentTarget.dataset.panel === 'notifications') {
-                        db.unread = 0; saveDB(); updateBadge(); renderNotifs();
-                    }
-                }
-            });
+        document.querySelectorAll('.panel-btn').forEach(b => {
+            b.onclick = (e) => {
+                const p = document.getElementById(e.currentTarget.dataset.panel + '-panel');
+                if(p.classList.contains('open')) closePanels();
+                else { closePanels(); p.classList.add('open'); document.getElementById('sidebar').classList.add('narrow'); }
+            }
         });
 
-        // --- RENDER FEED ---
-        function renderFeed() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
-            
-            [...db.posts].reverse().forEach(post => {
-                const isLiked = post.likes.includes(MY_USER.id);
-                const isSaved = post.saves.includes(MY_USER.id);
-                
-                container.innerHTML += `
-                    <div class="post">
-                        <div class="post-header">
-                            <img src="${post.pic}"> <strong>${post.username}</strong> <span>• Just now</span>
-                        </div>
-                        <img src="${post.img}" class="post-img" ondblclick="toggleLike('${post.id}')" onclick="openPost('${post.id}')">
-                        <div class="post-actions">
-                            <div style="display:flex; gap:16px;">
-                                <i class="${isLiked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${post.id}')"></i>
-                                <i class="far fa-comment" onclick="openPost('${post.id}')"></i>
-                                <i class="far fa-paper-plane" onclick="openShareModal()"></i>
+        // REAL-TIME FEED
+        function loadFeed() {
+            onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
+                const box = document.getElementById('feed-container');
+                box.innerHTML = '';
+                snap.forEach(d => {
+                    const p = d.data(); const id = d.id;
+                    const liked = p.likes?.includes(me.uid);
+                    const saved = mySaved.includes(id);
+                    box.innerHTML += `
+                        <div class="post">
+                            <div class="post-header"><img src="${p.pic}"> ${p.name}</div>
+                            <img src="${p.img}" class="post-img" ondblclick="toggleLike('${id}')" onclick="openPost('${id}')">
+                            <div class="post-actions">
+                                <div style="display:flex; gap:16px;">
+                                    <i class="${liked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${id}')"></i>
+                                    <i class="far fa-comment" onclick="openPost('${id}')"></i>
+                                </div>
+                                <i class="${saved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${id}')"></i>
                             </div>
-                            <i class="${isSaved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${post.id}')"></i>
-                        </div>
-                        <div class="post-likes">${post.likes.length} likes</div>
-                        <div class="post-caption"><strong>${post.username}</strong> ${post.caption}</div>
-                        ${post.comments.length > 0 ? `<div class="view-comments" onclick="openPost('${post.id}')">View all ${post.comments.length} comments</div>` : ''}
-                    </div>
-                `;
+                            <strong class="post-text">${p.likes?.length || 0} likes</strong>
+                            <div class="post-text"><strong>${p.name}</strong> ${p.caption}</div>
+                        </div>`;
+                });
             });
         }
 
-        // --- INTERACTIONS ---
-        function toggleLike(postId) {
-            const post = db.posts.find(p => p.id === postId);
-            const idx = post.likes.indexOf(MY_USER.id);
-            if(idx > -1) { post.likes.splice(idx, 1); } 
+        // INTERACTIONS
+        window.toggleLike = async (id) => {
+            const ref = doc(db, "posts", id);
+            const p = (await getDoc(ref)).data();
+            if(p.likes?.includes(me.uid)) await updateDoc(ref, { likes: arrayRemove(me.uid) });
             else { 
-                post.likes.push(MY_USER.id); 
-                if(post.userId !== MY_USER.id) addNotif(`${MY_USER.username} liked your photo.`);
-            }
-            saveDB(); renderFeed(); 
-            if(activePostId === postId) openPost(postId); // refresh modal if open
-        }
-
-        function toggleSave(postId) {
-            const post = db.posts.find(p => p.id === postId);
-            const idx = post.saves.indexOf(MY_USER.id);
-            if(idx > -1) { post.saves.splice(idx, 1); } else { post.saves.push(MY_USER.id); }
-            saveDB(); renderFeed(); renderProfile();
-            if(activePostId === postId) openPost(postId);
-        }
-
-        function addNotif(text) {
-            db.notifs.general.unshift({ id: Date.now(), user: MY_USER.username, pic: MY_USER.pic, text: text });
-            db.unread++; saveDB(); updateBadge();
-        }
-
-        function updateBadge() {
-            const b = document.getElementById('notif-badge');
-            if(db.unread > 0) { b.classList.remove('hidden'); b.innerText = db.unread; } 
-            else { b.classList.add('hidden'); }
-        }
-
-        // --- POST MODAL ---
-        let activePostId = null;
-        function openPost(postId) {
-            activePostId = postId;
-            const post = db.posts.find(p => p.id === postId);
-            document.getElementById('pm-img').src = post.img;
-            document.getElementById('pm-avatar').src = post.pic;
-            document.getElementById('pm-username').innerText = post.username;
-            document.getElementById('pm-likes-text').innerText = `${post.likes.length} likes`;
-            
-            const lBtn = document.getElementById('pm-like-btn');
-            lBtn.className = post.likes.includes(MY_USER.id) ? 'fas fa-heart liked' : 'far fa-heart';
-            lBtn.onclick = () => toggleLike(postId);
-            
-            const sBtn = document.getElementById('pm-save-btn');
-            sBtn.className = post.saves.includes(MY_USER.id) ? 'fas fa-bookmark saved' : 'far fa-bookmark';
-            sBtn.onclick = () => toggleSave(postId);
-
-            let commHTML = `<div class="comment"><img src="${post.pic}"><div><strong>${post.username}</strong> ${post.caption}</div></div>`;
-            post.comments.forEach(c => { commHTML += `<div class="comment"><img src="${MY_USER.pic}"><div><strong>${c.user}</strong> ${c.text}</div></div>`; });
-            document.getElementById('pm-comments').innerHTML = commHTML;
-
-            openModal('post-modal');
-        }
-
-        const pmInput = document.getElementById('pm-input');
-        const pmBtn = document.getElementById('pm-post-btn');
-        pmInput.oninput = () => pmBtn.disabled = !pmInput.value.trim();
-        pmBtn.onclick = () => {
-            if(!pmInput.value.trim() || !activePostId) return;
-            const post = db.posts.find(p => p.id === activePostId);
-            post.comments.push({ user: MY_USER.username, text: pmInput.value.trim() });
-            if(post.userId !== MY_USER.id) addNotif(`${MY_USER.username} commented on your post.`);
-            saveDB(); pmInput.value = ''; pmBtn.disabled = true; openPost(activePostId); renderFeed();
-        };
-
-        // --- SEARCH ---
-        document.getElementById('search-input').addEventListener('input', renderSearch);
-        function renderSearch() {
-            const q = document.getElementById('search-input').value.toLowerCase();
-            const list = document.getElementById('search-results');
-            list.innerHTML = '';
-            if(!q) return;
-            const res = db.users.filter(u => u.username.toLowerCase().includes(q));
-            res.forEach(u => {
-                list.innerHTML += `<div class="user-item"><img src="${u.pic}"><div class="info"><strong>${u.username}</strong><span>${u.subtitle}</span></div></div>`;
-            });
-        }
-
-        // --- NOTIFICATIONS ---
-        function renderNotifs() {
-            const reqBox = document.getElementById('follow-requests');
-            reqBox.innerHTML = '';
-            db.notifs.requests.forEach(n => {
-                reqBox.innerHTML += `
-                    <div class="notif-item">
-                        <img src="${n.pic}"> <div class="text"><strong>${n.user}</strong> ${n.text}</div>
-                        <div class="actions"><button class="btn-blue" onclick="acceptFollow('${n.id}', '${n.user}')">Confirm</button><button class="btn-grey" onclick="delReq('${n.id}')">Delete</button></div>
-                    </div>`;
-            });
-            
-            const genBox = document.getElementById('general-notifs');
-            genBox.innerHTML = '';
-            db.notifs.general.forEach(n => {
-                genBox.innerHTML += `<div class="notif-item"><img src="${n.pic}"><div class="text">${n.text}</div></div>`;
-            });
-        }
-        
-        window.acceptFollow = (id, user) => { delReq(id); addNotif(`You accepted ${user}'s follow request.`); renderNotifs(); };
-        window.delReq = (id) => { db.notifs.requests = db.notifs.requests.filter(n => n.id !== id); saveDB(); renderNotifs(); };
-
-        // --- PROFILE ---
-        let currentTab = 'posts';
-        function switchProfileTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            renderProfile();
-        }
-
-        function renderProfile() {
-            const grid = document.getElementById('profile-grid');
-            grid.innerHTML = '';
-            let items = [];
-            
-            if(currentTab === 'posts') { items = db.posts.filter(p => p.userId === MY_USER.id); document.getElementById('prof-posts').innerText = items.length;} 
-            else { items = db.posts.filter(p => p.saves.includes(MY_USER.id)); }
-
-            [...items].reverse().forEach(post => {
-                grid.innerHTML += `
-                    <div class="grid-item" onclick="openPost('${post.id}')">
-                        <img src="${post.img}">
-                        <div class="grid-overlay">
-                            <div><i class="fas fa-heart"></i> ${post.likes.length}</div>
-                            <div><i class="fas fa-comment"></i> ${post.comments.length}</div>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // --- CREATE POST ---
-        const fInput = document.getElementById('create-file');
-        const preview = document.getElementById('create-preview');
-        const capInput = document.getElementById('caption-input');
-        const sBtn = document.getElementById('create-share-btn');
-        let newImgData = null;
-
-        fInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if(file) {
-                const r = new FileReader();
-                r.onload = (ev) => {
-                    newImgData = ev.target.result;
-                    preview.src = newImgData;
-                    preview.style.display = 'block'; capInput.style.display = 'block'; sBtn.style.display = 'block';
-                    document.getElementById('create-icon').style.display = 'none'; document.getElementById('create-label').style.display = 'none';
-                };
-                r.readAsDataURL(file);
+                await updateDoc(ref, { likes: arrayUnion(me.uid) });
+                if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} liked your post.`);
             }
         };
 
-        sBtn.onclick = () => {
-            db.posts.push({ id: 'p' + Date.now(), userId: MY_USER.id, username: MY_USER.username, pic: MY_USER.pic, img: newImgData, caption: capInput.value, likes: [], comments: [], saves: [] });
-            saveDB();
-            
-            // Reset
-            fInput.value = ''; preview.src = ''; newImgData = null; capInput.value = '';
-            preview.style.display='none'; capInput.style.display='none'; sBtn.style.display='none';
-            document.getElementById('create-icon').style.display='block'; document.getElementById('create-label').style.display='block';
-            
-            closeModal('create-modal');
-            document.querySelector('.nav-btn[data-target="home"]').click(); // Go to feed
+        window.toggleSave = async (id) => {
+            const ref = doc(db, "users", me.uid);
+            if(mySaved.includes(id)) { await updateDoc(ref, { saves: arrayRemove(id) }); mySaved = mySaved.filter(x=>x!==id); }
+            else { await updateDoc(ref, { saves: arrayUnion(id) }); mySaved.push(id); }
+            loadFeed(); loadProfile();
         };
 
-        // --- MODALS ---
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        window.openShareModal = () => openModal('share-modal');
-        window.copyLink = () => { alert('Link copied to clipboard!'); closeModal('share-modal'); };
+        // POST MODAL
+        window.openPost = async (id) => {
+            activePostId = id; openModal('post-modal');
+            onSnapshot(doc(db, "posts", id), (d) => {
+                if(!d.exists()) return;
+                const p = d.data();
+                document.getElementById('pm-img').src = p.img; document.getElementById('pm-avatar').src = p.pic;
+                document.getElementById('pm-user').innerText = p.name; document.getElementById('pm-likes-count').innerText = `${p.likes?.length||0} likes`;
+                
+                const lbtn = document.getElementById('pm-like-btn'); lbtn.className = p.likes?.includes(me.uid) ? 'fas fa-heart liked' : 'far fa-heart'; lbtn.onclick = ()=>toggleLike(id);
+                const sbtn = document.getElementById('pm-save-btn'); sbtn.className = mySaved.includes(id) ? 'fas fa-bookmark saved' : 'far fa-bookmark'; sbtn.onclick = ()=>toggleSave(id);
 
-        // INITIALIZE
-        updateBadge(); renderFeed();
+                let html = `<div style="display:flex;gap:12px;"><img src="${p.pic}" style="width:32px;height:32px;border-radius:50%;"><div><strong>${p.name}</strong> ${p.caption}</div></div>`;
+                (p.comments||[]).forEach(c => html += `<div style="display:flex;gap:12px;"><img src="${c.pic}" style="width:32px;height:32px;border-radius:50%;"><div><strong>${c.name}</strong> ${c.text}</div></div>`);
+                document.getElementById('pm-comments').innerHTML = html;
+            });
+        };
+
+        document.getElementById('pm-post-btn').onclick = async () => {
+            const val = document.getElementById('pm-input').value.trim();
+            if(!val || !activePostId) return;
+            document.getElementById('pm-input').value = '';
+            await updateDoc(doc(db, "posts", activePostId), { comments: arrayUnion({ name: me.displayName, pic: me.photoURL, text: val }) });
+            const p = (await getDoc(doc(db, "posts", activePostId))).data();
+            if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} commented: ${val}`);
+        };
+
+        // CREATE POST REAL
+        let newImg = null;
+        document.getElementById('create-file').onchange = e => {
+            const f = e.target.files[0]; if(!f) return;
+            const r = new FileReader();
+            r.onload = ev => {
+                newImg = ev.target.result;
+                document.getElementById('create-preview').src = newImg; document.getElementById('create-preview').style.display='block';
+                document.getElementById('create-caption').style.display='block'; document.getElementById('create-share-btn').style.display='block';
+                document.getElementById('create-label').style.display='none';
+            }; r.readAsDataURL(f);
+        };
+
+        document.getElementById('create-share-btn').onclick = async () => {
+            if(!newImg) return;
+            document.getElementById('create-share-btn').innerText = 'Posting...';
+            // Upload to ImgBB for real URL
+            const fd = new FormData(); fd.append("image", newImg.split(',')[1]);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: fd });
+            const json = await res.json();
+            
+            await addDoc(collection(db, "posts"), {
+                uid: me.uid, name: me.displayName, pic: me.photoURL,
+                img: json.data.url, caption: document.getElementById('create-caption').value,
+                likes: [], comments: [], time: serverTimestamp()
+            });
+            closeModal('create-modal'); document.querySelector('.nav-btn[data-target="home"]').click();
+            document.getElementById('create-share-btn').innerText = 'Share';
+        };
+
+        // PROFILE
+        window.switchTab = t => { currentTab = t; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); loadProfile(); };
+        async function loadProfile() {
+            const grid = document.getElementById('profile-grid'); grid.innerHTML = '';
+            const all = await getDocs(query(collection(db, "posts"), orderBy("time", "desc")));
+            let count = 0;
+            all.forEach(d => {
+                const p = d.data();
+                if(currentTab === 'posts' && p.uid === me.uid) { count++; grid.innerHTML += `<div class="grid-item" onclick="openPost('${d.id}')"><img src="${p.img}"><div class="grid-overlay"><i class="fas fa-heart"></i> ${p.likes?.length||0}</div></div>`; }
+                if(currentTab === 'saved' && mySaved.includes(d.id)) { grid.innerHTML += `<div class="grid-item" onclick="openPost('${d.id}')"><img src="${p.img}"><div class="grid-overlay"><i class="fas fa-heart"></i> ${p.likes?.length||0}</div></div>`; }
+            });
+            if(currentTab === 'posts') document.getElementById('prof-posts-count').innerText = count;
+        }
+
+        // SEARCH
+        document.getElementById('search-input').oninput = async e => {
+            const q = e.target.value.toLowerCase(); const box = document.getElementById('search-results'); box.innerHTML = ''; if(!q) return;
+            const users = await getDocs(collection(db, "users"));
+            users.forEach(d => {
+                const u = d.data();
+                if(u.name.toLowerCase().includes(q)) box.innerHTML += `<div class="list-item"><img src="${u.pic}"><strong>${u.name}</strong></div>`;
+            });
+        };
+
+        // NOTIFICATIONS
+        async function addNotif(toUid, txt) { await addDoc(collection(db, "notifs"), { to: toUid, text: txt, pic: me.photoURL, time: serverTimestamp() }); }
+        function loadNotifs() {
+            onSnapshot(query(collection(db, "notifs"), orderBy("time", "desc")), snap => {
+                const box = document.getElementById('notif-list'); box.innerHTML = ''; let unread = 0;
+                snap.forEach(d => {
+                    const n = d.data();
+                    if(n.to === me.uid) { unread++; box.innerHTML += `<div class="list-item"><img src="${n.pic}"><span>${n.text}</span></div>`; }
+                });
+                const b = document.getElementById('notif-badge');
+                if(unread>0){b.classList.remove('hidden'); b.innerText=unread;} else b.classList.add('hidden');
+            });
+        }
     </script>
 </body>
 </html>
