@@ -3,730 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrukLink - Instagram Clone</title>
+    <title>DrukLink</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #000000;
-            --panel-bg: #121212;
             --border-color: #262626;
             --text-color: #f5f5f5;
             --text-secondary: #a8a8a8;
             --blue-color: #0095f6;
-            --blue-hover: #1877f2;
             --sidebar-hover: #1a1a1a;
-            --sidebar-width: 244px;
-            --panel-width: 397px;
-            --ig-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--ig-font); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
         body { background-color: var(--bg-color); color: var(--text-color); overflow: hidden; }
-        button, input[type="submit"] { border: none; background: none; cursor: pointer; color: var(--text-color); }
-        input, textarea { background: var(--bg-color); color: var(--text-color); outline: none; }
-        a { text-decoration: none; color: inherit; }
-        .none { display: none !important; }
+        button, input, textarea { border: none; background: none; outline: none; color: var(--text-color); }
+        .hidden { display: none !important; }
 
-        /* --- LOGIN SCREEN --- */
+        /* LOGIN SCREEN */
         #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); }
-        .login-box { border: 1px solid var(--border-color); padding: 50px 40px; text-align: center; background: var(--bg-color); width: 350px; border-radius: 4px; }
+        .login-box { border: 1px solid var(--border-color); padding: 50px 40px; text-align: center; width: 350px; border-radius: 4px; }
         .login-box h1 { font-family: 'Brush Script MT', cursive; font-size: 3.5rem; margin-bottom: 20px; font-weight: normal; }
-        .google-btn { background-color: var(--blue-color); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: background 0.2s; }
-        .google-btn:hover { background-color: var(--blue-hover); }
+        .google-btn { background-color: var(--blue-color); color: white; padding: 10px 16px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;}
 
-        /* --- LAYOUT --- */
-        #app-screen { display: none; height: 100vh; flex-direction: row; }
+        /* APP LAYOUT */
+        #app { display: none; height: 100vh; }
         
         /* SIDEBAR */
-        .sidebar { width: var(--sidebar-width); border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; background: var(--bg-color); display: flex; flex-direction: column; z-index: 100; transition: width 0.2s; flex-shrink: 0; }
+        .sidebar { width: 244px; border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; display: flex; flex-direction: column; z-index: 100; transition: width 0.2s; background: black; position: relative;}
         .sidebar.narrow { width: 72px; }
-        .sidebar.narrow .nav-text, .sidebar.narrow .sidebar-logo-text { display: none; }
+        .sidebar.narrow .nav-text, .sidebar.narrow .logo-text { display: none; }
+        .sidebar.narrow .logo-icon { display: block; }
         
-        .sidebar-logo { font-family: 'Brush Script MT', cursive; font-size: 1.75rem; padding: 10px 12px; margin-bottom: 30px; cursor: pointer; display: flex; align-items: center; }
-        .sidebar.narrow .sidebar-logo i { display: block; font-size: 24px; font-family: "Font Awesome 6 Free"; font-style: normal;}
-        .sidebar:not(.narrow) .sidebar-logo i { display: none; }
+        .logo { font-size: 28px; padding: 10px 12px; margin-bottom: 30px; cursor: pointer; display: flex; align-items: center; font-family: 'Brush Script MT', cursive; }
+        .logo-icon { display: none; font-size: 24px; font-family: "Font Awesome 6 Free"; font-style: normal; font-weight: 900;}
         
-        .nav-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: background 0.2s; font-size: 16px; position: relative; }
+        .nav-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: background 0.2s; position: relative;}
         .nav-item:hover { background: var(--sidebar-hover); }
-        .nav-item.active-nav { font-weight: 700; }
-        .nav-item i { font-size: 24px; margin-right: 16px; width: 24px; text-align: center; transition: transform 0.2s; color: var(--text-color);}
-        .sidebar.narrow .nav-item i { margin-right: 0; }
+        .nav-item i { font-size: 24px; margin-right: 16px; width: 24px; text-align: center; transition: transform 0.2s; }
         .nav-item:hover i { transform: scale(1.05); }
-        .nav-item img.profile-pic-small { width: 24px; height: 24px; border-radius: 50%; margin-right: 16px; border: 1px solid var(--border-color); object-fit: cover;}
-        .sidebar.narrow .nav-item img.profile-pic-small { margin-right: 0; }
-        
-        .notif-badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; position: absolute; left: 24px; top: 6px; border: 2px solid var(--bg-color); display: none; }
+        .sidebar.narrow .nav-item i { margin-right: 0; }
+        .profile-pic-small { width: 24px; height: 24px; border-radius: 50%; margin-right: 16px; object-fit: cover; }
+        .sidebar.narrow .profile-pic-small { margin-right: 0; }
+        .badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; position: absolute; left: 24px; top: 6px; border: 2px solid black; }
 
-        /* SLIDE PANELS (Search/Notif) */
-        .slide-panel { width: var(--panel-width); height: 100vh; background: var(--bg-color); border-right: 1px solid var(--border-color); position: fixed; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 90; padding: 24px 16px; display: flex; flex-direction: column; border-top-right-radius: 16px; border-bottom-right-radius: 16px; box-shadow: 4px 0 24px rgba(0,0,0,0.5);}
-        .slide-panel.open { transform: translateX(0); }
-        .panel-title { font-size: 24px; font-weight: 600; margin-bottom: 24px; padding: 0 8px;}
+        /* PANELS (Search/Notif) */
+        .slide-panel { width: 397px; height: 100vh; background: black; border-right: 1px solid var(--border-color); position: absolute; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: -1; display: flex; flex-direction: column; border-radius: 0 16px 16px 0; }
+        .slide-panel.open { transform: translateX(0); z-index: 90;}
+        .panel-header { padding: 24px; font-size: 24px; font-weight: 600; border-bottom: 1px solid var(--border-color);}
         
-        /* CONTENT AREA */
-        .content-area { flex-grow: 1; height: 100vh; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; align-items: center;}
-        section { display: none; width: 100%; padding: 40px 20px 60px; }
+        .search-box { background: #262626; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; margin: 20px 24px; }
+        .search-box input { flex-grow: 1; margin-left: 10px; font-size: 16px; }
+        .list-container { flex-grow: 1; overflow-y: auto; padding: 0 16px; }
+        .list-item { display: flex; align-items: center; padding: 12px 8px; cursor: pointer; border-radius: 8px; }
+        .list-item:hover { background: var(--sidebar-hover); }
+        .list-item img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover;}
         
-        #feed-section { max-width: 470px; display: block; }
-        #profile-section { max-width: 935px; }
+        /* CONTENT */
+        .content { flex-grow: 1; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
+        .section { width: 100%; max-width: 935px; display: none; padding-bottom: 60px;}
+        .section.active { display: block; }
 
-        /* --- FEED POSTS --- */
-        .post { background: var(--bg-color); margin-bottom: 28px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;}
-        .post-header { display: flex; align-items: center; padding: 14px 0; }
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; border: 1px solid var(--border-color); object-fit: cover; }
-        .post-header .username { font-weight: 600; font-size: 14px; cursor: pointer; color: var(--text-color); }
-        .post-header .time { color: var(--text-secondary); font-size: 14px; margin-left: 8px;}
-        
-        .post-image { border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; background: #121212; display: flex; justify-content: center; align-items: center; cursor: pointer;}
-        .post-image img { width: 100%; max-height: 585px; display: block; object-fit: cover; }
-        
-        .post-actions { padding: 12px 0 8px; display: flex; justify-content: space-between; align-items: center; font-size: 24px; }
-        .post-actions .action-icons { display: flex; gap: 16px; }
-        .post-actions i { cursor: pointer; transition: color 0.1s; color: var(--text-color); }
-        .post-actions i:hover { color: #8e8e8e; }
-        .post-actions i.liked { color: #ff3040; animation: pop 0.2s; }
+        /* FEED */
+        #feed { max-width: 470px; }
+        .post { margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; width: 470px;}
+        .post-header { display: flex; align-items: center; padding: 12px 0; gap: 10px; font-weight: 600; font-size: 14px;}
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover;}
+        .post-img { width: 100%; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; object-fit: cover; max-height: 585px;}
+        .post-actions { padding: 12px 0; display: flex; justify-content: space-between; font-size: 24px; }
+        .post-actions i { cursor: pointer; transition: color 0.2s; color: var(--text-color); }
+        .post-actions i.liked { color: #ff3040; animation: pop 0.3s; }
+        .post-actions i.saved { color: white; }
         @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        
-        .post-likes { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
-        .post-caption { font-size: 14px; margin-bottom: 8px; line-height: 1.4; }
-        .post-caption .username { font-weight: 600; margin-right: 5px; }
-        .view-comments { font-size: 14px; color: var(--text-secondary); cursor: pointer; margin-bottom: 8px; }
-        
-        .empty-feed { text-align: center; margin-top: 100px; color: var(--text-secondary); }
-        .empty-feed i { font-size: 48px; margin-bottom: 20px; color: #262626; }
+        .post-text { font-size: 14px; margin-bottom: 8px; line-height: 1.4;}
 
-        /* --- SEARCH PANEL & NOTIFICATIONS --- */
-        .search-input-box { background: #262626; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; margin-bottom: 24px; margin: 0 8px 24px; }
-        .search-input-box input { background: transparent; border: none; color: var(--text-color); flex-grow: 1; margin-left: 10px; font-size: 16px; }
-        .search-results-list, .notif-list { flex-grow: 1; overflow-y: auto; padding: 0 8px; }
-        
-        .search-item, .notification-item { display: flex; align-items: center; padding: 12px 8px; font-size: 14px; cursor: pointer; border-radius: 8px; transition: background 0.2s;}
-        .search-item:hover, .notification-item:hover { background: var(--sidebar-hover); }
-        .search-item img, .notification-item img.user-pic { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
-        .search-item .info { display: flex; flex-direction: column; }
-        .search-item .title { font-weight: 600; font-size: 14px; }
-        .notification-item span.notif-text { flex-grow: 1; line-height: 1.3;}
-        .notification-item img.post-pic { width: 44px; height: 44px; border-radius: 4px; object-fit: cover; margin-left: 15px; }
-
-        /* --- PROFILE --- */
-        .profile-header { display: flex; align-items: flex-start; padding: 30px 0 40px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        .profile-header img { width: 150px; height: 150px; border-radius: 50%; margin-right: 80px; margin-left: 60px; object-fit: cover; border: 1px solid var(--border-color);}
+        /* PROFILE */
+        .profile-header { display: flex; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
+        .profile-header img { width: 150px; height: 150px; border-radius: 50%; margin: 0 80px 0 60px; object-fit: cover;}
         .profile-info { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
-        .profile-info-row-1 { display: flex; align-items: center; gap: 20px; font-size: 20px; font-weight: 400; }
         .profile-stats { display: flex; gap: 40px; font-size: 16px; }
-        .profile-stats span { font-weight: 600; }
-        .profile-bio p { font-size: 14px; white-space: pre-wrap; margin-top: 5px;}
+        .profile-tabs { display: flex; justify-content: center; gap: 60px; border-top: 1px solid var(--border-color); }
+        .tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; padding: 15px 0; cursor: pointer; display: flex; gap: 6px; border-top: 1px solid transparent; margin-top:-1px;}
+        .tab.active { color: var(--text-color); border-top-color: var(--text-color); }
+
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+        .grid-item { aspect-ratio: 1/1; background: #121212; position: relative; cursor: pointer; overflow: hidden;}
+        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
+        .grid-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; gap: 30px; font-size: 20px; font-weight: bold; }
+        .grid-item:hover .grid-overlay { display: flex; }
+
+        /* MODALS */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
+        .modal { background: #262626; border-radius: 12px; display: flex; overflow: hidden; max-height: 90vh; }
         
-        .profile-tabs { display: flex; justify-content: center; gap: 50px; margin-top: -21px; padding-top: 15px;}
-        .profile-tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 5px;}
-        .profile-tab.active { color: var(--text-color); border-top: 1px solid var(--text-color); margin-top: -16px; padding-top: 16px;}
+        #post-modal .modal { width: 900px; height: 600px; background: black; }
+        .modal-img { width: 60%; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;}
+        .modal-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .modal-sidebar { width: 40%; display: flex; flex-direction: column; background: black;}
+        .modal-input { padding: 16px; border-top: 1px solid var(--border-color); display: flex; }
+        .modal-input input { flex-grow: 1; }
+        .modal-input button { color: var(--blue-color); font-weight: 600; cursor: pointer; }
 
-        .profile-posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 20px; width: 100%;}
-        .grid-item { aspect-ratio: 1/1; background: #121212; cursor: pointer; position: relative; overflow: hidden; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.2s; }
-        .grid-item:hover img { filter: brightness(0.8); }
-        .empty-posts { text-align: center; padding: 60px 0; grid-column: span 3; }
-
-        /* --- MODALS & OVERLAYS --- */
-        .overlay-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
-        .close-overlay { position: absolute; top: 20px; right: 20px; color: white; font-size: 24px; cursor: pointer; z-index: 3001;}
-        .modal-content { background: #262626; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; color: var(--text-color); }
-        
-        /* POST DETAIL & COMMENT MODAL */
-        #post-detail-modal { flex-direction: row; width: 900px; max-width: 95%; height: 600px; max-height: 90vh; background: var(--bg-color); border: 1px solid var(--border-color); }
-        .post-detail-img-container { width: 60%; background: #000; display: flex; justify-content: center; align-items: center; border-right: 1px solid var(--border-color);}
-        .post-detail-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .post-detail-sidebar { width: 40%; display: flex; flex-direction: column; background: var(--bg-color);}
-        .post-detail-header { padding: 14px 16px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
-        .post-detail-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .post-detail-comments { flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-        .comment-item { display: flex; gap: 12px; font-size: 14px; }
-        .comment-item img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover;}
-        .comment-item .content { display: flex; flex-direction: column; }
-        .comment-item .content strong { margin-right: 5px; cursor: pointer;}
-        .post-detail-actions { padding: 12px 16px; border-top: 1px solid var(--border-color); font-size: 24px; display: flex; gap: 16px;}
-        .post-detail-actions i { cursor: pointer; transition: color 0.1s;}
-        .post-detail-input-box { border-top: 1px solid var(--border-color); padding: 16px; display: flex; align-items: center; }
-        .post-detail-input-box input { flex-grow: 1; border: none; background: transparent; color: white; font-size: 14px; outline: none; }
-        .post-detail-input-box button { color: var(--blue-color); font-weight: 600; font-size: 14px; cursor: pointer;}
-        .post-detail-input-box button:disabled { opacity: 0.5; cursor: default; }
-
-        /* SHARE OVERLAY */
-        #share-modal-inner { width: 100%; max-width: 450px; background: #262626; border-radius: 16px; display: flex; flex-direction: column; }
-        .share-header { padding: 16px; display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 1px solid #363636; font-weight: 600; }
-        .share-header i { position: absolute; right: 16px; font-size: 20px; cursor: pointer; }
-        .share-bottom-actions { display: flex; overflow-x: auto; padding: 20px 16px; gap: 24px; scrollbar-width: none; }
-        .share-action-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
-        .share-action-circle { width: 50px; height: 50px; background: #363636; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 8px;}
-        .share-action-btn span { font-size: 12px; color: var(--text-secondary); text-align: center; }
-
-        /* CREATE POST */
-        #create-modal-inner { width: 100%; max-width: 500px; }
-        .modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-        .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 300px; justify-content: center;}
-        .file-label { background: var(--blue-color); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        #create-image-input { display: none; }
-        #create-preview-img { max-width: 100%; max-height: 300px; border-radius: 4px; object-fit: contain; margin-bottom: 15px;}
-        #create-post-caption { width: 100%; border: 1px solid var(--border-color); border-radius: 8px; outline: none; resize: none; height: 80px; font-size: 14px; padding: 10px; display: none; background: #121212; color: white;}
-
+        #create-modal .modal { width: 500px; flex-direction: column; }
+        .btn-blue { background: var(--blue-color); color: white; padding: 6px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;}
     </style>
 </head>
 <body>
 
-    <div id="login-screen" style="display: flex;">
+    <div id="login-screen">
         <div class="login-box">
             <h1>DrukLink</h1>
-            <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 14px;">Sign in to see photos and videos from your friends.</p>
+            <p style="margin-bottom: 30px; color: var(--text-secondary);">Log in to see photos and videos from your friends.</p>
             <button class="google-btn" id="login-btn"><i class="fab fa-google"></i> Log in with Google</button>
         </div>
     </div>
 
-    <div id="app-screen">
-        <aside class="sidebar" id="main-sidebar">
-            <div class="sidebar-logo nav-link" data-section="feed"><i class="fab fa-instagram"></i> <span class="sidebar-logo-text">DrukLink</span></div>
-            <nav>
-                <div class="nav-item nav-link active-nav" data-section="feed"><i class="fas fa-home"></i> <span class="nav-text">Home</span></div>
-                <div class="nav-item panel-trigger" data-panel="search-panel"><i class="fas fa-search"></i> <span class="nav-text">Search</span></div>
-                <div class="nav-item panel-trigger" data-panel="notifications-panel">
-                    <i class="far fa-heart"></i> <span class="nav-text">Notifications</span>
-                    <span id="notif-badge" class="notif-badge">0</span>
-                </div>
-                <div class="nav-item" id="nav-create-btn"><i class="far fa-plus-square"></i> <span class="nav-text">Create</span></div>
-                <div class="nav-item nav-link" data-section="profile">
-                    <img src="" id="nav-profile-pic" class="profile-pic-small"> <span class="nav-text">Profile</span>
-                </div>
-            </nav>
-            <div class="nav-item" id="logout-btn" style="margin-top: auto; color: #ff3040;"><i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span></div>
+    <div id="app">
+        <aside class="sidebar" id="sidebar">
+            <div class="logo nav-btn" data-target="home"><i class="fas fa-link logo-icon"></i><span class="logo-text">DrukLink</span></div>
+            <div class="nav-item nav-btn active" data-target="home"><i class="fas fa-home"></i><span class="nav-text">Home</span></div>
+            <div class="nav-item panel-btn" data-panel="search"><i class="fas fa-search"></i><span class="nav-text">Search</span></div>
+            <div class="nav-item panel-btn" data-panel="notifications">
+                <i class="far fa-heart"></i><span class="nav-text">Notifications</span>
+                <div class="badge hidden" id="notif-badge">0</div>
+            </div>
+            <div class="nav-item" onclick="openModal('create-modal')"><i class="far fa-plus-square"></i><span class="nav-text">Create</span></div>
+            <div class="nav-item nav-btn" data-target="profile"><img src="" id="my-pic" class="profile-pic-small"><span class="nav-text">Profile</span></div>
+            <div class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff3040;"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span></div>
         </aside>
 
         <div class="slide-panel" id="search-panel">
-            <div class="panel-title">Search</div>
-            <div class="search-input-box"><i class="fas fa-search" style="color: var(--text-secondary);"></i>
-                <input type="text" id="main-search-input" placeholder="Search users...">
-            </div>
-            <div class="search-results-list" id="search-results-list">
-                <div style="color: var(--text-secondary); text-align: center; margin-top: 20px;">Search for friends.</div>
-            </div>
+            <div class="panel-header">Search</div>
+            <div class="search-box"><input type="text" id="search-input" placeholder="Search users..."></div>
+            <div class="list-container" id="search-results"></div>
         </div>
 
         <div class="slide-panel" id="notifications-panel">
-            <div class="panel-title">Notifications</div>
-            <div class="notif-list" id="notifications-list-content"></div>
+            <div class="panel-header">Notifications</div>
+            <div class="list-container" id="notif-list" style="padding-top:16px;"></div>
         </div>
 
-        <main class="content-area" id="main-content-area">
-            <section id="feed-section"><div id="feed-content"><div class="empty-feed">Loading posts...</div></div></section>
+        <main class="content" onclick="closePanels()">
+            <div class="section active" id="home-section">
+                <div id="feed-container"></div>
+            </div>
 
-            <section id="profile-section">
+            <div class="section" id="profile-section">
                 <div class="profile-header">
-                    <img src="" id="profile-pic-large">
+                    <img src="" id="prof-pic">
                     <div class="profile-info">
-                        <div class="profile-info-row-1"><span id="profile-username" style="font-size: 20px;"></span></div>
+                        <h2 id="prof-name"></h2>
                         <div class="profile-stats">
-                            <span><span id="profile-post-count">0</span> posts</span>
-                            <span><span>0</span> followers</span>
-                            <span><span>0</span> following</span>
+                            <span><strong id="prof-posts-count">0</strong> posts</span>
+                            <span><strong>0</strong> followers</span>
                         </div>
-                        <div class="profile-bio"><strong id="profile-fullname" style="font-size: 14px;"></strong><p>Welcome to DrukLink!</p></div>
                     </div>
                 </div>
                 <div class="profile-tabs">
-                    <div class="profile-tab active" data-tab="posts"><i class="fas fa-th"></i> POSTS</div>
-                    <div class="profile-tab" data-tab="saved"><i class="far fa-bookmark"></i> SAVED</div>
+                    <div class="tab active" onclick="switchTab('posts')" id="tab-posts"><i class="fas fa-th"></i> POSTS</div>
+                    <div class="tab" onclick="switchTab('saved')" id="tab-saved"><i class="far fa-bookmark"></i> SAVED</div>
                 </div>
-                <div class="profile-posts-grid" id="profile-posts-content"></div>
-            </section>
+                <div class="grid" id="profile-grid"></div>
+            </div>
         </main>
     </div>
 
-    <div id="post-overlay" class="overlay-bg">
-        <i class="fas fa-times close-overlay" id="close-post-modal"></i>
-        <div class="modal-content" id="post-detail-modal">
-            <div class="post-detail-img-container"><img id="pd-img" src=""></div>
-            <div class="post-detail-sidebar">
-                <div class="post-detail-header">
-                    <img id="pd-user-img" src=""> <strong id="pd-username"></strong>
+    <div class="overlay" id="post-modal">
+        <i class="fas fa-times close-btn" onclick="closeModal('post-modal')"></i>
+        <div class="modal">
+            <div class="modal-img"><img id="pm-img" src=""></div>
+            <div class="modal-sidebar">
+                <div class="post-header" style="padding:16px; border-bottom:1px solid var(--border-color);"><img id="pm-avatar" src=""><span id="pm-user"></span></div>
+                <div class="list-container" id="pm-comments" style="padding:16px; display:flex; flex-direction:column; gap:16px;"></div>
+                <div style="padding:16px; border-top:1px solid var(--border-color);">
+                    <div style="font-size:24px; display:flex; gap:16px; margin-bottom:8px;">
+                        <i class="far fa-heart" id="pm-like-btn"></i>
+                        <i class="far fa-comment"></i>
+                        <i class="far fa-bookmark" id="pm-save-btn" style="margin-left:auto;"></i>
+                    </div>
+                    <strong id="pm-likes-count">0 likes</strong>
                 </div>
-                <div class="post-detail-comments" id="pd-comments"></div>
-                <div class="post-detail-actions">
-                    <i class="far fa-heart" id="pd-like-btn"></i>
-                    <i class="far fa-comment"></i>
-                    <i class="far fa-paper-plane" id="pd-share-btn"></i>
-                    <i class="far fa-bookmark" id="pd-save-btn" style="margin-left: auto;"></i>
-                </div>
-                <div style="padding: 0 16px 16px; font-size: 14px; font-weight: 600;" id="pd-likes-count">0 likes</div>
-                <div class="post-detail-input-box">
-                    <input type="text" id="pd-comment-input" placeholder="Add a comment...">
-                    <button id="pd-post-comment" disabled>Post</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="share-overlay" class="overlay-bg" style="z-index: 4000;">
-        <div class="modal-content" id="share-modal-inner">
-            <div class="share-header"><span>Share</span><i class="fas fa-times" id="close-share-modal"></i></div>
-            <div class="share-bottom-actions" style="justify-content: center; padding: 40px 16px;">
-                <div class="share-action-btn" id="real-copy-link-btn">
-                    <div class="share-action-circle"><i class="fas fa-link"></i></div>
-                    <span>Copy link</span>
-                </div>
-                <div class="share-action-btn" onclick="alert('WhatsApp share simulated')">
-                    <div class="share-action-circle"><i class="fab fa-whatsapp"></i></div>
-                    <span>WhatsApp</span>
+                <div class="modal-input">
+                    <input type="text" id="pm-input" placeholder="Add a comment...">
+                    <button id="pm-post-btn">Post</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="create-overlay" class="overlay-bg">
-        <i class="fas fa-times close-overlay" id="close-create"></i>
-        <div class="modal-content" id="create-modal-inner">
-            <div class="modal-header"><span></span><span>Create new post</span><button id="share-btn" style="color:var(--blue-color); font-weight:600;" disabled>Share</button></div>
-            <div class="modal-body">
-                <i class="far fa-images" id="create-icon-placeholder" style="font-size: 60px; margin-bottom: 20px;"></i>
-                <label for="create-image-input" class="file-label" id="file-label">Select from computer</label>
-                <input type="file" id="create-image-input" accept="image/*">
-                <div id="preview-image-container" style="display:none; width:100%; text-align:center;">
-                    <img id="create-preview-img" src="">
-                </div>
-                <textarea id="create-post-caption" placeholder="Write a caption..."></textarea>
+    <div class="overlay" id="create-modal">
+        <i class="fas fa-times close-btn" onclick="closeModal('create-modal')"></i>
+        <div class="modal" style="padding:20px; align-items:center;">
+            <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:20px; font-weight:bold;">
+                <span>Create post</span><button class="btn-blue hidden" id="create-share-btn">Share</button>
             </div>
+            <label class="btn-blue" id="create-label" style="cursor:pointer; margin: 40px 0;">
+                Select Image <input type="file" id="create-file" accept="image/*" class="hidden">
+            </label>
+            <img id="create-preview" style="max-width:100%; max-height:300px; display:none; margin-bottom:15px; border-radius:8px;">
+            <textarea id="create-caption" placeholder="Write a caption..." style="width:100%; height:80px; background:#121212; padding:10px; border-radius:8px; display:none; resize:none;"></textarea>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-        const app = initializeApp({
+        const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
             projectId: "druklink-24fa1",
             storageBucket: "druklink-24fa1.firebasestorage.app",
             messagingSenderId: "183615496366",
-            appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
-        });
+            appId: "1:183615496366:web:fcfb4f88f3223044924d3f",
+            measurementId: "G-R8JKT9DE48"
+        };
+
+        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const imgHippoKey = "b5f2098fa836fe7090138a418d294866";
+        const imgBBKey = "b5f2098fa836fe7090138a418d294866"; 
 
-        let currentUser = null;
-        let currentUserData = { savedPosts: [] }; 
-        let activeFeedListener = null;
-        let activePostModalId = null; 
-        let activePostListener = null;
-        let activeSharePostId = null;
+        let me = null;
+        let mySaved = [];
+        let activePostId = null;
+        let currentTab = 'posts';
 
-        // --- AUTH ---
-        document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
-        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                currentUser = user;
+                me = user;
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-screen').style.display = 'flex';
-                document.getElementById('nav-profile-pic').src = user.photoURL;
-                
-                await initUser(user);
-                listenForUnreadNotifications();
-                
-                // Check if opened via Shared Link
-                const urlParams = new URLSearchParams(window.location.search);
-                const sharedPost = urlParams.get('post');
-                if (sharedPost) {
-                    switchSection('feed');
-                    openPostModal(sharedPost);
-                } else {
-                    switchSection('feed');
+                document.getElementById('app').style.display = 'flex';
+                document.getElementById('my-pic').src = user.photoURL;
+                document.getElementById('prof-pic').src = user.photoURL;
+                document.getElementById('prof-name').innerText = user.displayName;
+
+                const uRef = doc(db, "users", user.uid);
+                const uDoc = await getDoc(uRef);
+                if (!uDoc.exists()) { 
+                    await setDoc(uRef, { name: user.displayName, pic: user.photoURL, saves: [] }); 
+                } else { 
+                    mySaved = uDoc.data().saves || []; 
                 }
+
+                loadFeed(); loadNotifs(); loadProfile();
             } else {
-                currentUser = null;
+                me = null;
                 document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-screen').style.display = 'none';
+                document.getElementById('app').style.display = 'none';
             }
         });
 
-        async function initUser(user) {
-            const userRef = doc(db, "users", user.uid);
-            const userDoc = await getDoc(userRef);
-            if (!userDoc.exists()) {
-                await setDoc(userRef, { displayName: user.displayName, photoURL: user.photoURL, savedPosts: [], createdAt: serverTimestamp() });
-                currentUserData = { savedPosts: [] };
-            } else { currentUserData = { savedPosts: userDoc.data().savedPosts || [] }; }
-        }
+        window.closePanels = () => { document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open')); document.getElementById('sidebar').classList.remove('narrow'); };
+        window.openModal = id => document.getElementById(id).style.display = 'flex';
+        window.closeModal = id => document.getElementById(id).style.display = 'none';
 
-        // --- NAVIGATION & PANELS ---
-        const sidebar = document.getElementById('main-sidebar');
-        function closeAllPanels() {
-            document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open'));
-            sidebar.classList.remove('narrow');
-        }
-
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                closeAllPanels();
-                switchSection(e.currentTarget.dataset.section);
-            });
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            b.onclick = (e) => {
+                closePanels();
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                if(e.currentTarget.classList.contains('nav-item')) e.currentTarget.classList.add('active');
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.getElementById(e.currentTarget.dataset.target + '-section').classList.add('active');
+                if(e.currentTarget.dataset.target === 'profile') loadProfile();
+            }
         });
 
-        document.querySelectorAll('.panel-trigger').forEach(trigger => {
-            trigger.addEventListener('click', (e) => {
-                const panelId = e.currentTarget.dataset.panel;
-                const panel = document.getElementById(panelId);
-                if (panel.classList.contains('open')) { closeAllPanels(); } 
-                else {
-                    closeAllPanels(); panel.classList.add('open'); sidebar.classList.add('narrow');
-                    if(panelId === 'notifications-panel') loadNotifications();
-                }
-            });
-        });
-        document.getElementById('main-content-area').addEventListener('click', closeAllPanels);
-
-        function switchSection(sectionId) {
-            document.querySelectorAll('.content-area > section').forEach(s => s.style.display = 'none');
-            document.getElementById(`${sectionId}-section`).style.display = 'block';
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active-nav'));
-            const activeNav = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
-            if(activeNav) activeNav.classList.add('active-nav');
-
-            if(sectionId === 'feed') loadFeed();
-            if(sectionId === 'profile') loadProfile('posts'); 
-        }
-
-        // --- REAL USER SEARCH ---
-        document.getElementById('main-search-input').addEventListener('input', async (e) => {
-            const queryText = e.target.value.toLowerCase();
-            const list = document.getElementById('search-results-list');
-            list.innerHTML = '';
-            
-            if(!queryText) { list.innerHTML = '<div style="color:var(--text-secondary); text-align:center; margin-top:20px;">Search for friends.</div>'; return; }
-            
-            const snap = await getDocs(collection(db, "users"));
-            let found = false;
-            snap.forEach(docSnap => {
-                const u = docSnap.data();
-                if(u.displayName.toLowerCase().includes(queryText)) {
-                    found = true;
-                    const el = document.createElement('div');
-                    el.className = 'search-item';
-                    el.innerHTML = `<img src="${u.photoURL}"> <div class="info"><span class="title">${u.displayName}</span></div>`;
-                    list.appendChild(el);
-                }
-            });
-            if(!found) list.innerHTML = '<div style="color:var(--text-secondary); text-align:center; margin-top:20px;">No users found.</div>';
+        document.querySelectorAll('.panel-btn').forEach(b => {
+            b.onclick = (e) => {
+                const p = document.getElementById(e.currentTarget.dataset.panel + '-panel');
+                if(p.classList.contains('open')) closePanels();
+                else { closePanels(); p.classList.add('open'); document.getElementById('sidebar').classList.add('narrow'); }
+            }
         });
 
-        // --- FEED ---
         function loadFeed() {
-            if(activeFeedListener) activeFeedListener();
-            activeFeedListener = onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), async (snap) => {
-                const container = document.getElementById('feed-content');
-                const safeSavedPosts = currentUserData.savedPosts || [];
-
-                if (snap.empty) { container.innerHTML = '<div class="empty-feed"><h2>No posts yet</h2></div>'; return; }
-
-                container.innerHTML = '';
-                snap.forEach(docSnap => {
-                    const post = docSnap.data();
-                    const isLiked = post.likedBy?.includes(currentUser.uid);
-                    const isSaved = safeSavedPosts.includes(docSnap.id);
-                    const commentsCount = post.comments?.length || 0;
-                    
-                    const el = document.createElement('article');
-                    el.className = 'post';
-                    el.innerHTML = `
-                        <div class="post-header"><img src="${post.userPic}"> <span class="username">${post.userName}</span><span class="time">Just now</span></div>
-                        <div class="post-image" onclick="openPostModal('${docSnap.id}')"><img src="${post.imageUrl}"></div>
-                        <div class="post-actions">
-                            <div class="action-icons">
-                                <i class="${isLiked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${docSnap.id}', '${post.userId}')"></i>
-                                <i class="far fa-comment" onclick="openPostModal('${docSnap.id}')"></i>
-                                <i class="far fa-paper-plane" onclick="openShareModal('${docSnap.id}')"></i>
+            onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
+                const box = document.getElementById('feed-container');
+                box.innerHTML = '';
+                snap.forEach(d => {
+                    const p = d.data(); const id = d.id;
+                    const liked = p.likes?.includes(me.uid);
+                    const saved = mySaved.includes(id);
+                    box.innerHTML += `
+                        <div class="post">
+                            <div class="post-header"><img src="${p.pic}"> ${p.name}</div>
+                            <img src="${p.img}" class="post-img" ondblclick="toggleLike('${id}')" onclick="openPost('${id}')">
+                            <div class="post-actions">
+                                <div style="display:flex; gap:16px;">
+                                    <i class="${liked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${id}')"></i>
+                                    <i class="far fa-comment" onclick="openPost('${id}')"></i>
+                                </div>
+                                <i class="${saved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${id}')"></i>
                             </div>
-                            <i class="${isSaved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${docSnap.id}')"></i>
-                        </div>
-                        <div class="post-likes">${post.likedBy?.length || 0} likes</div>
-                        <div class="post-caption"><span class="username">${post.userName}</span> ${post.caption}</div>
-                        ${commentsCount > 0 ? `<div class="view-comments" onclick="openPostModal('${docSnap.id}')">View all ${commentsCount} comments</div>` : ''}
-                    `;
-                    container.appendChild(el);
+                            <strong class="post-text">${p.likes?.length || 0} likes</strong>
+                            <div class="post-text"><strong>${p.name}</strong> ${p.caption}</div>
+                        </div>`;
                 });
             });
         }
 
-        window.toggleLike = async (postId, ownerId) => {
-            const ref = doc(db, "posts", postId);
-            const snap = await getDoc(ref);
-            if(!snap.exists()) return;
-            const liked = snap.data().likedBy?.includes(currentUser.uid);
-            
-            if (liked) { await updateDoc(ref, { likedBy: arrayRemove(currentUser.uid) }); } 
+        window.toggleLike = async (id) => {
+            const ref = doc(db, "posts", id);
+            const p = (await getDoc(ref)).data();
+            if(p.likes?.includes(me.uid)) await updateDoc(ref, { likes: arrayRemove(me.uid) });
             else { 
-                await updateDoc(ref, { likedBy: arrayUnion(currentUser.uid) });
-                if(ownerId !== currentUser.uid) sendNotification(ownerId, 'like', postId);
+                await updateDoc(ref, { likes: arrayUnion(me.uid) });
+                if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} liked your post.`);
             }
         };
 
-        window.toggleSave = async (postId) => {
-            const userRef = doc(db, "users", currentUser.uid);
-            const safeSavedPosts = currentUserData.savedPosts || [];
-            const isSaved = safeSavedPosts.includes(postId);
-            
-            if (isSaved) {
-                await updateDoc(userRef, { savedPosts: arrayRemove(postId) });
-                currentUserData.savedPosts = safeSavedPosts.filter(id => id !== postId);
-            } else {
-                await updateDoc(userRef, { savedPosts: arrayUnion(postId) });
-                currentUserData.savedPosts.push(postId);
-            }
-            loadFeed(); // Refresh feed visually to show bookmarked state
+        window.toggleSave = async (id) => {
+            const ref = doc(db, "users", me.uid);
+            if(mySaved.includes(id)) { await updateDoc(ref, { saves: arrayRemove(id) }); mySaved = mySaved.filter(x=>x!==id); }
+            else { await updateDoc(ref, { saves: arrayUnion(id) }); mySaved.push(id); }
+            loadFeed(); loadProfile();
         };
 
-        // --- POST & COMMENT MODAL ---
-        window.openPostModal = (postId) => {
-            activePostModalId = postId;
-            document.getElementById('post-overlay').style.display = 'flex';
-            
-            if(activePostListener) activePostListener();
-            
-            activePostListener = onSnapshot(doc(db, "posts", postId), (docSnap) => {
-                if(!docSnap.exists()) return;
-                const post = docSnap.data();
+        window.openPost = async (id) => {
+            activePostId = id; openModal('post-modal');
+            onSnapshot(doc(db, "posts", id), (d) => {
+                if(!d.exists()) return;
+                const p = d.data();
+                document.getElementById('pm-img').src = p.img; document.getElementById('pm-avatar').src = p.pic;
+                document.getElementById('pm-user').innerText = p.name; document.getElementById('pm-likes-count').innerText = `${p.likes?.length||0} likes`;
                 
-                document.getElementById('pd-img').src = post.imageUrl;
-                document.getElementById('pd-user-img').src = post.userPic;
-                document.getElementById('pd-username').innerText = post.userName;
-                document.getElementById('pd-likes-count').innerText = `${post.likedBy?.length || 0} likes`;
-                
-                const likeBtn = document.getElementById('pd-like-btn');
-                const isLiked = post.likedBy?.includes(currentUser.uid);
-                likeBtn.className = isLiked ? 'fas fa-heart liked' : 'far fa-heart';
-                likeBtn.onclick = () => toggleLike(postId, post.userId);
+                const lbtn = document.getElementById('pm-like-btn'); lbtn.className = p.likes?.includes(me.uid) ? 'fas fa-heart liked' : 'far fa-heart'; lbtn.onclick = ()=>toggleLike(id);
+                const sbtn = document.getElementById('pm-save-btn'); sbtn.className = mySaved.includes(id) ? 'fas fa-bookmark saved' : 'far fa-bookmark'; sbtn.onclick = ()=>toggleSave(id);
 
-                const saveBtn = document.getElementById('pd-save-btn');
-                const isSaved = currentUserData.savedPosts?.includes(postId);
-                saveBtn.className = isSaved ? 'fas fa-bookmark saved' : 'far fa-bookmark';
-                saveBtn.onclick = () => { toggleSave(postId); saveBtn.className = !isSaved ? 'fas fa-bookmark saved' : 'far fa-bookmark'; };
-
-                document.getElementById('pd-share-btn').onclick = () => openShareModal(postId);
-
-                // Render Comments
-                const commentsContainer = document.getElementById('pd-comments');
-                commentsContainer.innerHTML = `
-                    <div class="comment-item">
-                        <img src="${post.userPic}">
-                        <div class="content"><strong>${post.userName}</strong> <span>${post.caption}</span></div>
-                    </div>
-                `;
-                
-                if(post.comments) {
-                    post.comments.forEach(c => {
-                        commentsContainer.innerHTML += `
-                            <div class="comment-item">
-                                <img src="${c.userPic}">
-                                <div class="content"><strong>${c.userName}</strong> <span>${c.text}</span></div>
-                            </div>
-                        `;
-                    });
-                }
-                // Scroll to bottom of comments
-                commentsContainer.scrollTop = commentsContainer.scrollHeight;
+                let html = `<div style="display:flex;gap:12px;"><img src="${p.pic}" style="width:32px;height:32px;border-radius:50%;"><div><strong>${p.name}</strong> ${p.caption}</div></div>`;
+                (p.comments||[]).forEach(c => html += `<div style="display:flex;gap:12px;"><img src="${c.pic}" style="width:32px;height:32px;border-radius:50%;"><div><strong>${c.name}</strong> ${c.text}</div></div>`);
+                document.getElementById('pm-comments').innerHTML = html;
             });
         };
 
-        document.getElementById('close-post-modal').onclick = () => {
-            document.getElementById('post-overlay').style.display = 'none';
-            if(activePostListener) { activePostListener(); activePostListener = null; }
-            activePostModalId = null;
-            // Remove URL param if exists
-            window.history.pushState({}, document.title, window.location.pathname);
+        document.getElementById('pm-post-btn').onclick = async () => {
+            const val = document.getElementById('pm-input').value.trim();
+            if(!val || !activePostId) return;
+            document.getElementById('pm-input').value = '';
+            await updateDoc(doc(db, "posts", activePostId), { comments: arrayUnion({ name: me.displayName, pic: me.photoURL, text: val }) });
+            const p = (await getDoc(doc(db, "posts", activePostId))).data();
+            if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} commented: ${val}`);
         };
 
-        // Add Comment Logic
-        const commentInput = document.getElementById('pd-comment-input');
-        const postCommentBtn = document.getElementById('pd-post-comment');
-
-        commentInput.addEventListener('input', (e) => { postCommentBtn.disabled = e.target.value.trim() === ''; });
-        
-        postCommentBtn.addEventListener('click', async () => {
-            if(!activePostModalId || commentInput.value.trim() === '') return;
-            const text = commentInput.value.trim();
-            commentInput.value = '';
-            postCommentBtn.disabled = true;
-
-            const postRef = doc(db, "posts", activePostModalId);
-            await updateDoc(postRef, {
-                comments: arrayUnion({ text: text, userName: currentUser.displayName, userPic: currentUser.photoURL, createdAt: Date.now() })
-            });
-
-            // Send notification to post owner
-            const postSnap = await getDoc(postRef);
-            if(postSnap.exists() && postSnap.data().userId !== currentUser.uid) {
-                sendNotification(postSnap.data().userId, 'comment', activePostModalId);
-            }
-        });
-
-
-        // --- REAL SHARE LINK ---
-        window.openShareModal = (postId) => {
-            activeSharePostId = postId;
-            document.getElementById('share-overlay').style.display = 'flex';
+        let newImg = null;
+        document.getElementById('create-file').onchange = e => {
+            const f = e.target.files[0]; if(!f) return;
+            const r = new FileReader();
+            r.onload = ev => {
+                newImg = ev.target.result;
+                document.getElementById('create-preview').src = newImg; document.getElementById('create-preview').style.display='block';
+                document.getElementById('create-caption').style.display='block'; document.getElementById('create-share-btn').style.display='block';
+                document.getElementById('create-label').style.display='none';
+            }; r.readAsDataURL(f);
         };
 
-        document.getElementById('close-share-modal').onclick = () => { document.getElementById('share-overlay').style.display = 'none'; };
-
-        document.getElementById('real-copy-link-btn').onclick = () => {
-            if(!activeSharePostId) return;
-            // Generate real link appending ?post=ID
-            const link = window.location.origin + window.location.pathname + "?post=" + activeSharePostId;
-            navigator.clipboard.writeText(link).then(() => {
-                alert("Link copied to clipboard!\n" + link);
-                document.getElementById('share-overlay').style.display = 'none';
+        document.getElementById('create-share-btn').onclick = async () => {
+            if(!newImg) return;
+            document.getElementById('create-share-btn').innerText = 'Posting...';
+            const fd = new FormData(); fd.append("image", newImg.split(',')[1]);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: fd });
+            const json = await res.json();
+            
+            await addDoc(collection(db, "posts"), {
+                uid: me.uid, name: me.displayName, pic: me.photoURL,
+                img: json.data.url, caption: document.getElementById('create-caption').value,
+                likes: [], comments: [], time: serverTimestamp()
             });
+            
+            closeModal('create-modal'); document.querySelector('.nav-btn[data-target="home"]').click();
+            document.getElementById('create-share-btn').innerText = 'Share';
+            document.getElementById('create-preview').style.display='none'; document.getElementById('create-caption').style.display='none'; document.getElementById('create-share-btn').style.display='none';
+            document.getElementById('create-label').style.display='block'; document.getElementById('create-caption').value = '';
         };
 
-
-        // --- NOTIFICATIONS ---
-        async function sendNotification(recId, type, postId) {
-            await addDoc(collection(db, "notifications"), {
-                recipientId: recId, senderName: currentUser.displayName, senderPic: currentUser.photoURL,
-                type: type, relatedPostId: postId, createdAt: serverTimestamp(), read: false
+        window.switchTab = t => { currentTab = t; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); loadProfile(); };
+        async function loadProfile() {
+            const grid = document.getElementById('profile-grid'); grid.innerHTML = '';
+            const all = await getDocs(query(collection(db, "posts"), orderBy("time", "desc")));
+            let count = 0;
+            all.forEach(d => {
+                const p = d.data();
+                if(currentTab === 'posts' && p.uid === me.uid) { count++; grid.innerHTML += `<div class="grid-item" onclick="openPost('${d.id}')"><img src="${p.img}"><div class="grid-overlay"><i class="fas fa-heart"></i> ${p.likes?.length||0}</div></div>`; }
+                if(currentTab === 'saved' && mySaved.includes(d.id)) { grid.innerHTML += `<div class="grid-item" onclick="openPost('${d.id}')"><img src="${p.img}"><div class="grid-overlay"><i class="fas fa-heart"></i> ${p.likes?.length||0}</div></div>`; }
             });
+            if(currentTab === 'posts') document.getElementById('prof-posts-count').innerText = count;
         }
 
-        function listenForUnreadNotifications() {
-            onSnapshot(query(collection(db, "notifications"), where("recipientId", "==", currentUser.uid), where("read", "==", false)), (snap) => {
-                const badge = document.getElementById('notif-badge');
-                if (snap.size > 0) { badge.innerText = snap.size; badge.style.display = 'flex'; } 
-                else { badge.style.display = 'none'; }
+        document.getElementById('search-input').oninput = async e => {
+            const q = e.target.value.toLowerCase(); const box = document.getElementById('search-results'); box.innerHTML = ''; if(!q) return;
+            const users = await getDocs(collection(db, "users"));
+            users.forEach(d => {
+                const u = d.data();
+                if(u.name.toLowerCase().includes(q)) box.innerHTML += `<div class="list-item"><img src="${u.pic}"><strong>${u.name}</strong></div>`;
             });
-        }
+        };
 
-        function loadNotifications() {
-            onSnapshot(query(collection(db, "notifications"), where("recipientId", "==", currentUser.uid), orderBy("createdAt", "desc")), (snap) => {
-                const list = document.getElementById('notifications-list-content');
-                list.innerHTML = '';
-                if(snap.empty) { list.innerHTML = '<p style="color:var(--text-secondary); text-align:center; margin-top:20px;">No new notifications.</p>'; return; }
-                
-                snap.forEach(docSnap => {
-                    const n = docSnap.data();
-                    let txt = n.type === 'like' ? 'liked your post.' : (n.type === 'comment' ? 'commented on your post.' : `started following you.`);
-                    
-                    const el = document.createElement('div');
-                    el.className = 'notification-item';
-                    el.innerHTML = `<img src="${n.senderPic}" class="user-pic"><span class="notif-text"><strong>${n.senderName}</strong> ${txt}</span>`;
-                    
-                    if(n.relatedPostId) {
-                        getDoc(doc(db, "posts", n.relatedPostId)).then(p => {
-                            if(p.exists()) {
-                                const img = document.createElement('img'); img.src = p.data().imageUrl; img.className='post-pic';
-                                el.appendChild(img);
-                            }
-                        });
-                    }
-                    el.addEventListener('click', () => { 
-                        updateDoc(doc(db, "notifications", docSnap.id), { read: true }); 
-                        closeAllPanels(); 
-                        if(n.relatedPostId) { switchSection('feed'); openPostModal(n.relatedPostId); }
-                    });
-                    list.appendChild(el);
+        async function addNotif(toUid, txt) { await addDoc(collection(db, "notifs"), { to: toUid, text: txt, pic: me.photoURL, time: serverTimestamp() }); }
+        function loadNotifs() {
+            onSnapshot(query(collection(db, "notifs"), orderBy("time", "desc")), snap => {
+                const box = document.getElementById('notif-list'); box.innerHTML = ''; let unread = 0;
+                snap.forEach(d => {
+                    const n = d.data();
+                    if(n.to === me.uid) { unread++; box.innerHTML += `<div class="list-item"><img src="${n.pic}"><span style="margin-left:12px;">${n.text}</span></div>`; }
                 });
+                const b = document.getElementById('notif-badge');
+                if(unread>0){b.classList.remove('hidden'); b.innerText=unread;} else b.classList.add('hidden');
             });
         }
-
-        // --- PROFILE TABS ---
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                loadProfile(e.currentTarget.dataset.tab);
-            });
-        });
-
-        async function loadProfile(tabType) {
-            document.getElementById('profile-pic-large').src = currentUser.photoURL;
-            document.getElementById('profile-username').innerText = currentUser.displayName;
-            document.getElementById('profile-fullname').innerText = currentUser.displayName;
-            
-            const grid = document.getElementById('profile-posts-content');
-            grid.innerHTML = '';
-
-            if (tabType === 'posts') {
-                const snap = await getDocs(query(collection(db, "posts"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc")));
-                document.getElementById('profile-post-count').innerText = snap.size;
-                if(snap.empty) { grid.innerHTML = `<div class="empty-posts"><i class="fas fa-camera"></i><h2>Share Photos</h2></div>`; } 
-                else { snap.forEach(d => grid.innerHTML += `<div class="grid-item" onclick="openPostModal('${d.id}')"><img src="${d.data().imageUrl}"></div>`); }
-            } 
-            else if (tabType === 'saved') {
-                const safeSavedPosts = currentUserData.savedPosts || [];
-                if(safeSavedPosts.length === 0) { grid.innerHTML = `<div class="empty-posts"><i class="far fa-bookmark"></i><h2>Save your favorite photos</h2></div>`; } 
-                else {
-                    for(let postId of safeSavedPosts) {
-                        const postDoc = await getDoc(doc(db, "posts", postId));
-                        if(postDoc.exists()) { grid.innerHTML += `<div class="grid-item" onclick="openPostModal('${postDoc.id}')"><img src="${postDoc.data().imageUrl}"></div>`; }
-                    }
-                }
-            }
-        }
-
-        // --- CREATE POST ---
-        const createOverlay = document.getElementById('create-overlay');
-        const imgInput = document.getElementById('create-image-input');
-        const shareBtn = document.getElementById('share-btn');
-        
-        document.getElementById('nav-create-btn').addEventListener('click', () => { closeAllPanels(); createOverlay.style.display = 'flex'; });
-        document.getElementById('close-create').addEventListener('click', () => { createOverlay.style.display = 'none'; });
-
-        imgInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const r = new FileReader();
-                r.onload = (ev) => {
-                    document.getElementById('create-preview-img').src = ev.target.result;
-                    document.getElementById('preview-image-container').style.display = 'block';
-                    document.getElementById('file-label').style.display = 'none';
-                    document.getElementById('create-icon-placeholder').style.display = 'none';
-                    document.getElementById('create-post-caption').style.display = 'block';
-                    shareBtn.disabled = false;
-                };
-                r.readAsDataURL(file);
-            }
-        });
-
-        shareBtn.addEventListener('click', async () => {
-            const file = imgInput.files[0];
-            if (!file) return;
-            shareBtn.innerText = "Sharing..."; shareBtn.disabled = true;
-
-            try {
-                const fd = new FormData(); fd.append('api_key', imgHippoKey); fd.append('file', file);
-                const res = await fetch('https://api.imghippo.com/v1/upload', { method: 'POST', body: fd });
-                const data = await res.json();
-                
-                if (!data.success) throw new Error("Image Upload Failed");
-
-                await addDoc(collection(db, "posts"), {
-                    userId: currentUser.uid, userName: currentUser.displayName, userPic: currentUser.photoURL,
-                    imageUrl: data.data.url, caption: document.getElementById('create-post-caption').value,
-                    likedBy: [], comments: [], createdAt: serverTimestamp()
-                });
-                
-                imgInput.value = "";
-                document.getElementById('create-preview-img').src = "";
-                document.getElementById('preview-image-container').style.display = 'none';
-                document.getElementById('file-label').style.display = 'block';
-                document.getElementById('create-icon-placeholder').style.display = 'block';
-                document.getElementById('create-post-caption').style.display = 'none';
-                document.getElementById('create-post-caption').value = '';
-                
-                createOverlay.style.display = 'none';
-                switchSection('feed');
-                shareBtn.innerText = "Share";
-            } catch (err) { alert(err.message); shareBtn.disabled = false; shareBtn.innerText = "Share";} 
-        });
-
     </script>
 </body>
 </html>
