@@ -1,439 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrukLink</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-color: #000000;
-            --border-color: #262626;
-            --text-color: #f5f5f5;
-            --text-secondary: #a8a8a8;
-            --blue-color: #0095f6;
-            --sidebar-hover: #1a1a1a;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrukLink</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0b0b0b;
+            --card: #161616;
+            --border: #262626;
+            --accent: #0095f6;
+            --text: #ffffff;
+        }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-family); }
-        body { background-color: var(--bg-color); color: var(--text-color); overflow: hidden; }
-        button, input, textarea { border: none; background: none; outline: none; color: var(--text-color); }
-        .hidden { display: none !important; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
+        .hidden { display: none !important; }
+        
+        /* Nav */
+        nav { 
+            background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border);
+            padding: 10px 20px; display: flex; justify-content: space-between;
+            align-items: center; position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-family: 'Brush Script MT', cursive; font-size: 2rem; cursor: pointer; }
 
-        /* LOGIN SCREEN */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); }
-        .login-box { border: 1px solid var(--border-color); padding: 50px 40px; text-align: center; width: 350px; border-radius: 4px; }
-        .login-box h1 { font-family: 'Brush Script MT', cursive; font-size: 3.5rem; margin-bottom: 20px; font-weight: normal; }
-        .google-btn { background-color: var(--blue-color); color: white; padding: 10px 16px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;}
+        /* Login Section */
+        #auth-screen { 
+            height: 90vh; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+        }
+        .btn-google { 
+            background: var(--accent); color: white; padding: 12px 24px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; border: none;
+        }
 
-        /* APP LAYOUT */
-        #app { display: none; height: 100vh; }
-        
-        /* SIDEBAR */
-        .sidebar { width: 244px; border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; display: flex; flex-direction: column; z-index: 100; transition: width 0.2s; background: black; position: relative;}
-        .sidebar.narrow { width: 72px; }
-        .sidebar.narrow .nav-text, .sidebar.narrow .logo-text { display: none; }
-        .sidebar.narrow .logo-icon { display: block; }
-        
-        .logo { font-size: 28px; padding: 10px 12px; margin-bottom: 30px; cursor: pointer; display: flex; align-items: center; font-family: 'Brush Script MT', cursive; }
-        .logo-icon { display: none; font-size: 24px; font-family: "Font Awesome 6 Free"; font-style: normal; font-weight: 900;}
-        
-        .nav-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: background 0.2s; position: relative;}
-        .nav-item:hover { background: var(--sidebar-hover); }
-        .nav-item i { font-size: 24px; margin-right: 16px; width: 24px; text-align: center; transition: transform 0.2s; }
-        .nav-item:hover i { transform: scale(1.05); }
-        .sidebar.narrow .nav-item i { margin-right: 0; }
-        .profile-pic-small { width: 24px; height: 24px; border-radius: 50%; margin-right: 16px; object-fit: cover; }
-        .sidebar.narrow .profile-pic-small { margin-right: 0; }
-        .badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; position: absolute; left: 24px; top: 6px; border: 2px solid black; }
-
-        /* PANELS (Search/Notif) */
-        .slide-panel { width: 397px; height: 100vh; background: black; border-right: 1px solid var(--border-color); position: absolute; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: -1; display: flex; flex-direction: column; border-radius: 0 16px 16px 0; }
-        .slide-panel.open { transform: translateX(0); z-index: 90;}
-        .panel-header { padding: 24px; font-size: 24px; font-weight: 600; border-bottom: 1px solid var(--border-color);}
-        
-        .search-box { background: #262626; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; margin: 20px 24px; }
-        .search-box input { flex-grow: 1; margin-left: 10px; font-size: 16px; }
-        .list-container { flex-grow: 1; overflow-y: auto; padding: 0 16px; }
-        .list-item { display: flex; align-items: center; padding: 12px 8px; cursor: pointer; border-radius: 8px; }
-        .list-item:hover { background: var(--sidebar-hover); }
-        .list-item img { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover;}
-        
-        /* CONTENT */
-        .content { flex-grow: 1; height: 100vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
-        .section { width: 100%; max-width: 935px; display: none; padding-bottom: 60px;}
-        .section.active { display: block; }
-
-        /* FEED */
-        #feed { max-width: 470px; }
-        .post { margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; width: 470px;}
-        .post-header { display: flex; align-items: center; padding: 12px 0; gap: 10px; font-weight: 600; font-size: 14px;}
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover;}
-        .post-img { width: 100%; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; object-fit: cover; max-height: 585px;}
-        .post-actions { padding: 12px 0; display: flex; justify-content: space-between; font-size: 24px; }
-        .post-actions i { cursor: pointer; transition: color 0.2s; color: var(--text-color); }
-        .post-actions i.liked { color: #ff3040; animation: pop 0.3s; }
-        .post-actions i.saved { color: white; }
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        .post-text { font-size: 14px; margin-bottom: 8px; line-height: 1.4;}
-
-        /* PROFILE */
-        .profile-header { display: flex; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        .profile-header img { width: 150px; height: 150px; border-radius: 50%; margin: 0 80px 0 60px; object-fit: cover;}
-        .profile-info { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
-        .profile-stats { display: flex; gap: 40px; font-size: 16px; }
-        .profile-tabs { display: flex; justify-content: center; gap: 60px; border-top: 1px solid var(--border-color); }
-        .tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; padding: 15px 0; cursor: pointer; display: flex; gap: 6px; border-top: 1px solid transparent; margin-top:-1px;}
-        .tab.active { color: var(--text-color); border-top-color: var(--text-color); }
-
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
-        .grid-item { aspect-ratio: 1/1; background: #121212; position: relative; cursor: pointer; overflow: hidden;}
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        .grid-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: none; justify-content: center; align-items: center; gap: 30px; font-size: 20px; font-weight: bold; }
-        .grid-item:hover .grid-overlay { display: flex; }
-
-        /* MODALS */
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .close-btn { position: absolute; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
-        .modal { background: #262626; border-radius: 12px; display: flex; overflow: hidden; max-height: 90vh; }
-        
-        #post-modal .modal { width: 900px; height: 600px; background: black; }
-        .modal-img { width: 60%; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;}
-        .modal-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .modal-sidebar { width: 40%; display: flex; flex-direction: column; background: black;}
-        .modal-input { padding: 16px; border-top: 1px solid var(--border-color); display: flex; }
-        .modal-input input { flex-grow: 1; }
-        .modal-input button { color: var(--blue-color); font-weight: 600; cursor: pointer; }
-
-        #create-modal .modal { width: 500px; flex-direction: column; }
-        .btn-blue { background: var(--blue-color); color: white; padding: 6px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;}
-    </style>
+        /* Post Creator */
+        .create-box {
+            background: var(--card); border: 1px solid var(--border);
+            max-width: 500px; margin: 20px auto; padding: 15px; border-radius: 12px;
+        }
+        textarea { 
+            width: 100%; background: none; color: white; border: none; 
+            resize: none; font-size: 1rem; padding: 10px 0;
+        }
+        .controls { display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Feed */
+        #feed { max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
+        .post { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; }
+        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; }
+        .post-img { width: 100%; display: block; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .post-info { padding: 12px; }
+        .like-btn { font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
+        .like-btn.active { color: #ff3040; }
+    </style>
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="login-box">
-            <h1>DrukLink</h1>
-            <p style="margin-bottom: 30px; color: var(--text-secondary);">Log in to see photos and videos from your friends.</p>
-            <button class="google-btn" id="login-btn"><i class="fab fa-google"></i> Log in with Google</button>
-        </div>
-    </div>
+    <nav id="nav-bar" class="hidden">
+        <div class="logo">DrukLink</div>
+        <button id="logout-btn" style="color: #a8a8a8; cursor: pointer; background:none; border:none;">Logout</button>
+    </nav>
 
-    <div id="app">
-        <aside class="sidebar" id="sidebar">
-            <div class="logo nav-btn" data-target="home"><i class="fab fa-instagram logo-icon"></i><span class="logo-text">DrukLink</span></div>
-            <div class="nav-item nav-btn active" data-target="home"><i class="fas fa-home"></i><span class="nav-text">Home</span></div>
-            <div class="nav-item panel-btn" data-panel="search"><i class="fas fa-search"></i><span class="nav-text">Search</span></div>
-            <div class="nav-item panel-btn" data-panel="notifications">
-                <i class="far fa-heart"></i><span class="nav-text">Notifications</span>
-                <div class="badge hidden" id="notif-badge">0</div>
-            </div>
-            <div class="nav-item" onclick="openModal('create-modal')"><i class="far fa-plus-square"></i><span class="nav-text">Create</span></div>
-            <div class="nav-item nav-btn" data-target="profile"><img src="" id="my-pic" class="profile-pic-small"><span class="nav-text">Profile</span></div>
-            <div class="nav-item" id="logout-btn" style="margin-top: auto; color:#ff3040;"><i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span></div>
-        </aside>
+    <div id="auth-screen">
+        <h1 style="font-family: 'Brush Script MT', cursive; font-size: 4rem;">DrukLink</h1>
+        <button class="btn-google" id="login-btn"><i class="fab fa-google"></i> Login with Google</button>
+    </div>
 
-        <div class="slide-panel" id="search-panel">
-            <div class="panel-header">Search</div>
-            <div class="search-box"><input type="text" id="search-input" placeholder="Search real users..."></div>
-            <div class="list-container" id="search-results"></div>
-        </div>
+    <main id="app" class="hidden">
+        <div class="create-box">
+            <textarea id="caption" placeholder="What's on your mind?"></textarea>
+            <div id="preview-container" style="margin-bottom:10px;"></div>
+            <div class="controls">
+                <label style="cursor:pointer; color: var(--accent);">
+                    <i class="fas fa-image"></i> Add Photo
+                    <input type="file" id="file-input" accept="image/*" class="hidden">
+                </label>
+                <button id="share-btn" class="btn-google" style="padding: 8px 16px;">Post</button>
+            </div>
+        </div>
 
-        <div class="slide-panel" id="notifications-panel">
-            <div class="panel-header">Notifications</div>
-            <div class="list-container" id="notif-list" style="padding-top:16px;"></div>
-        </div>
+        <div id="feed"></div>
+    </main>
 
-        <main class="content" onclick="closePanels()">
-            <div class="section active" id="home-section">
-                <div id="feed-container"></div>
-            </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-            <div class="section" id="profile-section">
-                <div class="profile-header">
-                    <img src="" id="prof-pic">
-                    <div class="profile-info">
-                        <h2 id="prof-name"></h2>
-                        <div class="profile-stats">
-                            <span><strong id="prof-posts-count">0</strong> posts</span>
-                            <span><strong>0</strong> followers</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="profile-tabs">
-                    <div class="tab active" onclick="switchTab('posts')" id="tab-posts"><i class="fas fa-th"></i> POSTS</div>
-                    <div class="tab" onclick="switchTab('saved')" id="tab-saved"><i class="far fa-bookmark"></i> SAVED</div>
-                </div>
-                <div class="grid" id="profile-grid"></div>
-            </div>
-        </main>
-    </div>
+        // CONFIGURATION
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
+            authDomain: "druklink-24fa1.firebaseapp.com",
+            projectId: "druklink-24fa1",
+            storageBucket: "druklink-24fa1.firebasestorage.app",
+            messagingSenderId: "183615496366",
+            appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
+        };
+        const imgBBKey = "b5f2098fa836fe7090138a418d294866";
 
-    <div class="overlay" id="post-modal">
-        <i class="fas fa-times close-btn" onclick="closeModal('post-modal')"></i>
-        <div class="modal">
-            <div class="modal-img"><img id="pm-img" src=""></div>
-            <div class="modal-sidebar">
-                <div class="post-header" style="padding:16px; border-bottom:1px solid var(--border-color);"><img id="pm-avatar" src=""><span id="pm-user"></span></div>
-                <div class="list-container" id="pm-comments" style="padding:16px; display:flex; flex-direction:column; gap:16px;"></div>
-                <div style="padding:16px; border-top:1px solid var(--border-color);">
-                    <div style="font-size:24px; display:flex; gap:16px; margin-bottom:8px;">
-                        <i class="far fa-heart" id="pm-like-btn"></i>
-                        <i class="far fa-comment"></i>
-                        <i class="far fa-bookmark" id="pm-save-btn" style="margin-left:auto;"></i>
-                    </div>
-                    <strong id="pm-likes-count">0 likes</strong>
-                </div>
-                <div class="modal-input">
-                    <input type="text" id="pm-input" placeholder="Add a comment...">
-                    <button id="pm-post-btn">Post</button>
-                </div>
-            </div>
-        </div>
-    </div>
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let user = null;
 
-    <div class="overlay" id="create-modal">
-        <i class="fas fa-times close-btn" onclick="closeModal('create-modal')"></i>
-        <div class="modal" style="padding:20px; align-items:center;">
-            <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:20px; font-weight:bold;">
-                <span>Create post</span><button class="btn-blue hidden" id="create-share-btn">Share</button>
-            </div>
-            <label class="btn-blue" id="create-label" style="cursor:pointer; margin: 40px 0;">
-                Select Image <input type="file" id="create-file" accept="image/*" class="hidden">
-            </label>
-            <img id="create-preview" style="max-width:100%; max-height:300px; display:none; margin-bottom:15px; border-radius:8px;">
-            <textarea id="create-caption" placeholder="Write a caption..." style="width:100%; height:80px; background:#121212; padding:10px; border-radius:8px; display:none; resize:none;"></textarea>
-        </div>
-    </div>
+        // AUTH
+        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
+        document.getElementById('logout-btn').onclick = () => signOut(auth);
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            document.getElementById('auth-screen').classList.toggle('hidden', !!u);
+            document.getElementById('app').classList.toggle('hidden', !u);
+            document.getElementById('nav-bar').classList.toggle('hidden', !u);
+            if(u) loadFeed();
+        });
 
-        // YOUR EXACT FIREBASE CONFIGURATION
-        const firebaseConfig = {
-            apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
-            authDomain: "druklink-24fa1.firebaseapp.com",
-            projectId: "druklink-24fa1",
-            storageBucket: "druklink-24fa1.firebasestorage.app",
-            messagingSenderId: "183615496366",
-            appId: "1:183615496366:web:fcfb4f88f3223044924d3f",
-            measurementId: "G-R8JKT9DE48"
-        };
+        // IMAGE HANDLING
+        let selectedFile = null;
+        document.getElementById('file-input').onchange = e => {
+            selectedFile = e.target.files[0];
+            if(selectedFile) document.getElementById('preview-container').innerHTML = `<p style="color:var(--accent)">Image selected: ${selectedFile.name}</p>`;
+        };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
-        // Free image hosting API to store user-uploaded images since Firebase Storage requires extra setup
-        const imgBBKey = "b5f2098fa836fe7090138a418d294866"; 
+        // POSTING
+        document.getElementById('share-btn').onclick = async () => {
+            const cap = document.getElementById('caption').value;
+            if(!selectedFile || !cap) return alert("Add a photo and a caption!");
+            
+            document.getElementById('share-btn').innerText = "Posting...";
+            
+            // Upload to ImgBB
+            const formData = new FormData();
+            formData.append("image", selectedFile);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: formData });
+            const data = await res.json();
 
-        let me = null;
-        let mySaved = [];
-        let activePostId = null;
-        let currentTab = 'posts';
+            // Save to Firestore
+            await addDoc(collection(db, "posts"), {
+                uid: user.uid,
+                userName: user.displayName,
+                userPic: user.photoURL,
+                imageUrl: data.data.url,
+                caption: cap,
+                likes: [],
+                createdAt: serverTimestamp()
+            });
 
-        // AUTHENTICATION LOGIC
-        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
-        document.getElementById('logout-btn').onclick = () => signOut(auth);
+            // Reset
+            document.getElementById('caption').value = "";
+            document.getElementById('preview-container').innerHTML = "";
+            document.getElementById('share-btn').innerText = "Post";
+            selectedFile = null;
+        };
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                me = user;
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app').style.display = 'flex';
-                document.getElementById('my-pic').src = user.photoURL;
-                document.getElementById('prof-pic').src = user.photoURL;
-                document.getElementById('prof-name').innerText = user.displayName;
+        // LIKE LOGIC
+        window.toggleLike = async (postId) => {
+            const postRef = doc(db, "posts", postId);
+            const snap = await getDoc(postRef);
+            if(snap.data().likes.includes(user.uid)) {
+                await updateDoc(postRef, { likes: arrayRemove(user.uid) });
+            } else {
+                await updateDoc(postRef, { likes: arrayUnion(user.uid) });
+            }
+        };
 
-                // Create or Fetch User Document in Firestore
-                const uRef = doc(db, "users", user.uid);
-                const uDoc = await getDoc(uRef);
-                if (!uDoc.exists()) { 
-                    await setDoc(uRef, { name: user.displayName, pic: user.photoURL, saves: [] }); 
-                } else { 
-                    mySaved = uDoc.data().saves || []; 
-                }
-
-                loadFeed(); loadNotifs(); loadProfile();
-            } else {
-                me = null;
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app').style.display = 'none';
-            }
-        });
-
-        // UI INTERFACE LOGIC
-        window.closePanels = () => { document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open')); document.getElementById('sidebar').classList.remove('narrow'); };
-        window.openModal = id => document.getElementById(id).style.display = 'flex';
-        window.closeModal = id => document.getElementById(id).style.display = 'none';
-
-        document.querySelectorAll('.nav-btn').forEach(b => {
-            b.onclick = (e) => {
-                closePanels();
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                if(e.currentTarget.classList.contains('nav-item')) e.currentTarget.classList.add('active');
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById(e.currentTarget.dataset.target + '-section').classList.add('active');
-                if(e.currentTarget.dataset.target === 'profile') loadProfile();
-            }
-        });
-
-        document.querySelectorAll('.panel-btn').forEach(b => {
-            b.onclick = (e) => {
-                const p = document.getElementById(e.currentTarget.dataset.panel + '-panel');
-                if(p.classList.contains('open')) closePanels();
-                else { closePanels(); p.classList.add('open'); document.getElementById('sidebar').classList.add('narrow'); }
-            }
-        });
-
-        // REAL-TIME FEED FROM YOUR FIRESTORE
-        function loadFeed() {
-            onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
-                const box = document.getElementById('feed-container');
-                box.innerHTML = '';
-                snap.forEach(d => {
-                    const p = d.data(); const id = d.id;
-                    const liked = p.likes?.includes(me.uid);
-                    const saved = mySaved.includes(id);
-                    box.innerHTML += `
-                        <div class="post">
-                            <div class="post-header"><img src="${p.pic}"> ${p.name}</div>
-                            <img src="${p.img}" class="post-img" ondblclick="toggleLike('${id}')" onclick="openPost('${id}')">
-                            <div class="post-actions">
-                                <div style="display:flex; gap:16px;">
-                                    <i class="${liked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${id}')"></i>
-                                    <i class="far fa-comment" onclick="openPost('${id}')"></i>
-                                </div>
-                                <i class="${saved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${id}')"></i>
-                            </div>
-                            <strong class="post-text">${p.likes?.length || 0} likes</strong>
-                            <div class="post-text"><strong>${p.name}</strong> ${p.caption}</div>
-                        </div>`;
-                });
-            });
-        }
-
-        // LIKES & SAVES
-        window.toggleLike = async (id) => {
-            const ref = doc(db, "posts", id);
-            const p = (await getDoc(ref)).data();
-            if(p.likes?.includes(me.uid)) await updateDoc(ref, { likes: arrayRemove(me.uid) });
-            else { 
-                await updateDoc(ref, { likes: arrayUnion(me.uid) });
-                if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} liked your post.`);
-            }
-        };
-
-        window.toggleSave = async (id) => {
-            const ref = doc(db, "users", me.uid);
-            if(mySaved.includes(id)) { await updateDoc(ref, { saves: arrayRemove(id) }); mySaved = mySaved.filter(x=>x!==id); }
-            else { await updateDoc(ref, { saves: arrayUnion(id) }); mySaved.push(id); }
-            loadFeed(); loadProfile();
-        };
-
-        // VIEW POST MODAL
-        window.openPost = async (id) => {
-            activePostId = id; openModal('post-modal');
-            onSnapshot(doc(db, "posts", id), (d) => {
-                if(!d.exists()) return;
-                const p = d.data();
-                document.getElementById('pm-img').src = p.img; document.getElementById('pm-avatar').src = p.pic;
-                document.getElementById('pm-user').innerText = p.name; document.getElementById('pm-likes-count').innerText = `${p.likes?.length||0} likes`;
-                
-                const lbtn = document.getElementById('pm-like-btn'); lbtn.className = p.likes?.includes(me.uid) ? 'fas fa-heart liked' : 'far fa-heart'; lbtn.onclick = ()=>toggleLike(id);
-                const sbtn = document.getElementById('pm-save-btn'); sbtn.className = mySaved.includes(id) ? 'fas fa-bookmark saved' : 'far fa-bookmark'; sbtn.onclick = ()=>toggleSave(id);
-
-                let html = `<div style="display:flex;gap:12px;"><img src="${p.pic}" style="width:32px;height:32px;border-radius:50%;"><div><strong>${p.name}</strong> ${p.caption}</div></div>`;
-                (p.comments||[]).forEach(c => html += `<div style="display:flex;gap:12px;"><img src="${c.pic}" style="width:32px;height:32px;border-radius:50%;"><div><strong>${c.name}</strong> ${c.text}</div></div>`);
-                document.getElementById('pm-comments').innerHTML = html;
-            });
-        };
-
-        document.getElementById('pm-post-btn').onclick = async () => {
-            const val = document.getElementById('pm-input').value.trim();
-            if(!val || !activePostId) return;
-            document.getElementById('pm-input').value = '';
-            await updateDoc(doc(db, "posts", activePostId), { comments: arrayUnion({ name: me.displayName, pic: me.photoURL, text: val }) });
-            const p = (await getDoc(doc(db, "posts", activePostId))).data();
-            if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} commented: ${val}`);
-        };
-
-        // CREATING NEW POST
-        let newImg = null;
-        document.getElementById('create-file').onchange = e => {
-            const f = e.target.files[0]; if(!f) return;
-            const r = new FileReader();
-            r.onload = ev => {
-                newImg = ev.target.result;
-                document.getElementById('create-preview').src = newImg; document.getElementById('create-preview').style.display='block';
-                document.getElementById('create-caption').style.display='block'; document.getElementById('create-share-btn').style.display='block';
-                document.getElementById('create-label').style.display='none';
-            }; r.readAsDataURL(f);
-        };
-
-        document.getElementById('create-share-btn').onclick = async () => {
-            if(!newImg) return;
-            document.getElementById('create-share-btn').innerText = 'Posting...';
-            
-            // Upload to ImgBB
-            const fd = new FormData(); fd.append("image", newImg.split(',')[1]);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: fd });
-            const json = await res.json();
-            
-            // Save to Your Firestore Database
-            await addDoc(collection(db, "posts"), {
-                uid: me.uid, name: me.displayName, pic: me.photoURL,
-                img: json.data.url, caption: document.getElementById('create-caption').value,
-                likes: [], comments: [], time: serverTimestamp()
-            });
-            
-            // Reset Modal
-            closeModal('create-modal'); document.querySelector('.nav-btn[data-target="home"]').click();
-            document.getElementById('create-share-btn').innerText = 'Share';
-            document.getElementById('create-preview').style.display='none'; document.getElementById('create-caption').style.display='none'; document.getElementById('create-share-btn').style.display='none';
-            document.getElementById('create-label').style.display='block'; document.getElementById('create-caption').value = '';
-        };
-
-        // PROFILE VIEW
-        window.switchTab = t => { currentTab = t; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); loadProfile(); };
-        async function loadProfile() {
-            const grid = document.getElementById('profile-grid'); grid.innerHTML = '';
-            const all = await getDocs(query(collection(db, "posts"), orderBy("time", "desc")));
-            let count = 0;
-            all.forEach(d => {
-                const p = d.data();
-                if(currentTab === 'posts' && p.uid === me.uid) { count++; grid.innerHTML += `<div class="grid-item" onclick="openPost('${d.id}')"><img src="${p.img}"><div class="grid-overlay"><i class="fas fa-heart"></i> ${p.likes?.length||0}</div></div>`; }
-                if(currentTab === 'saved' && mySaved.includes(d.id)) { grid.innerHTML += `<div class="grid-item" onclick="openPost('${d.id}')"><img src="${p.img}"><div class="grid-overlay"><i class="fas fa-heart"></i> ${p.likes?.length||0}</div></div>`; }
-            });
-            if(currentTab === 'posts') document.getElementById('prof-posts-count').innerText = count;
-        }
-
-        // SEARCH USERS
-        document.getElementById('search-input').oninput = async e => {
-            const q = e.target.value.toLowerCase(); const box = document.getElementById('search-results'); box.innerHTML = ''; if(!q) return;
-            const users = await getDocs(collection(db, "users"));
-            users.forEach(d => {
-                const u = d.data();
-                if(u.name.toLowerCase().includes(q)) box.innerHTML += `<div class="list-item"><img src="${u.pic}"><strong>${u.name}</strong></div>`;
-            });
-        };
-
-        // REAL-TIME NOTIFICATIONS
-        async function addNotif(toUid, txt) { await addDoc(collection(db, "notifs"), { to: toUid, text: txt, pic: me.photoURL, time: serverTimestamp() }); }
-        function loadNotifs() {
-            onSnapshot(query(collection(db, "notifs"), orderBy("time", "desc")), snap => {
-                const box = document.getElementById('notif-list'); box.innerHTML = ''; let unread = 0;
-                snap.forEach(d => {
-                    const n = d.data();
-                    if(n.to === me.uid) { unread++; box.innerHTML += `<div class="list-item"><img src="${n.pic}"><span style="margin-left:12px;">${n.text}</span></div>`; }
-                });
-                const b = document.getElementById('notif-badge');
-                if(unread>0){b.classList.remove('hidden'); b.innerText=unread;} else b.classList.add('hidden');
-            });
-        }
-    </script>
+        // FEED
+        function loadFeed() {
+            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const feed = document.getElementById('feed');
+                feed.innerHTML = "";
+                snapshot.forEach(d => {
+                    const post = d.data();
+                    const isLiked = post.likes.includes(user.uid);
+                    feed.innerHTML += `
+                        <div class="post">
+                            <div class="post-header">
+                                <img src="${post.userPic}">
+                                <strong>${post.userName}</strong>
+                            </div>
+                            <img src="${post.imageUrl}" class="post-img">
+                            <div class="post-info">
+                                <i class="fa-heart ${isLiked ? 'fas active' : 'far'} like-btn" onclick="toggleLike('${d.id}')"></i>
+                                <p><strong>${post.likes.length} likes</strong></p>
+                                <p><strong>${post.userName}</strong> ${post.caption}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+    </script>
 </body>
 </html>
