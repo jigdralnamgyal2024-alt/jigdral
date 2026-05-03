@@ -168,9 +168,12 @@
             </div>
             <h2 style="color: #ececec;">Welcome to DrukTalk AI</h2>
             <p style="color: #9b9b9b; font-size: 14px; margin-bottom: 20px;">Log in with your Google account</p>
+            
             <button class="primary-btn" onclick="login()" style="background: #ececec; color: #171717;">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" alt="Google Logo"> 
+                Continue with Google
             </button>
+            
         </div>
     </div>
 
@@ -244,7 +247,6 @@
     </main>
 
     <script type="module">
-        // Added getDocs import here!
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
@@ -304,7 +306,6 @@
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
-        // --- NEW: Fully working clearAllHistory function ---
         window.clearAllHistory = async () => {
             if(!user) return;
             if(!confirm("Are you sure you want to delete all chat history? This cannot be undone la.")) return;
