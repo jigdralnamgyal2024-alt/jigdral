@@ -3,47 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrukLink Fix</title>
+    <title>DrukLink | Bhutan's Social Space</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg: #000; --card: #121212; --border: #262626; --accent: #0095f6; --text: #fff; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; display: flex; }
+        :root { --bg: #000; --card: #121212; --border: #262626; --accent: #0095f6; --text: #fff; --secondary: #a8a8a8; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; display: flex; }
         .hidden { display: none !important; }
-        .sidebar { width: 240px; height: 100vh; border-right: 1px solid var(--border); position: fixed; padding: 20px; }
+        
+        /* Sidebar Navigation */
+        .sidebar { width: 240px; height: 100vh; border-right: 1px solid var(--border); position: fixed; padding: 20px 12px; display: flex; flex-direction: column; }
+        .logo { font-family: 'Brush Script MT', cursive; font-size: 2.2rem; margin-bottom: 30px; padding-left: 12px; }
+        .nav-item { display: flex; align-items: center; gap: 15px; padding: 12px; cursor: pointer; border-radius: 8px; font-size: 1.1rem; margin-bottom: 5px; }
+        .nav-item:hover { background: #1a1a1a; }
+        .nav-item.active { font-weight: bold; }
+        
+        /* Main Feed */
         main { margin-left: 240px; width: 100%; display: flex; justify-content: center; }
-        .content { width: 100%; max-width: 500px; padding: 20px; }
+        .content { width: 100%; max-width: 470px; padding: 20px; }
+        
+        /* Post Box */
         .post-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 30px; }
-        textarea { width: 100%; background: transparent; color: #fff; border: none; outline: none; margin-bottom: 10px; font-size: 1rem; }
-        .post { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
-        .post img { width: 100%; border-radius: 8px; margin-top: 10px; }
+        textarea { width: 100%; background: transparent; color: #fff; border: none; outline: none; font-size: 1rem; resize: none; }
+        
+        /* Post Rendering */
+        .post { margin-bottom: 40px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .post-img { width: 100%; border-radius: 4px; border: 1px solid var(--border); }
+        .post-info { padding: 10px 0; }
+        
         button { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         button:disabled { opacity: 0.5; }
+        
+        @media (max-width: 768px) { .sidebar { width: 70px; } .nav-text, .logo { display: none; } main { margin-left: 70px; } }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;">
-        <button onclick="login()" style="padding: 15px 30px;">Login with Google to Start</button>
+    <div id="auth-screen" style="width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h1 style="font-family: 'Brush Script MT', cursive; font-size: 4rem;">DrukLink</h1>
+        <button onclick="login()">Login with Google</button>
     </div>
 
-    <div id="app" class="hidden">
+    <div id="app" class="hidden" style="display: flex; width: 100%;">
         <aside class="sidebar">
-            <h1 style="font-family: cursive;">DrukLink</h1>
-            <div onclick="showScreen('home')" style="cursor:pointer; margin-bottom: 20px;"><i class="fas fa-home"></i> Home</div>
-            <div onclick="logout()" style="cursor:pointer; color: red;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+            <div class="logo">DrukLink</div>
+            <div class="nav-item active" onclick="showScreen('home')"><i class="fas fa-home"></i> <span class="nav-text">Home</span></div>
+            <div class="nav-item" onclick="showScreen('explore')"><i class="fas fa-search"></i> <span class="nav-text">Explore</span></div>
+            <div class="nav-item" onclick="showScreen('profile')"><i class="far fa-user"></i> <span class="nav-text">Profile</span></div>
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: #ff3b30;"><i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span></div>
         </aside>
 
         <main>
             <div class="content">
-                <div id="home-screen">
+                <div id="home-screen" class="screen">
                     <div class="post-box">
-                        <textarea id="caption" placeholder="Write something, la..."></textarea>
-                        <div style="display: flex; justify-content: space-between;">
+                        <textarea id="caption" rows="2" placeholder="Write something, la..."></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
                             <input type="file" id="fileInput" accept="image/*">
                             <button id="upBtn" onclick="handleUpload()">Post</button>
                         </div>
                     </div>
                     <div id="feed"></div>
+                </div>
+                
+                <div id="explore-screen" class="screen hidden"><h2>Explore</h2><p>Coming soon...</p></div>
+                <div id="profile-screen" class="screen hidden" style="text-align: center;">
+                    <img id="user-pic" style="width: 100px; border-radius: 50%; margin-top: 50px;">
+                    <h2 id="user-name"></h2>
                 </div>
             </div>
         </main>
@@ -63,26 +90,23 @@
             appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
         };
         
-        // This is your ImgBB Key
         const BB_KEY = "b5f2098fa836fe7090138a418d294866";
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        let currentUser = null;
+        let user = null;
 
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('app').classList.remove('hidden');
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            document.getElementById('auth-screen').classList.toggle('hidden', !!u);
+            document.getElementById('app').classList.toggle('hidden', !u);
+            if(u) {
+                document.getElementById('user-pic').src = u.photoURL;
+                document.getElementById('user-name').innerText = u.displayName;
                 loadPosts();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('app').classList.add('hidden');
             }
         });
 
@@ -91,70 +115,67 @@
             const text = document.getElementById('caption').value;
             const btn = document.getElementById('upBtn');
 
-            if (!file) return alert("Please select a photo first!");
-            if (!text) return alert("Please write a caption!");
+            if (!file || !text) return alert("Please select a photo and write a caption, la!");
 
             btn.disabled = true;
-            btn.innerText = "Uploading...";
+            btn.innerText = "Posting...";
 
             try {
-                // Prepare form for ImgBB
                 const formData = new FormData();
                 formData.append("image", file);
-
-                // Try to upload
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${BB_KEY}`, {
-                    method: "POST",
-                    body: formData
-                });
-                
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${BB_KEY}`, { method: "POST", body: formData });
                 const data = await res.json();
 
                 if (data.success) {
-                    // Save to Firebase
                     await addDoc(collection(db, "posts"), {
-                        name: currentUser.displayName,
-                        pic: currentUser.photoURL,
-                        image: data.data.url,
-                        caption: text,
-                        createdAt: serverTimestamp()
+                        authorName: user.displayName,
+                        authorPic: user.photoURL,
+                        imageUrl: data.data.url,
+                        postText: text,
+                        date: serverTimestamp()
                     });
-
-                    // Clear form
                     document.getElementById('fileInput').value = "";
                     document.getElementById('caption').value = "";
-                    alert("Posted successfully la!");
-                } else {
-                    alert("ImgBB Error: " + data.error.message);
                 }
-            } catch (err) {
-                alert("Connection Error: Check your internet or API key!");
-                console.error(err);
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Post";
-            }
+            } catch (err) { alert("Upload failed, check internet!"); }
+            btn.disabled = false; btn.innerText = "Post";
         };
 
         function loadPosts() {
-            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            // We use 'date' here, make sure it matches the field in handleUpload
+            const q = query(collection(db, "posts"), orderBy("date", "desc"));
             onSnapshot(q, (snap) => {
                 const feedDiv = document.getElementById('feed');
                 feedDiv.innerHTML = "";
                 snap.forEach(doc => {
                     const p = doc.data();
-                    feedDiv.innerHTML += `
-                        <div class="post">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <img src="${p.pic}" style="width:30px; height:30px; border-radius:50%;">
-                                <b>${p.name}</b>
+                    // SAFETY: If old data has different names, we provide fallbacks
+                    const name = p.authorName || p.name || "User";
+                    const profileImg = p.authorPic || p.pic || "https://via.placeholder.com/32";
+                    const postImg = p.imageUrl || p.image || p.img;
+                    const caption = p.postText || p.caption || "";
+
+                    if (postImg) { // Only show post if there is an image
+                        feedDiv.innerHTML += `
+                            <div class="post">
+                                <div class="post-header">
+                                    <img src="${profileImg}">
+                                    <b>${name}</b>
+                                </div>
+                                <img src="${postImg}" class="post-img">
+                                <div class="post-info">
+                                    <b>${name}</b> ${caption}
+                                </div>
                             </div>
-                            <img src="${p.image}">
-                            <p><b>${p.name}</b> ${p.caption}</p>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
             });
+        }
+
+        window.showScreen = (id) => {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(id + '-screen').classList.remove('hidden');
         }
     </script>
 </body>
