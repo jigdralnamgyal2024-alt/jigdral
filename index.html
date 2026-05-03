@@ -15,6 +15,7 @@
             --text-muted: #9b9b9b;
             --border-color: rgba(255,255,255,0.1);
             --accent: #10a37f;
+            --hover-bg: rgba(255,255,255,0.05);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
@@ -23,13 +24,21 @@
 
         /* Modals & Screens */
         .overlay-screen { background: rgba(0,0,0,0.8); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; backdrop-filter: blur(5px); }
-        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 16px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
+        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 16px; text-align: left; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .card-box h2 { text-align: center; margin-bottom: 20px; font-size: 20px;}
+        .close-modal { float: right; cursor: pointer; color: var(--text-muted); font-size: 18px; }
+        .close-modal:hover { color: white; }
+
         /* Buttons & Inputs */
-        .primary-btn { width: 100%; padding: 12px; background: white; color: #171717; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 25px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
+        .primary-btn { width: 100%; padding: 12px; background: white; color: #171717; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
         .primary-btn:hover { background: #f1f1f1; }
-        .styled-input { width: 100%; padding: 12px; margin-top: 20px; background: var(--main-bg); border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 15px; outline: none;}
-        .styled-input:focus { border-color: var(--accent); }
+        .danger-btn { background: #ef4444; color: white; }
+        .danger-btn:hover { background: #dc2626; }
+        
+        .styled-input, .styled-textarea { width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px; background: var(--main-bg); border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 14px; outline: none;}
+        .styled-input:focus, .styled-textarea:focus { border-color: var(--accent); }
+        .styled-textarea { resize: vertical; min-height: 80px; font-family: inherit;}
+        label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
         /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; border-right: 1px solid var(--border-color);}
@@ -37,11 +46,22 @@
         .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: white; }
         .sidebar-brand img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
 
-        .new-chat-btn { display: flex; align-items: center; gap: 10px; padding: 12px 15px; width: 100%; border-radius: 8px; cursor: pointer; background: transparent; color: var(--text-main); border: none; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: left; margin-bottom: 20px;}
+        .new-chat-btn { display: flex; align-items: center; gap: 10px; padding: 12px 15px; width: 100%; border-radius: 8px; cursor: pointer; background: transparent; color: var(--text-main); border: none; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: left; margin-bottom: 15px;}
         .new-chat-btn:hover { background: var(--user-msg-bg); }
         
+        /* History List */
+        .history-label { font-size: 12px; color: var(--text-muted); padding: 10px 15px 5px; font-weight: 600; }
+        .history-list { flex: 1; overflow-y: auto; margin-bottom: 10px; }
+        .history-list::-webkit-scrollbar { width: 5px; }
+        .history-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        
+        .history-item { padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--text-main); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; margin-bottom: 2px;}
+        .history-item:hover { background: var(--hover-bg); }
+        .history-item.active { background: var(--user-msg-bg); font-weight: 500; }
+        
+        /* Bottom Nav Items */
         .nav-item { padding: 10px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; margin-bottom: 2px; color: var(--text-main); font-size: 14px;}
-        .nav-item:hover { background: rgba(255,255,255,0.05); }
+        .nav-item:hover { background: var(--hover-bg); }
         
         /* Main Chat Area */
         .main-container { flex: 1; display: flex; flex-direction: column; position: relative; height: 100vh; }
@@ -50,28 +70,22 @@
         #chat-feed { flex: 1; overflow-y: auto; padding: 40px 20px; display: flex; flex-direction: column; scroll-behavior: smooth; }
         .chat-content-limit { width: 100%; max-width: 768px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
 
-        /* EXACT ChatGPT Message Styling */
         .msg-row { display: flex; width: 100%; }
         .msg-row.user { justify-content: flex-end; }
         .msg-row.ai { justify-content: flex-start; gap: 16px; }
 
         .msg-bubble.user { background: var(--user-msg-bg); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-size: 16px; line-height: 1.5; max-width: 70%; word-wrap: break-word; }
-        
         .ai-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; overflow: hidden; background: #fff;}
         .ai-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        
         .msg-bubble.ai { background: transparent; color: var(--text-main); font-size: 16px; line-height: 1.6; max-width: 85%; word-wrap: break-word; padding-top: 5px;}
 
         /* Input Area */
         .input-wrap { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
         .input-box { background: var(--user-msg-bg); border-radius: 26px; padding: 10px 15px 10px 20px; display: flex; align-items: flex-end; gap: 10px; }
-        
         textarea { flex: 1; background: transparent; border: none; color: var(--text-main); outline: none; font-size: 16px; padding: 8px 0; resize: none; max-height: 200px; line-height: 1.5; min-height: 40px; font-family: inherit;}
-        
         button.send-btn { background: white; color: black; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; margin-bottom: 4px;}
         button.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* Mobile */
         .mobile-header { display: none; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: white; font-weight: 600; font-size: 16px; align-items: center; gap: 15px;}
         @media (max-width: 768px) { 
             .sidebar { position: absolute; left: -260px; z-index: 50; height: 100%; } 
@@ -90,25 +104,49 @@
 <body>
 
     <div id="auth-screen" class="overlay-screen">
-        <div class="card-box">
+        <div class="card-box" style="text-align: center;">
             <div style="margin-bottom: 20px;">
                 <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
             </div>
-            <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Welcome to DrukTalk AI</h2>
-            <p style="color: var(--text-muted); font-size: 14px;">Log in with your Google account to continue</p>
+            <h2>Welcome to DrukTalk AI</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Log in with your Google account</p>
             <button class="primary-btn" onclick="login()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
             </button>
         </div>
     </div>
 
-    <div id="api-modal" class="overlay-screen hidden">
+    <div id="profile-modal" class="overlay-screen hidden">
         <div class="card-box">
-            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 10px;">Groq API Required la</h2>
-            <p style="color: var(--text-muted); font-size: 14px;">Please enter your free Groq API Key to start chatting.</p>
-            <input type="password" id="groq-input" class="styled-input" placeholder="gsk_...">
-            <button class="primary-btn" onclick="saveApiKey()" style="background: var(--accent); color: white;">Save Key securely</button>
-            <a href="https://console.groq.com/keys" target="_blank" style="display: block; margin-top: 15px; color: var(--accent); font-size: 13px; text-decoration: none;">Get a Groq key here</a>
+            <i class="fas fa-times close-modal" onclick="closeModal('profile-modal')"></i>
+            <h2>User Profile</h2>
+            
+            <label>What should DrukTalk AI call you?</label>
+            <input type="text" id="profile-name" class="styled-input" placeholder="Your Name">
+            
+            <label>Custom Instructions (How should the AI behave?)</label>
+            <textarea id="profile-persona" class="styled-textarea" placeholder="e.g., Answer in Bhutanese English. Be funny and sarcastic."></textarea>
+            
+            <button class="primary-btn" onclick="saveProfile()" style="background: var(--accent); color: white;">Save Profile</button>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="overlay-screen hidden">
+        <div class="card-box">
+            <i class="fas fa-times close-modal" onclick="closeModal('settings-modal')"></i>
+            <h2>Settings</h2>
+            
+            <label>Groq API Key</label>
+            <input type="password" id="settings-groq-key" class="styled-input" placeholder="gsk_...">
+            <button class="primary-btn" onclick="saveApiKey()" style="margin-top: 0; background: var(--accent); color: white;">Update Key</button>
+            <a href="https://console.groq.com/keys" target="_blank" style="display: block; margin-top: 10px; margin-bottom: 25px; color: var(--accent); font-size: 12px; text-decoration: none;">Get a free Groq key here</a>
+            
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: 20px;">
+            
+            <label style="color: #ef4444;">Danger Zone</label>
+            <button class="primary-btn danger-btn" onclick="clearAllHistory()">
+                <i class="fas fa-trash"></i> Delete All Chat History
+            </button>
         </div>
     </div>
 
@@ -118,33 +156,27 @@
             DrukTalk AI
         </div>
 
-        <button class="new-chat-btn" onclick="location.reload()">
+        <button class="new-chat-btn" onclick="startNewChat()">
             <i class="fas fa-pen"></i> New chat
         </button>
 
-        <div class="nav-item" onclick="alert('Profile coming soon la!')">
+        <div class="history-label">Past Chats</div>
+        <div class="history-list" id="history-list">
+            </div>
+        
+        <div class="nav-item" onclick="openProfileModal()">
             <i class="fas fa-user"></i> Profile
         </div>
-        <div class="nav-item" onclick="alert('History coming soon la!')">
-            <i class="fas fa-history"></i> History
+        <div class="nav-item" onclick="openSettingsModal()">
+            <i class="fas fa-cog"></i> Settings
         </div>
-        <div class="nav-item" onclick="alert('Settings coming soon la!')">
-            <i class="fas fa-cog"></i> Setting
-        </div>
-
-        <div style="flex: 1;"></div>
-        
-        <div class="nav-item" onclick="document.getElementById('api-modal').classList.remove('hidden')" style="color: var(--text-muted); font-size: 12px; margin-bottom: 5px;">
-            <i class="fas fa-key"></i> Update API Key
-        </div>
-        <div class="nav-item" onclick="logout()" style="cursor: pointer;">
+        <div class="nav-item" onclick="logout()" style="cursor: pointer; margin-top: 5px; border-top: 1px solid var(--border-color); border-radius: 0; padding-top: 15px;">
             <img id="side-profile-pic" src="" style="width: 24px; height: 24px; border-radius: 50%; display: none;"> 
             <span id="side-user-name">Log out</span>
         </div>
     </aside>
 
     <main class="main-container">
-        
         <div class="mobile-header">
             <i class="fas fa-bars" onclick="toggleSidebar()" style="cursor: pointer; font-size: 18px;"></i>
             <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
@@ -172,7 +204,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         // Firebase Config
         const firebaseConfig = {
@@ -189,51 +221,54 @@
         const db = getFirestore(app);
         
         let user = null;
-        let userGroqKey = null;
+        let userProfile = { name: "", persona: "", groqKey: "" };
+        let currentSessionId = "session-" + Date.now(); // Create a session ID for tracking current chat
+        let allUserChats = []; // Holds all chat messages for history building
 
-        // UI Helpers
-        window.autoResize = (textarea) => {
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-        }
-        window.handleEnter = (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                window.sendMsg();
-            }
-        }
-        window.toggleSidebar = () => {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.style.left = sidebar.style.left === '0px' ? '-260px' : '0px';
+        // --- UI & Modal Helpers ---
+        window.autoResize = (textarea) => { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
+        window.handleEnter = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendMsg(); } }
+        window.toggleSidebar = () => { const s = document.getElementById('sidebar'); s.style.left = s.style.left === '0px' ? '-260px' : '0px'; }
+        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+        
+        window.openSettingsModal = () => {
+            document.getElementById('settings-groq-key').value = userProfile.groqKey || "";
+            document.getElementById('settings-modal').classList.remove('hidden');
         }
 
-        // Render Messages in UI
+        window.openProfileModal = () => {
+            document.getElementById('profile-name').value = userProfile.name || user.displayName;
+            document.getElementById('profile-persona').value = userProfile.persona || "";
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
+
+        // --- Chat Rendering Logic ---
         const feedBox = document.getElementById('chat-limit-box');
         
         function appendUserMsg(text) {
-            feedBox.innerHTML += `
-                <div class="msg-row user">
-                    <div class="msg-bubble user">${text.replace(/\n/g, '<br>')}</div>
-                </div>`;
+            feedBox.innerHTML += `<div class="msg-row user"><div class="msg-bubble user">${text.replace(/\n/g, '<br>')}</div></div>`;
             scrollToBottom();
         }
 
         function appendAIMsg(text, id = null) {
-            const idAttr = id ? `id="${id}"` : "";
-            feedBox.innerHTML += `
-                <div class="msg-row ai" ${idAttr}>
-                    <div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div>
-                    <div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div>
-                </div>`;
+            feedBox.innerHTML += `<div class="msg-row ai" ${id ? `id="${id}"` : ""}><div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png"></div><div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div></div>`;
             scrollToBottom();
         }
 
-        function scrollToBottom() {
-            const feed = document.getElementById('chat-feed');
-            feed.scrollTop = feed.scrollHeight;
-        }
+        function scrollToBottom() { const feed = document.getElementById('chat-feed'); feed.scrollTop = feed.scrollHeight; }
 
-        // Authentication & Key Loading
+        window.startNewChat = () => {
+            currentSessionId = "session-" + Date.now();
+            renderActiveSession();
+        };
+
+        window.loadSession = (sessionId) => {
+            currentSessionId = sessionId;
+            renderActiveSession();
+            if(window.innerWidth <= 768) toggleSidebar(); // Close sidebar on mobile after clicking
+        };
+
+        // --- Firebase Auth & User Data ---
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -243,59 +278,114 @@
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('side-profile-pic').style.display = 'block';
                 document.getElementById('side-profile-pic').src = u.photoURL;
-                document.getElementById('side-user-name').innerText = "Log out (" + u.displayName.split(' ')[0] + ")";
+                document.getElementById('side-user-name').innerText = "Log out";
                 
-                // Check if they have a saved Groq Key
-                await checkAndLoadApiKey();
-                loadMessages();
+                await loadUserProfile();
+                listenToChats();
             } else {
                 document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('api-modal').classList.add('hidden');
             }
         });
 
-        // Database logic for API Key
-        async function checkAndLoadApiKey() {
+        async function loadUserProfile() {
             try {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists() && userDoc.data().groqKey) {
-                    userGroqKey = userDoc.data().groqKey;
-                } else {
-                    // Show API modal if no key is found
-                    document.getElementById('api-modal').classList.remove('hidden');
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if (docSnap.exists()) {
+                    userProfile = docSnap.data();
                 }
-            } catch (err) {
-                console.error("Error checking key:", err);
-            }
+                if (!userProfile.groqKey) openSettingsModal(); // Ask for key if missing
+            } catch (e) { console.error("Error loading profile:", e); }
         }
 
-        window.saveApiKey = async () => {
-            const inputKey = document.getElementById('groq-input').value.trim();
-            if (!inputKey) return alert("Please enter a valid key la.");
-            
+        window.saveProfile = async () => {
+            const name = document.getElementById('profile-name').value.trim();
+            const persona = document.getElementById('profile-persona').value.trim();
             try {
-                // Save key to Firestore database
-                await setDoc(doc(db, "users", user.uid), { groqKey: inputKey }, { merge: true });
-                userGroqKey = inputKey;
-                document.getElementById('api-modal').classList.add('hidden');
-            } catch (err) {
-                alert("Error saving key to database la.");
-                console.error(err);
-            }
+                await setDoc(doc(db, "users", user.uid), { name, persona }, { merge: true });
+                userProfile.name = name;
+                userProfile.persona = persona;
+                closeModal('profile-modal');
+                alert("Profile saved successfully la!");
+            } catch (err) { alert("Error saving profile."); }
         };
 
-        // 🌟 THE GROQ SEND FUNCTION 🌟
+        window.saveApiKey = async () => {
+            const key = document.getElementById('settings-groq-key').value.trim();
+            if (!key) return alert("Please enter a valid key la.");
+            try {
+                await setDoc(doc(db, "users", user.uid), { groqKey: key }, { merge: true });
+                userProfile.groqKey = key;
+                closeModal('settings-modal');
+                alert("API Key updated securely!");
+            } catch (err) { alert("Error saving API key."); }
+        };
+
+        window.clearAllHistory = async () => {
+            if (!confirm("Are you sure you want to delete ALL chat history? This cannot be undone la!")) return;
+            try {
+                // Delete all documents in the user's chat history array
+                for (let chat of allUserChats) {
+                    await deleteDoc(doc(db, "chats", chat.docId));
+                }
+                startNewChat();
+                closeModal('settings-modal');
+            } catch (e) { alert("Error clearing history la."); }
+        }
+
+        // --- Fetching & Organizing History ---
+        function listenToChats() {
+            const q = query(collection(db, "chats"), where("uid", "==", user.uid));
+            onSnapshot(q, (snap) => {
+                let msgs = [];
+                snap.forEach(d => msgs.push({ docId: d.id, ...d.data() }));
+                msgs.sort((a, b) => (a.time ? a.time.toMillis() : Date.now()) - (b.time ? b.time.toMillis() : Date.now()));
+                
+                allUserChats = msgs;
+                buildSidebarHistory();
+                renderActiveSession();
+            });
+        }
+
+        function buildSidebarHistory() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = "";
+            
+            // Group messages by sessionId to find unique chats
+            let sessions = {};
+            allUserChats.forEach(msg => {
+                let sId = msg.sessionId || "old-legacy-chat"; // For messages saved before this update
+                if (!sessions[sId]) sessions[sId] = msg.prompt; // Save the first prompt as the title
+            });
+
+            // Render list (newest first)
+            Object.keys(sessions).reverse().forEach(sId => {
+                const title = sessions[sId].length > 25 ? sessions[sId].substring(0, 25) + "..." : sessions[sId];
+                const isActive = (sId === currentSessionId) ? "active" : "";
+                historyList.innerHTML += `<div class="history-item ${isActive}" onclick="loadSession('${sId}')"><i class="far fa-comment-alt" style="margin-right: 8px;"></i> ${title}</div>`;
+            });
+        }
+
+        function renderActiveSession() {
+            feedBox.innerHTML = "";
+            let currentName = userProfile.name || user?.displayName?.split(' ')[0] || "friend";
+            appendAIMsg(`Kuzuzangpo la, ${currentName}! How can DrukTalk AI help you today?`);
+            
+            const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old-legacy-chat") === currentSessionId);
+            sessionMsgs.forEach(data => {
+                appendUserMsg(data.prompt);
+                appendAIMsg(data.response);
+            });
+            buildSidebarHistory(); // update the active gray highlight
+        }
+
+        // --- THE AI SEND FUNCTION ---
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
             const val = input.value.trim();
             
             if (!val || !user) return;
-            
-            if (!userGroqKey) {
-                document.getElementById('api-modal').classList.remove('hidden');
-                return;
-            }
+            if (!userProfile.groqKey) return openSettingsModal();
 
             appendUserMsg(val);
             const tempId = "thinking-" + Date.now();
@@ -305,36 +395,45 @@
             input.style.height = "auto";
             btn.disabled = true;
 
+            // Prepare the System prompt with custom Profile settings
+            const userName = userProfile.name || user.displayName;
+            let systemInstruction = `You are DrukTalk AI from Bhutan. You are talking to a user named ${userName}. Answer intelligently.`;
+            if (userProfile.persona) {
+                systemInstruction += ` You MUST strictly follow these custom instructions: ${userProfile.persona}`;
+            }
+
+            // Build conversation history for context
+            let messagesPayload = [{"role": "system", "content": systemInstruction}];
+            const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old-legacy-chat") === currentSessionId);
+            sessionMsgs.forEach(m => {
+                messagesPayload.push({"role": "user", "content": m.prompt});
+                messagesPayload.push({"role": "assistant", "content": m.response});
+            });
+            messagesPayload.push({"role": "user", "content": val});
+
             try {
-                // Groq API Endpoint
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${userGroqKey}`,
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Authorization": `Bearer ${userProfile.groqKey}`, "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        "model": "llama-3.3-70b-versatile", // THE NEW DEFAULT MODEL!
-                        "messages": [
-                            {"role": "system", "content": "You are DrukTalk AI from Bhutan. Answer intelligently and nicely."},
-                            {"role": "user", "content": val}
-                        ]
+                        "model": "llama-3.3-70b-versatile",
+                        "messages": messagesPayload
                     })
                 });
 
                 const data = await response.json();
-                
-                if (!response.ok || data.error) {
-                    throw new Error(data.error?.message || "Invalid API response. Check if your Groq key is correct.");
-                }
-
+                if (!response.ok || data.error) throw new Error(data.error?.message || "Invalid API response.");
                 const aiText = data.choices[0].message.content;
 
                 document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
-                // Save Chat to Firebase
+                // Save to Firebase WITH the sessionId
                 await addDoc(collection(db, "chats"), {
-                    uid: user.uid, prompt: val, response: aiText, time: serverTimestamp()
+                    uid: user.uid, 
+                    sessionId: currentSessionId, 
+                    prompt: val, 
+                    response: aiText, 
+                    time: serverTimestamp()
                 });
 
             } catch (err) {
@@ -344,28 +443,6 @@
                 btn.disabled = false;
             }
         };
-
-        // Load Chat History
-        function loadMessages() {
-            const q = query(collection(db, "chats"), where("uid", "==", user.uid));
-            onSnapshot(q, (snap) => {
-                let msgs = [];
-                snap.forEach(d => msgs.push(d.data()));
-                msgs.sort((a, b) => {
-                    let tA = a.time ? a.time.toMillis() : Date.now();
-                    let tB = b.time ? b.time.toMillis() : Date.now();
-                    return tA - tB;
-                });
-
-                feedBox.innerHTML = "";
-                appendAIMsg("Kuzuzangpo la! I am DrukTalk AI. How can I help you today?");
-                
-                msgs.forEach(data => {
-                    appendUserMsg(data.prompt);
-                    appendAIMsg(data.response);
-                });
-            });
-        }
     </script>
 </body>
 </html>
