@@ -3,339 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrukLink</title>
+    <title>DrukLink Fix</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --bg-color: #000000;
-            --panel-bg: #121212;
-            --border-color: #262626;
-            --text-color: #f5f5f5;
-            --text-secondary: #a8a8a8;
-            --blue-color: #0095f6;
-            --blue-hover: #1877f2;
-            --sidebar-hover: #1a1a1a;
-            --sidebar-width: 244px;
-            --panel-width: 397px;
-            --ig-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--ig-font); }
-        body { background-color: var(--bg-color); color: var(--text-color); overflow: hidden; }
-        button, input[type="submit"] { border: none; background: none; cursor: pointer; color: var(--text-color); }
-        input, textarea { background: var(--bg-color); color: var(--text-color); outline: none; }
-        a { text-decoration: none; color: inherit; }
-        .none { display: none !important; }
-
-        /* --- LOGIN SCREEN --- */
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: var(--bg-color); }
-        .login-box { border: 1px solid var(--border-color); padding: 50px 40px; text-align: center; background: var(--bg-color); width: 350px; border-radius: 4px; }
-        .login-box h1 { font-family: 'Brush Script MT', cursive; font-size: 3.5rem; margin-bottom: 20px; font-weight: normal; }
-        .google-btn { background-color: var(--blue-color); color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; transition: background 0.2s; }
-        .google-btn:hover { background-color: var(--blue-hover); }
-
-        /* --- LAYOUT --- */
-        #app-screen { display: none; height: 100vh; flex-direction: row; }
-        
-        /* SIDEBAR */
-        .sidebar { width: var(--sidebar-width); border-right: 1px solid var(--border-color); padding: 20px 12px; height: 100vh; background: var(--bg-color); display: flex; flex-direction: column; z-index: 100; transition: width 0.2s; flex-shrink: 0; }
-        .sidebar.narrow { width: 72px; }
-        .sidebar.narrow .nav-text, .sidebar.narrow .sidebar-logo-text { display: none; }
-        
-        .sidebar-logo { font-family: 'Brush Script MT', cursive; font-size: 1.75rem; padding: 10px 12px; margin-bottom: 30px; cursor: pointer; display: flex; align-items: center; }
-        .sidebar.narrow .sidebar-logo i { display: block; font-size: 24px; font-family: "Font Awesome 6 Free"; font-style: normal;}
-        .sidebar:not(.narrow) .sidebar-logo i { display: none; }
-        
-        .nav-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; transition: background 0.2s; font-size: 16px; position: relative; }
-        .nav-item:hover { background: var(--sidebar-hover); }
-        .nav-item.active-nav { font-weight: 700; }
-        .nav-item i { font-size: 24px; margin-right: 16px; width: 24px; text-align: center; transition: transform 0.2s; color: var(--text-color);}
-        .sidebar.narrow .nav-item i { margin-right: 0; }
-        .nav-item:hover i { transform: scale(1.05); }
-        .nav-item img.profile-pic-small { width: 24px; height: 24px; border-radius: 50%; margin-right: 16px; border: 1px solid var(--border-color); object-fit: cover;}
-        .sidebar.narrow .nav-item img.profile-pic-small { margin-right: 0; }
-        
-        .notif-badge { background: #ff3040; color: white; font-size: 11px; font-weight: bold; height: 18px; min-width: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; position: absolute; left: 24px; top: 6px; border: 2px solid var(--bg-color); display: none; }
-
-        /* SLIDE PANELS (Search/Notif) */
-        .slide-panel { width: var(--panel-width); height: 100vh; background: var(--bg-color); border-right: 1px solid var(--border-color); position: fixed; left: 72px; top: 0; transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); z-index: 90; padding: 24px 16px; display: flex; flex-direction: column; border-top-right-radius: 16px; border-bottom-right-radius: 16px; box-shadow: 4px 0 24px rgba(0,0,0,0.5);}
-        .slide-panel.open { transform: translateX(0); }
-        .panel-title { font-size: 24px; font-weight: 600; margin-bottom: 24px; padding: 0 8px;}
-        
-        /* CONTENT AREA */
-        .content-area { flex-grow: 1; height: 100vh; overflow-y: auto; background: var(--bg-color); position: relative; display: flex; flex-direction: column; align-items: center;}
-        section { display: none; width: 100%; padding: 40px 20px 60px; }
-        
-        /* IG Feed standard max-width is ~470px */
-        #feed-section { max-width: 470px; display: block; }
-        #profile-section { max-width: 935px; }
-
-        /* --- FEED POSTS --- */
-        .post { background: var(--bg-color); margin-bottom: 28px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;}
-        .post-header { display: flex; align-items: center; padding: 14px 0; }
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; border: 1px solid var(--border-color); object-fit: cover; }
-        .post-header .username { font-weight: 600; font-size: 14px; cursor: pointer; color: var(--text-color); }
-        .post-header .dot { margin: 0 6px; color: var(--text-secondary); font-size: 10px; }
-        .post-header .time { color: var(--text-secondary); font-size: 14px; }
-        
-        .post-image { border: 1px solid var(--border-color); border-radius: 4px; overflow: hidden; background: #121212; display: flex; justify-content: center; align-items: center;}
-        .post-image img { width: 100%; max-height: 585px; display: block; object-fit: cover; }
-        
-        .post-actions { padding: 12px 0 8px; display: flex; justify-content: space-between; align-items: center; font-size: 24px; }
-        .post-actions .action-icons { display: flex; gap: 16px; }
-        .post-actions i { cursor: pointer; transition: color 0.1s; color: var(--text-color); }
-        .post-actions i:hover { color: #8e8e8e; }
-        
-        .post-actions i.liked { color: #ff3040; animation: pop 0.2s; }
-        .post-actions i.saved { color: var(--text-color); }
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        
-        .post-likes { font-weight: 600; font-size: 14px; margin-bottom: 8px; }
-        .post-caption { font-size: 14px; margin-bottom: 8px; line-height: 1.4; }
-        .post-caption .username { font-weight: 600; margin-right: 5px; }
-        
-        .empty-feed { text-align: center; margin-top: 100px; color: var(--text-secondary); }
-        .empty-feed i { font-size: 48px; margin-bottom: 20px; color: #262626; }
-
-        /* --- SEARCH PANEL & NOTIFICATIONS --- */
-        .search-input-box { background: #262626; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; margin-bottom: 24px; margin: 0 8px 24px; }
-        .search-input-box input { background: transparent; border: none; color: var(--text-color); flex-grow: 1; margin-left: 10px; font-size: 16px; }
-        .search-results-list, .notif-list { flex-grow: 1; overflow-y: auto; padding: 0 8px; }
-        
-        .search-item, .notification-item { display: flex; align-items: center; padding: 12px 8px; font-size: 14px; cursor: pointer; border-radius: 8px; transition: background 0.2s;}
-        .search-item:hover, .notification-item:hover { background: var(--sidebar-hover); }
-        .search-item img, .notification-item img.user-pic { width: 44px; height: 44px; border-radius: 50%; margin-right: 12px; object-fit: cover; }
-        .search-item .info { display: flex; flex-direction: column; }
-        .search-item .title { font-weight: 600; font-size: 14px; }
-        .search-item .subtitle { font-size: 14px; color: var(--text-secondary); }
-        .notification-item span.notif-text { flex-grow: 1; line-height: 1.3;}
-        .notification-item img.post-pic { width: 44px; height: 44px; border-radius: 4px; object-fit: cover; margin-left: 15px; }
-
-        /* --- PROFILE --- */
-        .profile-header { display: flex; align-items: flex-start; padding: 30px 0 40px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-        .profile-header img { width: 150px; height: 150px; border-radius: 50%; margin-right: 80px; margin-left: 60px; object-fit: cover; border: 1px solid var(--border-color);}
-        .profile-info { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
-        .profile-info-row-1 { display: flex; align-items: center; gap: 20px; font-size: 20px; font-weight: 400; }
-        .edit-profile-btn { font-size: 14px; padding: 6px 16px; border: none; background: #363636; color: white; font-weight: 600; border-radius: 8px; transition: background 0.2s; cursor: pointer;}
-        .edit-profile-btn:hover { background: #262626; }
-        .profile-stats { display: flex; gap: 40px; font-size: 16px; }
-        .profile-stats span { font-weight: 600; }
-        .profile-bio p { font-size: 14px; white-space: pre-wrap; margin-top: 5px; line-height: 1.4;}
-        
-        /* Profile Tabs */
-        .profile-tabs { display: flex; justify-content: center; gap: 50px; margin-top: -21px; padding-top: 15px;}
-        .profile-tab { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: color 0.2s;}
-        .profile-tab.active { color: var(--text-color); border-top: 1px solid var(--text-color); margin-top: -16px; padding-top: 16px;}
-        .profile-tab:hover { color: var(--text-color); }
-
-        .profile-posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 20px; width: 100%;}
-        .grid-item { aspect-ratio: 1/1; background: #121212; cursor: pointer; position: relative; overflow: hidden; }
-        .grid-item img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.2s; }
-        .grid-item:hover img { filter: brightness(0.8); }
-        .empty-posts { text-align: center; padding: 60px 0; grid-column: span 3; }
-        .empty-posts i { font-size: 40px; border: 2px solid var(--text-color); border-radius: 50%; padding: 20px; margin-bottom: 20px;}
-
-        /* --- MODALS & OVERLAYS --- */
-        .overlay-bg { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; justify-content: center; align-items: center; }
-        .close-overlay { position: absolute; top: 20px; right: 20px; color: white; font-size: 24px; cursor: pointer; }
-        .modal-content { background: #262626; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; position: relative; color: var(--text-color); }
-        
-        /* Create Post Modal */
-        #create-modal-inner { width: 100%; max-width: 500px; }
-        .modal-header { padding: 12px 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 16px; text-align: center;}
-        .share-btn { color: var(--blue-color); font-weight: 600; font-size: 14px; }
-        .share-btn:disabled { color: #004c8c; cursor: default;}
-        .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 300px; justify-content: center;}
-        .file-label { background: var(--blue-color); color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; }
-        #create-image-input { display: none; }
-        #preview-image-container { display: none; width: 100%; text-align: center; }
-        #create-preview-img { max-width: 100%; max-height: 300px; border-radius: 4px; object-fit: contain; margin-bottom: 15px;}
-        #create-post-caption { width: 100%; border: 1px solid var(--border-color); border-radius: 8px; outline: none; resize: none; height: 80px; font-size: 14px; padding: 10px; display: none; background: #121212; color: white;}
-
-        /* SHARE OVERLAY (Matches Instagram UI) */
-        #share-modal-inner { width: 100%; max-width: 450px; background: #262626; border-radius: 16px; display: flex; flex-direction: column; }
-        .share-header { padding: 16px; display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 1px solid #363636; font-weight: 600; font-size: 16px; }
-        .share-header i { position: absolute; left: 16px; font-size: 20px; cursor: pointer; color: var(--text-color); }
-        
-        .share-search-bar { margin: 16px; background: #121212; border-radius: 8px; display: flex; align-items: center; padding: 10px 16px; border: 1px solid #363636;}
-        .share-search-bar input { background: transparent; border: none; color: white; font-size: 15px; margin-left: 10px; width: 100%; outline: none; }
-        
-        .share-users-list { display: flex; overflow-x: auto; padding: 0 16px 20px; gap: 20px; border-bottom: 1px solid #363636; scrollbar-width: none; }
-        .share-users-list::-webkit-scrollbar { display: none; }
-        .share-user-card { display: flex; flex-direction: column; align-items: center; min-width: 70px; cursor: pointer; }
-        .share-user-card img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 1px solid #363636;}
-        .share-user-card span { font-size: 12px; color: var(--text-color); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70px; }
-        
-        .share-bottom-actions { display: flex; overflow-x: auto; padding: 20px 16px; gap: 24px; scrollbar-width: none; }
-        .share-bottom-actions::-webkit-scrollbar { display: none; }
-        .share-action-btn { display: flex; flex-direction: column; align-items: center; cursor: pointer; min-width: 60px; }
-        .share-action-circle { width: 50px; height: 50px; background: #363636; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 20px; margin-bottom: 8px; transition: background 0.2s;}
-        .share-action-btn:hover .share-action-circle { background: #4a4a4a; }
-        .share-action-btn span { font-size: 12px; color: var(--text-secondary); text-align: center; }
-
+        :root { --bg: #000; --card: #121212; --border: #262626; --accent: #0095f6; --text: #fff; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; display: flex; }
+        .hidden { display: none !important; }
+        .sidebar { width: 240px; height: 100vh; border-right: 1px solid var(--border); position: fixed; padding: 20px; }
+        main { margin-left: 240px; width: 100%; display: flex; justify-content: center; }
+        .content { width: 100%; max-width: 500px; padding: 20px; }
+        .post-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 30px; }
+        textarea { width: 100%; background: transparent; color: #fff; border: none; outline: none; margin-bottom: 10px; font-size: 1rem; }
+        .post { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .post img { width: 100%; border-radius: 8px; margin-top: 10px; }
+        button { background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        button:disabled { opacity: 0.5; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" style="display: flex;">
-        <div class="login-box">
-            <h1>DrukLink</h1>
-            <p style="margin-bottom: 30px; color: var(--text-secondary); font-size: 14px;">Sign in to see photos and videos from your friends.</p>
-            <button class="google-btn" id="login-btn"><i class="fab fa-google"></i> Log in with Google</button>
-        </div>
+    <div id="auth-screen" style="width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;">
+        <button onclick="login()" style="padding: 15px 30px;">Login with Google to Start</button>
     </div>
 
-    <div id="app-screen">
-        
-        <aside class="sidebar" id="main-sidebar">
-            <div class="sidebar-logo nav-link" data-section="feed">
-                <i class="fab fa-instagram"></i> 
-                <span class="sidebar-logo-text">DrukLink</span>
-            </div>
-            <nav>
-                <div class="nav-item nav-link active-nav" data-section="feed"><i class="fas fa-home"></i> <span class="nav-text">Home</span></div>
-                <div class="nav-item panel-trigger" data-panel="search-panel"><i class="fas fa-search"></i> <span class="nav-text">Search</span></div>
-                
-                <div class="nav-item panel-trigger" data-panel="notifications-panel">
-                    <i class="far fa-heart"></i> <span class="nav-text">Notifications</span>
-                    <span id="notif-badge" class="notif-badge">0</span>
-                </div>
-                <div class="nav-item" id="nav-create-btn"><i class="far fa-plus-square"></i> <span class="nav-text">Create</span></div>
-                <div class="nav-item nav-link" data-section="profile">
-                    <img src="" id="nav-profile-pic" class="profile-pic-small"> <span class="nav-text">Profile</span>
-                </div>
-            </nav>
-            <div class="nav-item" id="logout-btn" style="margin-top: auto; color: #ff3040;"><i class="fas fa-sign-out-alt"></i> <span class="nav-text">Logout</span></div>
+    <div id="app" class="hidden">
+        <aside class="sidebar">
+            <h1 style="font-family: cursive;">DrukLink</h1>
+            <div onclick="showScreen('home')" style="cursor:pointer; margin-bottom: 20px;"><i class="fas fa-home"></i> Home</div>
+            <div onclick="logout()" style="cursor:pointer; color: red;"><i class="fas fa-sign-out-alt"></i> Logout</div>
         </aside>
 
-        <div class="slide-panel" id="search-panel">
-            <div class="panel-title">Search</div>
-            <div class="search-input-box">
-                <i class="fas fa-search" style="color: var(--text-secondary);"></i>
-                <input type="text" id="main-search-input" placeholder="Search">
-            </div>
-            <div class="search-results-list" id="search-results-list">
-                <div style="color: var(--text-secondary); text-align: center; margin-top: 20px;">No recent searches.</div>
-            </div>
-        </div>
-
-        <div class="slide-panel" id="notifications-panel">
-            <div class="panel-title">Notifications</div>
-            <div class="notif-list" id="notifications-list-content"></div>
-        </div>
-
-        <main class="content-area" id="main-content-area">
-            
-            <section id="feed-section">
-                <div id="feed-content">
-                    <div class="empty-feed">Loading posts...</div>
-                </div>
-            </section>
-
-            <section id="profile-section">
-                <div class="profile-header">
-                    <img src="" id="profile-pic-large">
-                    <div class="profile-info">
-                        <div class="profile-info-row-1">
-                            <span id="profile-username" style="font-size: 20px;"></span>
-                            <button class="edit-profile-btn">Edit profile</button>
-                        </div>
-                        <div class="profile-stats">
-                            <span><span id="profile-post-count">0</span> posts</span>
-                            <span><span>0</span> followers</span>
-                            <span><span>0</span> following</span>
-                        </div>
-                        <div class="profile-bio">
-                            <strong id="profile-fullname" style="font-size: 14px;"></strong>
-                            <p id="profile-bio-text">Welcome to DrukLink!</p>
+        <main>
+            <div class="content">
+                <div id="home-screen">
+                    <div class="post-box">
+                        <textarea id="caption" placeholder="Write something, la..."></textarea>
+                        <div style="display: flex; justify-content: space-between;">
+                            <input type="file" id="fileInput" accept="image/*">
+                            <button id="upBtn" onclick="handleUpload()">Post</button>
                         </div>
                     </div>
+                    <div id="feed"></div>
                 </div>
-                
-                <div class="profile-tabs">
-                    <div class="profile-tab active" data-tab="posts"><i class="fas fa-th"></i> POSTS</div>
-                    <div class="profile-tab" data-tab="saved"><i class="far fa-bookmark"></i> SAVED</div>
-                    <div class="profile-tab" data-tab="tagged"><i class="fas fa-user-tag"></i> TAGGED</div>
-                </div>
-                <div class="profile-posts-grid" id="profile-posts-content"></div>
-            </section>
-
+            </div>
         </main>
-    </div>
-
-    <div id="create-overlay" class="overlay-bg">
-        <i class="fas fa-times close-overlay" id="close-create"></i>
-        <div class="modal-content" id="create-modal-inner">
-            <div class="modal-header">
-                <div style="width: 40px;"></div>
-                <span>Create new post</span>
-                <button class="share-btn" id="share-btn" disabled>Share</button>
-            </div>
-            <div class="modal-body">
-                <i class="far fa-images" id="create-icon-placeholder" style="font-size: 60px; margin-bottom: 20px;"></i>
-                <h3 id="create-title" style="margin-bottom: 20px; font-weight: normal;">Drag photos and videos here</h3>
-                <label for="create-image-input" class="file-label" id="file-label">Select from computer</label>
-                <input type="file" id="create-image-input" accept="image/*">
-                <div id="preview-image-container">
-                    <img id="create-preview-img" src="">
-                </div>
-                <textarea id="create-post-caption" placeholder="Write a caption..."></textarea>
-            </div>
-        </div>
-    </div>
-
-    <div id="share-overlay" class="overlay-bg" style="z-index: 3000;">
-        <div class="modal-content" id="share-modal-inner">
-            <div class="share-header">
-                <i class="fas fa-times" id="close-share-modal"></i>
-                <span>Share</span>
-            </div>
-            
-            <div class="share-search-bar">
-                <i class="fas fa-search" style="color: var(--text-secondary);"></i>
-                <input type="text" id="share-search-input" placeholder="Search">
-            </div>
-            
-            <div class="share-users-list" id="share-users-list">
-                </div>
-
-            <div class="share-bottom-actions">
-                <div class="share-action-btn" onclick="alert('Link copied to clipboard!')">
-                    <div class="share-action-circle"><i class="fas fa-link"></i></div>
-                    <span>Copy link</span>
-                </div>
-                <div class="share-action-btn">
-                    <div class="share-action-circle"><i class="fab fa-facebook-f"></i></div>
-                    <span>Facebook</span>
-                </div>
-                <div class="share-action-btn">
-                    <div class="share-action-circle"><i class="fab fa-facebook-messenger"></i></div>
-                    <span>Messenger</span>
-                </div>
-                <div class="share-action-btn">
-                    <div class="share-action-circle"><i class="fab fa-whatsapp"></i></div>
-                    <span>WhatsApp</span>
-                </div>
-                <div class="share-action-btn">
-                    <div class="share-action-circle"><i class="far fa-envelope"></i></div>
-                    <span>Email</span>
-                </div>
-                <div class="share-action-btn">
-                    <div class="share-action-circle"><i class="fab fa-threads"></i></div>
-                    <span>Threads</span>
-                </div>
-                <div class="share-action-btn">
-                    <div class="share-action-circle"><i class="fab fa-twitter"></i></div>
-                    <span>X</span>
-                </div>
-            </div>
-        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
@@ -345,361 +62,100 @@
             messagingSenderId: "183615496366",
             appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
         };
+        
+        // This is your ImgBB Key
+        const BB_KEY = "b5f2098fa836fe7090138a418d294866";
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const imgHippoKey = "b5f2098fa836fe7090138a418d294866";
-
         let currentUser = null;
-        let currentUserData = { savedPosts: [] }; // Fallback safe state
-        let activeFeedListener = null;
 
-        // --- AUTH ---
-        document.getElementById('login-btn').addEventListener('click', () => signInWithPopup(auth, new GoogleAuthProvider()));
-        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+        window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
+        window.logout = () => signOut(auth);
 
-        onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('app-screen').style.display = 'flex';
-                document.getElementById('nav-profile-pic').src = user.photoURL;
-                
-                await initUser(user); // Wait for user database entry to initialize fully
-                listenForUnreadNotifications();
-                switchSection('feed'); // Safely load feed after init
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                loadPosts();
             } else {
-                currentUser = null;
-                document.getElementById('login-screen').style.display = 'flex';
-                document.getElementById('app-screen').style.display = 'none';
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('app').classList.add('hidden');
             }
         });
 
-        // Safe Initialization of user document (Fixes the black/blank screen bug)
-        async function initUser(user) {
-            try {
-                const userRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userRef);
-                if (!userDoc.exists()) {
-                    await setDoc(userRef, { displayName: user.displayName, photoURL: user.photoURL, savedPosts: [], createdAt: serverTimestamp() });
-                    currentUserData = { savedPosts: [] };
-                } else {
-                    const data = userDoc.data();
-                    currentUserData = { savedPosts: data.savedPosts || [] };
-                }
-            } catch (error) {
-                console.error("Error initializing user:", error);
-                currentUserData = { savedPosts: [] }; // Emergency fallback
-            }
-        }
+        window.handleUpload = async () => {
+            const file = document.getElementById('fileInput').files[0];
+            const text = document.getElementById('caption').value;
+            const btn = document.getElementById('upBtn');
 
-        // --- NAVIGATION & PANELS ---
-        const sidebar = document.getElementById('main-sidebar');
-        
-        function closeAllPanels() {
-            document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open'));
-            sidebar.classList.remove('narrow');
-        }
+            if (!file) return alert("Please select a photo first!");
+            if (!text) return alert("Please write a caption!");
 
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                closeAllPanels();
-                switchSection(e.currentTarget.dataset.section);
-            });
-        });
-
-        document.querySelectorAll('.panel-trigger').forEach(trigger => {
-            trigger.addEventListener('click', (e) => {
-                const panelId = e.currentTarget.dataset.panel;
-                const panel = document.getElementById(panelId);
-                if (panel.classList.contains('open')) { closeAllPanels(); } 
-                else {
-                    closeAllPanels();
-                    panel.classList.add('open');
-                    sidebar.classList.add('narrow');
-                    if(panelId === 'notifications-panel') loadNotifications();
-                }
-            });
-        });
-
-        document.getElementById('main-content-area').addEventListener('click', closeAllPanels);
-
-        function switchSection(sectionId) {
-            document.querySelectorAll('.content-area > section').forEach(s => s.style.display = 'none');
-            document.getElementById(`${sectionId}-section`).style.display = 'block';
-            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active-nav'));
-            const activeNav = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
-            if(activeNav) activeNav.classList.add('active-nav');
-
-            if(sectionId === 'feed') loadFeed();
-            if(sectionId === 'profile') loadProfile('posts'); 
-        }
-
-        // --- FEED & POSTS ---
-        function loadFeed() {
-            if(activeFeedListener) activeFeedListener();
-            activeFeedListener = onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), async (snap) => {
-                const container = document.getElementById('feed-content');
-                
-                // Fetch latest savedPosts safely
-                try {
-                    const uDoc = await getDoc(doc(db, "users", currentUser.uid));
-                    if(uDoc.exists()) currentUserData = { savedPosts: uDoc.data().savedPosts || [] };
-                } catch(e) {}
-                
-                const safeSavedPosts = currentUserData.savedPosts || [];
-
-                if (snap.empty) {
-                    container.innerHTML = '<div class="empty-feed"><i class="fas fa-camera"></i><h2>No posts yet</h2><p>Be the first to share a photo!</p></div>';
-                    return;
-                }
-
-                container.innerHTML = '';
-                snap.forEach(docSnap => {
-                    const post = docSnap.data();
-                    const isLiked = post.likedBy?.includes(currentUser.uid);
-                    const isSaved = safeSavedPosts.includes(docSnap.id);
-                    
-                    const el = document.createElement('article');
-                    el.className = 'post';
-                    el.innerHTML = `
-                        <div class="post-header">
-                            <img src="${post.userPic}"> 
-                            <span class="username">${post.userName}</span>
-                            <span class="dot">•</span>
-                            <span class="time">Just now</span>
-                        </div>
-                        <div class="post-image"><img src="${post.imageUrl}"></div>
-                        <div class="post-actions">
-                            <div class="action-icons">
-                                <i class="${isLiked ? 'fas fa-heart liked' : 'far fa-heart'}" onclick="toggleLike('${docSnap.id}', '${post.userId}')"></i>
-                                <i class="far fa-comment"></i>
-                                <i class="far fa-paper-plane" onclick="openShareModal()"></i>
-                            </div>
-                            <i class="${isSaved ? 'fas fa-bookmark saved' : 'far fa-bookmark'}" onclick="toggleSave('${docSnap.id}')"></i>
-                        </div>
-                        <div class="post-likes">${post.likedBy?.length || 0} likes</div>
-                        <div class="post-caption"><span class="username">${post.userName}</span> ${post.caption}</div>
-                    `;
-                    container.appendChild(el);
-                });
-            }, (error) => {
-                console.error("Error loading feed:", error);
-                document.getElementById('feed-content').innerHTML = `<div class="empty-feed">Error loading posts.</div>`;
-            });
-        }
-
-        window.toggleLike = async (postId, ownerId) => {
-            const ref = doc(db, "posts", postId);
-            const snap = await getDoc(ref);
-            if(!snap.exists()) return;
-            const liked = snap.data().likedBy?.includes(currentUser.uid);
-            
-            if (liked) {
-                await updateDoc(ref, { likedBy: arrayRemove(currentUser.uid) });
-            } else {
-                await updateDoc(ref, { likedBy: arrayUnion(currentUser.uid) });
-                if(ownerId !== currentUser.uid) sendNotification(ownerId, 'like', postId);
-            }
-        };
-
-        window.toggleSave = async (postId) => {
-            const userRef = doc(db, "users", currentUser.uid);
-            const safeSavedPosts = currentUserData.savedPosts || [];
-            const isSaved = safeSavedPosts.includes(postId);
-            
-            if (isSaved) {
-                await updateDoc(userRef, { savedPosts: arrayRemove(postId) });
-                currentUserData.savedPosts = safeSavedPosts.filter(id => id !== postId);
-            } else {
-                await updateDoc(userRef, { savedPosts: arrayUnion(postId) });
-                currentUserData.savedPosts.push(postId);
-            }
-            loadFeed();
-        };
-
-        // --- NOTIFICATIONS ---
-        async function sendNotification(recId, type, postId) {
-            await addDoc(collection(db, "notifications"), {
-                recipientId: recId, senderName: currentUser.displayName, senderPic: currentUser.photoURL,
-                type: type, relatedPostId: postId, createdAt: serverTimestamp(), read: false
-            });
-        }
-
-        function listenForUnreadNotifications() {
-            onSnapshot(query(collection(db, "notifications"), where("recipientId", "==", currentUser.uid), where("read", "==", false)), (snap) => {
-                const badge = document.getElementById('notif-badge');
-                if (snap.size > 0) { badge.innerText = snap.size; badge.style.display = 'flex'; } 
-                else { badge.style.display = 'none'; }
-            });
-        }
-
-        function loadNotifications() {
-            onSnapshot(query(collection(db, "notifications"), where("recipientId", "==", currentUser.uid), orderBy("createdAt", "desc")), (snap) => {
-                const list = document.getElementById('notifications-list-content');
-                list.innerHTML = '';
-                if(snap.empty) { list.innerHTML = '<p style="color:var(--text-secondary); text-align:center; margin-top:20px;">No new notifications.</p>'; return; }
-                
-                snap.forEach(docSnap => {
-                    const n = docSnap.data();
-                    let txt = n.type === 'like' ? 'liked your post.' : `started following you.`;
-                    
-                    const el = document.createElement('div');
-                    el.className = 'notification-item';
-                    el.innerHTML = `<img src="${n.senderPic}" class="user-pic"><span class="notif-text"><strong>${n.senderName}</strong> ${txt}</span>`;
-                    
-                    if(n.relatedPostId) {
-                        getDoc(doc(db, "posts", n.relatedPostId)).then(p => {
-                            if(p.exists()) {
-                                const img = document.createElement('img'); img.src = p.data().imageUrl; img.className='post-pic';
-                                el.appendChild(img);
-                            }
-                        });
-                    }
-                    el.addEventListener('click', () => { updateDoc(doc(db, "notifications", docSnap.id), { read: true }); closeAllPanels(); switchSection('feed'); });
-                    list.appendChild(el);
-                });
-            });
-        }
-
-        // --- SHARE OVERLAY LOGIC ---
-        const shareOverlay = document.getElementById('share-overlay');
-        const shareSearchInput = document.getElementById('share-search-input');
-        const shareUsersList = document.getElementById('share-users-list');
-
-        window.openShareModal = async () => {
-            shareOverlay.style.display = 'flex';
-            shareSearchInput.value = '';
-            await renderShareUsers('');
-        };
-
-        document.getElementById('close-share-modal').onclick = () => shareOverlay.style.display = 'none';
-        shareSearchInput.addEventListener('input', (e) => renderShareUsers(e.target.value.toLowerCase()));
-
-        async function renderShareUsers(queryText) {
-            shareUsersList.innerHTML = '';
-            const usersSnap = await getDocs(collection(db, "users"));
-            
-            usersSnap.forEach(d => {
-                const u = d.data();
-                if(d.id !== currentUser.uid && (!queryText || u.displayName.toLowerCase().includes(queryText))) {
-                    const el = document.createElement('div');
-                    el.className = 'share-user-card';
-                    el.innerHTML = `<img src="${u.photoURL}"> <span>${u.displayName.split(' ')[0]}</span>`;
-                    el.onclick = () => {
-                        el.innerHTML = `<img src="${u.photoURL}" style="opacity: 0.5;"> <span style="color: #0095f6;">Sent</span>`;
-                        setTimeout(() => shareOverlay.style.display = 'none', 800);
-                    };
-                    shareUsersList.appendChild(el);
-                }
-            });
-            if(shareUsersList.innerHTML === '') shareUsersList.innerHTML = '<span style="color:var(--text-secondary); font-size:14px; margin:auto;">No users found.</span>';
-        }
-
-        // --- PROFILE TABS ---
-        document.querySelectorAll('.profile-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
-                e.currentTarget.classList.add('active');
-                loadProfile(e.currentTarget.dataset.tab);
-            });
-        });
-
-        async function loadProfile(tabType) {
-            document.getElementById('profile-pic-large').src = currentUser.photoURL;
-            document.getElementById('profile-username').innerText = currentUser.displayName;
-            document.getElementById('profile-fullname').innerText = currentUser.displayName;
-            
-            const grid = document.getElementById('profile-posts-content');
-            grid.innerHTML = '';
-
-            if (tabType === 'posts') {
-                const snap = await getDocs(query(collection(db, "posts"), where("userId", "==", currentUser.uid), orderBy("createdAt", "desc")));
-                document.getElementById('profile-post-count').innerText = snap.size;
-                if(snap.empty) {
-                    grid.innerHTML = `<div class="empty-posts"><i class="fas fa-camera"></i><h2>Share Photos</h2><p style="color: var(--text-secondary);">When you share photos, they will appear here.</p></div>`;
-                } else {
-                    snap.forEach(d => grid.innerHTML += `<div class="grid-item"><img src="${d.data().imageUrl}"></div>`);
-                }
-            } 
-            else if (tabType === 'saved') {
-                const safeSavedPosts = currentUserData.savedPosts || [];
-                if(safeSavedPosts.length === 0) {
-                    grid.innerHTML = `<div class="empty-posts"><i class="far fa-bookmark"></i><h2>Save your favorite photos</h2><p style="color: var(--text-secondary);">Tap the bookmark icon to save.</p></div>`;
-                } else {
-                    for(let postId of safeSavedPosts) {
-                        const postDoc = await getDoc(doc(db, "posts", postId));
-                        if(postDoc.exists()) {
-                            grid.innerHTML += `<div class="grid-item"><img src="${postDoc.data().imageUrl}"></div>`;
-                        }
-                    }
-                }
-            }
-            else if (tabType === 'tagged') {
-                grid.innerHTML = `<div class="empty-posts"><i class="fas fa-user-tag"></i><h2>Photos of you</h2><p style="color: var(--text-secondary);">When people tag you in photos, they'll appear here.</p></div>`;
-            }
-        }
-
-        // --- CREATE POST ---
-        const createOverlay = document.getElementById('create-overlay');
-        const imgInput = document.getElementById('create-image-input');
-        const shareBtn = document.getElementById('share-btn');
-        
-        document.getElementById('nav-create-btn').addEventListener('click', () => { closeAllPanels(); createOverlay.style.display = 'flex'; });
-        document.getElementById('close-create').addEventListener('click', () => { createOverlay.style.display = 'none'; });
-
-        imgInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const r = new FileReader();
-                r.onload = (ev) => {
-                    document.getElementById('create-preview-img').src = ev.target.result;
-                    document.getElementById('preview-image-container').style.display = 'block';
-                    document.getElementById('file-label').style.display = 'none';
-                    document.getElementById('create-icon-placeholder').style.display = 'none';
-                    document.getElementById('create-title').style.display = 'none';
-                    document.getElementById('create-post-caption').style.display = 'block';
-                    shareBtn.disabled = false;
-                };
-                r.readAsDataURL(file);
-            }
-        });
-
-        shareBtn.addEventListener('click', async () => {
-            const file = imgInput.files[0];
-            if (!file) return;
-            shareBtn.innerText = "Sharing..."; shareBtn.disabled = true;
+            btn.disabled = true;
+            btn.innerText = "Uploading...";
 
             try {
-                const fd = new FormData(); fd.append('api_key', imgHippoKey); fd.append('file', file);
-                const res = await fetch('https://api.imghippo.com/v1/upload', { method: 'POST', body: fd });
+                // Prepare form for ImgBB
+                const formData = new FormData();
+                formData.append("image", file);
+
+                // Try to upload
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${BB_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+                
                 const data = await res.json();
-                
-                if (!data.success) throw new Error("Image Upload Failed");
 
-                await addDoc(collection(db, "posts"), {
-                    userId: currentUser.uid, userName: currentUser.displayName, userPic: currentUser.photoURL,
-                    imageUrl: data.data.url, caption: document.getElementById('create-post-caption').value,
-                    likedBy: [], comments: [], createdAt: serverTimestamp()
+                if (data.success) {
+                    // Save to Firebase
+                    await addDoc(collection(db, "posts"), {
+                        name: currentUser.displayName,
+                        pic: currentUser.photoURL,
+                        image: data.data.url,
+                        caption: text,
+                        createdAt: serverTimestamp()
+                    });
+
+                    // Clear form
+                    document.getElementById('fileInput').value = "";
+                    document.getElementById('caption').value = "";
+                    alert("Posted successfully la!");
+                } else {
+                    alert("ImgBB Error: " + data.error.message);
+                }
+            } catch (err) {
+                alert("Connection Error: Check your internet or API key!");
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Post";
+            }
+        };
+
+        function loadPosts() {
+            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snap) => {
+                const feedDiv = document.getElementById('feed');
+                feedDiv.innerHTML = "";
+                snap.forEach(doc => {
+                    const p = doc.data();
+                    feedDiv.innerHTML += `
+                        <div class="post">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <img src="${p.pic}" style="width:30px; height:30px; border-radius:50%;">
+                                <b>${p.name}</b>
+                            </div>
+                            <img src="${p.image}">
+                            <p><b>${p.name}</b> ${p.caption}</p>
+                        </div>
+                    `;
                 });
-                
-                // Reset form
-                imgInput.value = "";
-                document.getElementById('create-preview-img').src = "";
-                document.getElementById('preview-image-container').style.display = 'none';
-                document.getElementById('file-label').style.display = 'block';
-                document.getElementById('create-icon-placeholder').style.display = 'block';
-                document.getElementById('create-title').style.display = 'block';
-                document.getElementById('create-post-caption').style.display = 'none';
-                document.getElementById('create-post-caption').value = '';
-                
-                createOverlay.style.display = 'none';
-                switchSection('feed');
-                shareBtn.innerText = "Share";
-            } catch (err) { alert(err.message); shareBtn.disabled = false; shareBtn.innerText = "Share";} 
-        });
-
+            });
+        }
     </script>
 </body>
 </html>
