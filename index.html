@@ -51,6 +51,7 @@
         .styled-input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: white; }
 
         button { cursor: pointer; border: none; transition: 0.3s; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
         .primary-btn { background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; }
         .google-btn { width: 100%; padding: 14px; background: white; color: black; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
 
@@ -62,7 +63,7 @@
     <div id="auth-screen">
         <div class="login-card">
             <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">DrukLink AI</h1>
-            <p style="color: #94a3b8; margin-bottom: 20px;">Jigdral Namgyel</p>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Built by Jigdral Namgyel</p>
             <button class="google-btn" onclick="login()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20"> Sign in with Google
             </button>
@@ -113,7 +114,8 @@
                 <h2>Settings</h2>
                 <div class="card">
                     <p>AI Engine: <b>Gemini 1.5 Flash</b></p>
-                    <p>Region: <b>Paro, Bhutan</b></p>
+                    <p>Status: <b style="color: #22c55e;">Connected</b></p>
+                    <p>Location: <b>Paro, Bhutan</b></p>
                 </div>
             </div>
         </main>
@@ -123,10 +125,9 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile as firebaseUpdateProfile } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-        
-        // --- 1. IMPORT AI SDK ---
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -136,11 +137,11 @@
             appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
         };
 
-        // --- 2. INITIALIZE AI ---
-        const genAI = new GoogleGenerativeAI("AIzaSyCS0xJpcwWS2YBtiFl6cpNvH7l3QtRfqVw");
+        // Initialize AI with your NEW key
+        const genAI = new GoogleGenerativeAI("AIzaSyCm3HIfkxyN7uItsed8h8Pdbb8rSn6G4v4");
         const aiModel = genAI.getGenerativeModel({ 
             model: "gemini-1.5-flash",
-            systemInstruction: "You are DrukLink AI, a helpful, polite assistant from Bhutan. Always greet users with 'Kuzuzangpo la'. Use Bhutanese context when relevant."
+            systemInstruction: "You are DrukLink AI, a helpful, polite assistant from Bhutan. Always greet users with 'Kuzuzangpo la'. Answer clearly and concisely."
         });
 
         const app = initializeApp(firebaseConfig);
@@ -174,44 +175,40 @@
             el.classList.add('active');
         };
 
-        // --- 3. RE-WRITTEN SEND FUNCTION ---
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
-            const sendBtn = document.getElementById('sendBtn');
+            const btn = document.getElementById('sendBtn');
             const val = input.value.trim();
-            
             if (!val || !user) return;
 
-            // Clear input and disable button during processing
             input.value = "";
-            sendBtn.disabled = true;
-            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
 
             try {
-                // Generate content from Gemini API
+                // Get AI Response
                 const result = await aiModel.generateContent(val);
-                const response = await result.response;
-                const responseText = response.text();
+                const aiText = result.response.text();
 
-                // Save both to Firebase
+                // Save to Firestore
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid,
                     prompt: val,
-                    response: responseText,
+                    response: aiText,
                     time: serverTimestamp()
                 });
-            } catch (error) {
-                console.error("AI Error:", error);
-                // Log a user-friendly error message in the chat
+            } catch (err) {
+                console.error(err);
+                // Display the specific error in the chat so you can see what's wrong
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid,
                     prompt: val,
-                    response: "I am sorry la, I am having trouble thinking right now. Please check if the API key is active.",
+                    response: "System Error la: " + err.message + ". Please check your API key settings.",
                     time: serverTimestamp()
                 });
             } finally {
-                sendBtn.disabled = false;
-                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
         };
 
@@ -219,9 +216,7 @@
             const q = query(collection(db, "chats"), where("uid", "==", user.uid), orderBy("time", "asc"));
             onSnapshot(q, (snap) => {
                 const feed = document.getElementById('chat-feed');
-                // Initial Greeting
                 feed.innerHTML = '<div class="msg ai">Kuzuzangpo la! I am DrukLink AI. How can I help you today?</div>';
-                
                 snap.forEach(d => {
                     const data = d.data();
                     feed.innerHTML += `<div class="msg user">${data.prompt}</div>`;
@@ -240,8 +235,8 @@
                     const data = d.data();
                     list.innerHTML += `
                         <div class="card">
-                            <small>${data.time?.toDate().toLocaleString() || 'Sending...'}</small>
-                            <p><b>You:</b> ${data.prompt}</p>
+                            <small>${data.time?.toDate().toLocaleString() || 'Syncing...'}</small>
+                            <p><b>Prompt:</b> ${data.prompt}</p>
                             <p><b>AI:</b> ${data.response}</p>
                         </div>`;
                 });
@@ -254,9 +249,9 @@
             try {
                 await firebaseUpdateProfile(auth.currentUser, { displayName: newName });
                 await setDoc(doc(db, "users", user.uid), { name: newName }, { merge: true });
-                alert("Name updated la! Refreshing...");
+                alert("Profile Updated la!");
                 location.reload();
-            } catch (e) { alert("Error updating name!"); }
+            } catch (e) { alert("Error updating profile!"); }
         };
     </script>
 </body>
