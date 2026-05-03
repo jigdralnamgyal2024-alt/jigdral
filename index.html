@@ -57,8 +57,9 @@
         /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; border-right: 1px solid var(--border-color);}
         
+        /* NO CIRCLE ON LOGO */
         .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-main); }
-        .sidebar-brand img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .sidebar-brand img { width: 32px; height: 32px; object-fit: contain; }
 
         .new-chat-btn { display: flex; align-items: center; gap: 10px; padding: 12px 15px; width: 100%; border-radius: 8px; cursor: pointer; background: transparent; color: var(--text-main); border: none; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: left; margin-bottom: 15px;}
         .new-chat-btn:hover { background: var(--user-msg-bg); }
@@ -89,8 +90,11 @@
         .msg-row.ai { justify-content: flex-start; gap: 16px; }
 
         .msg-bubble.user { background: var(--user-msg-bg); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-size: 16px; line-height: 1.5; max-width: 70%; word-wrap: break-word; }
-        .ai-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; overflow: hidden; background: #fff; border: 1px solid var(--border-color);}
-        .ai-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        /* NO CIRCLE ON AVATAR */
+        .ai-avatar { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; background: transparent; }
+        .ai-avatar img { width: 100%; height: 100%; object-fit: contain; }
+        
         .msg-bubble.ai { background: transparent; color: var(--text-main); font-size: 16px; line-height: 1.6; max-width: 85%; word-wrap: break-word; padding-top: 5px;}
 
         /* Input Area */
@@ -126,7 +130,7 @@
     <div id="auth-screen" class="overlay-screen">
         <div class="card-box" style="text-align: center;">
             <div style="margin-bottom: 20px;">
-                <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                <img src="https://i.imghippo.com/files/RPD5045T.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));">
             </div>
             <h2>Welcome to DrukTalk AI</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Log in with your Google account</p>
@@ -178,7 +182,7 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="Logo">
+            <img src="https://i.imghippo.com/files/RPD5045T.png" alt="Logo">
             DrukTalk AI
         </div>
 
@@ -205,7 +209,7 @@
     <main class="main-container">
         <div class="mobile-header">
             <i class="fas fa-bars" onclick="toggleSidebar()" style="cursor: pointer; font-size: 18px;"></i>
-            <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+            <img src="https://i.imghippo.com/files/RPD5045T.png" style="width: 24px; height: 24px; object-fit: contain;">
             <span>DrukTalk AI</span>
         </div>
 
@@ -258,7 +262,7 @@
             } else {
                 document.body.classList.remove("light-theme");
             }
-            localStorage.setItem("theme", themeValue); // Save locally for instant load
+            localStorage.setItem("theme", themeValue); 
             
             if (user) {
                 userProfile.theme = themeValue;
@@ -295,7 +299,8 @@
         }
 
         function appendAIMsg(text, id = null) {
-            feedBox.innerHTML += `<div class="msg-row ai" ${id ? `id="${id}"` : ""}><div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png"></div><div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div></div>`;
+            // UPDATED NEW IMAGE LINK FOR AVATAR
+            feedBox.innerHTML += `<div class="msg-row ai" ${id ? `id="${id}"` : ""}><div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png"></div><div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div></div>`;
             scrollToBottom();
         }
 
@@ -337,7 +342,6 @@
                 if (docSnap.exists()) {
                     userProfile = { ...userProfile, ...docSnap.data() };
                     
-                    // Apply saved theme from Database
                     if (userProfile.theme) {
                         document.getElementById('settings-theme').value = userProfile.theme;
                         updateThemePreference(userProfile.theme);
@@ -470,7 +474,8 @@
                 if (!response.ok || data.error) throw new Error(data.error?.message || "Invalid API response.");
                 const aiText = data.choices[0].message.content;
 
-                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
+                // UPDATED NEW IMAGE LINK FOR AVATAR
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid, 
@@ -482,7 +487,8 @@
 
             } catch (err) {
                 console.error("Groq Error:", err);
-                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Error la: ${err.message}</div>`;
+                // UPDATED NEW IMAGE LINK FOR AVATAR
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Error la: ${err.message}</div>`;
             } finally {
                 btn.disabled = false;
             }
