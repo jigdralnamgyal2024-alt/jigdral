@@ -67,7 +67,7 @@
 
         /* FEED */
         #feed { max-width: 470px; }
-        .post { margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; width: 470px;}
+        .post { margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;}
         .post-header { display: flex; align-items: center; padding: 12px 0; gap: 10px; font-weight: 600; font-size: 14px;}
         .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover;}
         .post-img { width: 100%; border: 1px solid var(--border-color); border-radius: 4px; cursor: pointer; object-fit: cover; max-height: 585px;}
@@ -100,7 +100,7 @@
         
         #post-modal .modal { width: 900px; height: 600px; background: black; }
         .modal-img { width: 60%; border-right: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center;}
-        .modal-img img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .modal-img img { max-width: 100%; max-height: 100%; }
         .modal-sidebar { width: 40%; display: flex; flex-direction: column; background: black;}
         .modal-input { padding: 16px; border-top: 1px solid var(--border-color); display: flex; }
         .modal-input input { flex-grow: 1; }
@@ -115,7 +115,7 @@
     <div id="login-screen">
         <div class="login-box">
             <h1>DrukLink</h1>
-            <p style="margin-bottom: 30px; color: var(--text-secondary);">Log in to see photos and videos from your friends.</p>
+            <p style="margin-bottom: 30px; color: var(--text-secondary);">Log in for real to see photos and videos.</p>
             <button class="google-btn" id="login-btn"><i class="fab fa-google"></i> Log in with Google</button>
         </div>
     </div>
@@ -208,34 +208,31 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // YOUR EXACT FIREBASE CONFIGURATION
+        // YOU MUST REPLACE THIS WITH YOUR REAL CONFIG
         const firebaseConfig = {
-            apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
-            authDomain: "druklink-24fa1.firebaseapp.com",
-            projectId: "druklink-24fa1",
-            storageBucket: "druklink-24fa1.firebasestorage.app",
-            messagingSenderId: "183615496366",
-            appId: "1:183615496366:web:fcfb4f88f3223044924d3f",
-            measurementId: "G-R8JKT9DE48"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        
-        // Free image hosting API to store user-uploaded images since Firebase Storage requires extra setup
-        const imgBBKey = "b5f2098fa836fe7090138a418d294866"; 
+        const imgBBKey = "b5f2098fa836fe7090138a418d294866"; // Free image hosting API
 
         let me = null;
         let mySaved = [];
         let activePostId = null;
         let currentTab = 'posts';
 
-        // AUTHENTICATION LOGIC
+        // AUTH
         document.getElementById('login-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
         document.getElementById('logout-btn').onclick = () => signOut(auth);
 
@@ -248,14 +245,11 @@
                 document.getElementById('prof-pic').src = user.photoURL;
                 document.getElementById('prof-name').innerText = user.displayName;
 
-                // Create or Fetch User Document in Firestore
+                // Create/Get User in Real DB
                 const uRef = doc(db, "users", user.uid);
                 const uDoc = await getDoc(uRef);
-                if (!uDoc.exists()) { 
-                    await setDoc(uRef, { name: user.displayName, pic: user.photoURL, saves: [] }); 
-                } else { 
-                    mySaved = uDoc.data().saves || []; 
-                }
+                if (!uDoc.exists()) { await setDoc(uRef, { name: user.displayName, pic: user.photoURL, saves: [] }); } 
+                else { mySaved = uDoc.data().saves || []; }
 
                 loadFeed(); loadNotifs(); loadProfile();
             } else {
@@ -265,7 +259,7 @@
             }
         });
 
-        // UI INTERFACE LOGIC
+        // UI LOGIC
         window.closePanels = () => { document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open')); document.getElementById('sidebar').classList.remove('narrow'); };
         window.openModal = id => document.getElementById(id).style.display = 'flex';
         window.closeModal = id => document.getElementById(id).style.display = 'none';
@@ -289,7 +283,7 @@
             }
         });
 
-        // REAL-TIME FEED FROM YOUR FIRESTORE
+        // REAL-TIME FEED
         function loadFeed() {
             onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
                 const box = document.getElementById('feed-container');
@@ -316,7 +310,7 @@
             });
         }
 
-        // LIKES & SAVES
+        // INTERACTIONS
         window.toggleLike = async (id) => {
             const ref = doc(db, "posts", id);
             const p = (await getDoc(ref)).data();
@@ -334,7 +328,7 @@
             loadFeed(); loadProfile();
         };
 
-        // VIEW POST MODAL
+        // POST MODAL
         window.openPost = async (id) => {
             activePostId = id; openModal('post-modal');
             onSnapshot(doc(db, "posts", id), (d) => {
@@ -361,7 +355,7 @@
             if(p.uid !== me.uid) addNotif(p.uid, `${me.displayName} commented: ${val}`);
         };
 
-        // CREATING NEW POST
+        // CREATE POST REAL
         let newImg = null;
         document.getElementById('create-file').onchange = e => {
             const f = e.target.files[0]; if(!f) return;
@@ -377,27 +371,21 @@
         document.getElementById('create-share-btn').onclick = async () => {
             if(!newImg) return;
             document.getElementById('create-share-btn').innerText = 'Posting...';
-            
-            // Upload to ImgBB
+            // Upload to ImgBB for real URL
             const fd = new FormData(); fd.append("image", newImg.split(',')[1]);
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: fd });
             const json = await res.json();
             
-            // Save to Your Firestore Database
             await addDoc(collection(db, "posts"), {
                 uid: me.uid, name: me.displayName, pic: me.photoURL,
                 img: json.data.url, caption: document.getElementById('create-caption').value,
                 likes: [], comments: [], time: serverTimestamp()
             });
-            
-            // Reset Modal
             closeModal('create-modal'); document.querySelector('.nav-btn[data-target="home"]').click();
             document.getElementById('create-share-btn').innerText = 'Share';
-            document.getElementById('create-preview').style.display='none'; document.getElementById('create-caption').style.display='none'; document.getElementById('create-share-btn').style.display='none';
-            document.getElementById('create-label').style.display='block'; document.getElementById('create-caption').value = '';
         };
 
-        // PROFILE VIEW
+        // PROFILE
         window.switchTab = t => { currentTab = t; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); document.getElementById('tab-'+t).classList.add('active'); loadProfile(); };
         async function loadProfile() {
             const grid = document.getElementById('profile-grid'); grid.innerHTML = '';
@@ -411,7 +399,7 @@
             if(currentTab === 'posts') document.getElementById('prof-posts-count').innerText = count;
         }
 
-        // SEARCH USERS
+        // SEARCH
         document.getElementById('search-input').oninput = async e => {
             const q = e.target.value.toLowerCase(); const box = document.getElementById('search-results'); box.innerHTML = ''; if(!q) return;
             const users = await getDocs(collection(db, "users"));
@@ -421,14 +409,14 @@
             });
         };
 
-        // REAL-TIME NOTIFICATIONS
+        // NOTIFICATIONS
         async function addNotif(toUid, txt) { await addDoc(collection(db, "notifs"), { to: toUid, text: txt, pic: me.photoURL, time: serverTimestamp() }); }
         function loadNotifs() {
             onSnapshot(query(collection(db, "notifs"), orderBy("time", "desc")), snap => {
                 const box = document.getElementById('notif-list'); box.innerHTML = ''; let unread = 0;
                 snap.forEach(d => {
                     const n = d.data();
-                    if(n.to === me.uid) { unread++; box.innerHTML += `<div class="list-item"><img src="${n.pic}"><span style="margin-left:12px;">${n.text}</span></div>`; }
+                    if(n.to === me.uid) { unread++; box.innerHTML += `<div class="list-item"><img src="${n.pic}"><span>${n.text}</span></div>`; }
                 });
                 const b = document.getElementById('notif-badge');
                 if(unread>0){b.classList.remove('hidden'); b.innerText=unread;} else b.classList.add('hidden');
