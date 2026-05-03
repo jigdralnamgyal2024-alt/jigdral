@@ -8,11 +8,8 @@
     <link rel="icon" type="image/png" href="https://i.imghippo.com/files/RPD5045T.png">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-    
     <style>
-        /* True ChatGPT / Gemini Modern UI - DARK MODE */
+        /* True ChatGPT / Gemini Modern UI - DARK MODE (Default) */
         :root {
             --sidebar-bg: #171717;
             --main-bg: #212121;
@@ -23,8 +20,6 @@
             --accent: #10a37f;
             --hover-bg: rgba(255,255,255,0.05);
             --input-shadow: 0 0 15px rgba(0,0,0,0.2);
-            --code-header-bg: #2d2d2d;
-            --code-bg: #1e1e1e;
         }
 
         /* LIGHT MODE VARIABLES */
@@ -37,26 +32,34 @@
             --border-color: rgba(0,0,0,0.1);
             --hover-bg: rgba(0,0,0,0.05);
             --input-shadow: 0 0 15px rgba(0,0,0,0.05);
-            --code-header-bg: #e5e5e5;
-            --code-bg: #f6f8fa;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background: var(--main-bg); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; transition: background 0.3s, color 0.3s; }
         .hidden { display: none !important; }
 
-        /* Modals & Auth Screen */
+        /* Modals & Screens */
         .overlay-screen { background: rgba(0,0,0,0.6); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; backdrop-filter: blur(5px); }
-        #auth-screen { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://i.imghippo.com/files/PR9518Yw.webp'); background-size: cover; background-position: center; background-repeat: no-repeat; }
-        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 16px; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        
+        /* Custom Auth Screen Background */
+        #auth-screen {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://i.imghippo.com/files/PR9518Yw.webp');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 16px; text-align: left; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .card-box h2 { text-align: center; margin-bottom: 20px; font-size: 20px;}
         .close-modal { float: right; cursor: pointer; color: var(--text-muted); font-size: 18px; }
         .close-modal:hover { color: var(--text-main); }
-        
+
+        /* Buttons & Inputs */
         .primary-btn { width: 100%; padding: 12px; background: var(--text-main); color: var(--main-bg); border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
         .primary-btn:hover { opacity: 0.8; }
         .danger-btn { background: #ef4444; color: white; }
         .danger-btn:hover { background: #dc2626; opacity: 1; }
+        
         .styled-input, .styled-textarea, select.styled-input { width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px; background: var(--main-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; font-size: 14px; outline: none;}
         .styled-input:focus, .styled-textarea:focus, select.styled-input:focus { border-color: var(--accent); }
         .styled-textarea { resize: vertical; min-height: 80px; font-family: inherit;}
@@ -64,73 +67,62 @@
 
         /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; border-right: 1px solid var(--border-color);}
+        
         .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-main); }
         .sidebar-brand img { width: 32px; height: 32px; object-fit: contain; }
+
         .new-chat-btn { display: flex; align-items: center; gap: 10px; padding: 12px 15px; width: 100%; border-radius: 8px; cursor: pointer; background: transparent; color: var(--text-main); border: none; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: left; margin-bottom: 15px;}
         .new-chat-btn:hover { background: var(--user-msg-bg); }
+        
+        /* History List */
         .history-label { font-size: 12px; color: var(--text-muted); padding: 10px 15px 5px; font-weight: 600; }
         .history-list { flex: 1; overflow-y: auto; margin-bottom: 10px; }
         .history-list::-webkit-scrollbar { width: 5px; }
         .history-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        
         .history-item { padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--text-main); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: 0.2s; margin-bottom: 2px;}
         .history-item:hover { background: var(--hover-bg); }
         .history-item.active { background: var(--user-msg-bg); font-weight: 500; }
+        
+        /* Bottom Nav Items */
         .nav-item { padding: 10px 15px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; margin-bottom: 2px; color: var(--text-main); font-size: 14px;}
         .nav-item:hover { background: var(--hover-bg); }
-
-        /* Main Chat Container */
+        
+        /* Main Chat Area - ChatGPT Centered Container Style */
         .main-container { flex: 1; display: flex; flex-direction: column; position: relative; height: 100vh; align-items: center; }
         .screen { flex: 1; display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; position: relative; }
-        #chat-feed { flex: 1; overflow-y: auto; padding: 40px 20px; display: flex; flex-direction: column; scroll-behavior: smooth; width: 100%; align-items: center; }
-        .chat-content-limit { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 30px; padding-bottom: 20px;}
-
-        /* Messages */
-        .msg-row { display: flex; width: 100%; flex-direction: column; position: relative; }
-        .msg-row.user { align-items: flex-end; }
-        .msg-row.ai { align-items: flex-start; }
         
-        .msg-content-wrapper { display: flex; gap: 16px; max-width: 85%; }
-        .msg-row.user .msg-content-wrapper { flex-direction: row-reverse; max-width: 75%; }
+        #chat-feed { flex: 1; overflow-y: auto; padding: 40px 20px; display: flex; flex-direction: column; scroll-behavior: smooth; width: 100%; align-items: center; }
+        .chat-content-limit { width: 100%; max-width: 768px; display: flex; flex-direction: column; gap: 24px; padding-bottom: 20px;}
 
-        .msg-bubble { font-size: 16px; line-height: 1.6; word-wrap: break-word; position: relative; }
-        .msg-bubble.user { background: var(--user-msg-bg); color: var(--text-main); padding: 12px 20px; border-radius: 20px; }
-        .msg-bubble.ai { background: transparent; color: var(--text-main); width: 100%; padding-top: 5px; }
+        .msg-row { display: flex; width: 100%; }
+        .msg-row.user { justify-content: flex-end; }
+        .msg-row.ai { justify-content: flex-start; gap: 16px; }
+
+        .msg-bubble.user { background: var(--user-msg-bg); color: var(--text-main); padding: 12px 20px; border-radius: 20px; font-size: 16px; line-height: 1.5; max-width: 70%; word-wrap: break-word; }
         
         .ai-avatar { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; background: transparent; }
         .ai-avatar img { width: 100%; height: 100%; object-fit: contain; }
-
-        /* Action Menus */
-        .action-menu { display: flex; gap: 10px; margin-top: 8px; opacity: 0; transition: opacity 0.2s; padding: 0 10px;}
-        .msg-row:hover .action-menu { opacity: 1; }
-        .action-menu button { background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 5px; transition: 0.2s; border-radius: 4px;}
-        .action-menu button:hover { color: var(--text-main); background: var(--hover-bg); }
         
-        /* Markdown & Code Styles */
-        .msg-bubble.ai p { margin-bottom: 12px; }
-        .msg-bubble.ai strong { color: var(--text-main); font-weight: 600; }
-        .msg-bubble.ai ul, .msg-bubble.ai ol { margin-bottom: 12px; padding-left: 20px; }
-        .msg-bubble.ai li { margin-bottom: 6px; }
-        .msg-bubble.ai a { color: var(--accent); text-decoration: none; }
-        .msg-bubble.ai a:hover { text-decoration: underline; }
-        
-        .code-container { margin: 15px 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); background: var(--code-bg); }
-        .code-header { background: var(--code-header-bg); padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted); font-family: monospace;}
-        .copy-code-btn { background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 5px; font-family: inherit;}
-        .copy-code-btn:hover { color: var(--text-main); }
-        .code-container pre { margin: 0; padding: 15px; overflow-x: auto; font-size: 14px; }
-        .msg-bubble.ai code:not(pre code) { background: var(--user-msg-bg); padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; color: #e26f78;}
+        .msg-bubble.ai { background: transparent; color: var(--text-main); font-size: 16px; line-height: 1.6; max-width: 85%; word-wrap: break-word; padding-top: 5px;}
 
-        /* Input Area */
+        /* Sleek Input Area */
         .input-wrap { padding: 15px 20px 25px 20px; width: 100%; max-width: 800px; margin: 0 auto; position: relative; }
         .input-box { background: var(--sidebar-bg); border-radius: 26px; padding: 12px 15px 12px 20px; display: flex; align-items: flex-end; gap: 10px; border: 1px solid var(--border-color); box-shadow: var(--input-shadow); transition: border-color 0.2s;}
         .input-box:focus-within { border-color: var(--text-muted); }
+        
         textarea { flex: 1; background: transparent; border: none; color: var(--text-main); outline: none; font-size: 16px; padding: 6px 0; resize: none; max-height: 200px; line-height: 1.5; min-height: 36px; font-family: inherit;}
+        
         button.send-btn { background: var(--text-main); color: var(--main-bg); border: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; margin-bottom: 3px;}
         button.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        button.stop-btn { background: var(--text-main); color: var(--main-bg); border: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; margin-bottom: 3px; display: none;}
 
         .mobile-header { display: none; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; font-size: 16px; align-items: center; gap: 15px; background: var(--sidebar-bg); width: 100%;}
-        @media (max-width: 768px) { .sidebar { position: absolute; left: -260px; z-index: 50; height: 100%; } .mobile-header { display: flex; } .input-wrap { padding: 10px; } .msg-row:hover .action-menu { opacity: 1; /* Always show or rely on touch */ } }
+        @media (max-width: 768px) { 
+            .sidebar { position: absolute; left: -260px; z-index: 50; height: 100%; } 
+            .mobile-header { display: flex; }
+            .msg-bubble.user { max-width: 85%; }
+            .input-wrap { padding: 10px; }
+        }
 
         .typing-indicator { display: flex; gap: 4px; padding: 8px 0; }
         .dot { width: 6px; height: 6px; background: var(--text-muted); border-radius: 50%; animation: blink 1.4s infinite both; }
@@ -138,22 +130,13 @@
         .dot:nth-child(3) { animation-delay: 0.4s; }
         @keyframes blink { 0% { opacity: 0.2; } 20% { opacity: 1; } 100% { opacity: 0.2; } }
     </style>
-
-    <script>
-        window.MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
-            svg: { fontCache: 'global' }
-        };
-    </script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
     <script>
-        if(localStorage.getItem("theme") === "light") document.body.classList.add("light-theme");
+        if(localStorage.getItem("theme") === "light") {
+            document.body.classList.add("light-theme");
+        }
     </script>
 
     <div id="auth-screen" class="overlay-screen">
@@ -163,6 +146,7 @@
             </div>
             <h2 style="color: #ececec;">Welcome to DrukTalk AI</h2>
             <p style="color: #9b9b9b; font-size: 14px; margin-bottom: 20px;">Log in with your Google account</p>
+            
             <button class="primary-btn" onclick="login()" style="background: #ececec; color: #171717;">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
             </button>
@@ -173,10 +157,13 @@
         <div class="card-box">
             <i class="fas fa-times close-modal" onclick="closeModal('profile-modal')"></i>
             <h2>User Profile</h2>
+            
             <label>What should DrukTalk AI call you?</label>
             <input type="text" id="profile-name" class="styled-input" placeholder="Your Name">
-            <label>Custom Instructions</label>
-            <textarea id="profile-persona" class="styled-textarea" placeholder="e.g., Answer in Bhutanese English."></textarea>
+            
+            <label>Custom Instructions (How should the AI behave?)</label>
+            <textarea id="profile-persona" class="styled-textarea" placeholder="e.g., Answer in Bhutanese English. Be funny and sarcastic."></textarea>
+            
             <button class="primary-btn" onclick="saveProfile()" style="background: var(--accent); color: white;">Save Profile</button>
         </div>
     </div>
@@ -185,29 +172,48 @@
         <div class="card-box">
             <i class="fas fa-times close-modal" onclick="closeModal('settings-modal')"></i>
             <h2>Settings</h2>
+
             <label>App Theme</label>
             <select id="settings-theme" class="styled-input" onchange="updateThemePreference(this.value)">
                 <option value="dark">Dark Mode</option>
                 <option value="light">Light Mode</option>
             </select>
+            
             <label>Groq API Key</label>
             <input type="password" id="settings-groq-key" class="styled-input" placeholder="gsk_...">
             <button class="primary-btn" onclick="saveApiKey()" style="margin-top: 0; background: var(--accent); color: white;">Update Key</button>
             <a href="https://console.groq.com/keys" target="_blank" style="display: block; margin-top: 10px; margin-bottom: 25px; color: var(--accent); font-size: 12px; text-decoration: none;">Get a free Groq key here</a>
+            
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin-bottom: 20px;">
+            
             <label style="color: #ef4444;">Danger Zone</label>
-            <button class="primary-btn danger-btn" onclick="clearAllHistory()"><i class="fas fa-trash"></i> Delete All Chat History</button>
+            <button class="primary-btn danger-btn" onclick="clearAllHistory()">
+                <i class="fas fa-trash"></i> Delete All Chat History
+            </button>
         </div>
     </div>
 
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="Logo"> DrukTalk AI</div>
-        <button class="new-chat-btn" onclick="startNewChat()"><i class="fas fa-pen"></i> New chat</button>
+        <div class="sidebar-brand">
+            <img src="https://i.imghippo.com/files/RPD5045T.png" alt="Logo">
+            DrukTalk AI
+        </div>
+
+        <button class="new-chat-btn" onclick="startNewChat()">
+            <i class="fas fa-pen"></i> New chat
+        </button>
+
         <div class="history-label">Past Chats</div>
-        <div class="history-list" id="history-list"></div>
-        <div class="nav-item" onclick="openProfileModal()"><i class="fas fa-user"></i> Profile</div>
-        <div class="nav-item" onclick="openSettingsModal()"><i class="fas fa-cog"></i> Settings</div>
-        <div class="nav-item" onclick="logout()" style="margin-top: 5px; border-top: 1px solid var(--border-color); border-radius: 0; padding-top: 15px;">
+        <div class="history-list" id="history-list">
+            </div>
+        
+        <div class="nav-item" onclick="openProfileModal()">
+            <i class="fas fa-user"></i> Profile
+        </div>
+        <div class="nav-item" onclick="openSettingsModal()">
+            <i class="fas fa-cog"></i> Settings
+        </div>
+        <div class="nav-item" onclick="logout()" style="cursor: pointer; margin-top: 5px; border-top: 1px solid var(--border-color); border-radius: 0; padding-top: 15px;">
             <img id="side-profile-pic" src="" style="width: 24px; height: 24px; border-radius: 50%; display: none;"> 
             <span id="side-user-name">Log out</span>
         </div>
@@ -222,14 +228,14 @@
 
         <div id="chat-screen" class="screen">
             <div id="chat-feed">
-                <div class="chat-content-limit" id="chat-limit-box"></div>
+                <div class="chat-content-limit" id="chat-limit-box">
+                    </div>
             </div>
             
             <div class="input-wrap">
                 <div class="input-box">
                     <textarea id="userInput" placeholder="Message DrukTalk AI..." rows="1" oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
                     <button id="sendBtn" onclick="sendMsg()" class="send-btn"><i class="fas fa-arrow-up"></i></button>
-                    <button id="stopBtn" onclick="stopGenerating()" class="stop-btn"><i class="fas fa-square" style="font-size: 14px;"></i></button>
                 </div>
                 <div style="text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 12px;">
                     Powered by Newton • DrukTalk AI can make mistakes.
@@ -243,6 +249,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -260,115 +267,67 @@
         let userProfile = { name: "", persona: "", groqKey: "", theme: "dark" };
         let currentSessionId = "session-" + Date.now();
         let allUserChats = []; 
-        let isGenerating = false;
-        let abortController = null; // Used to stop the stream
 
-        // Setup Marked.js custom renderer for Code Blocks
-        const renderer = new marked.Renderer();
-        renderer.code = function(code, language) {
-            const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
-            const highlighted = hljs.highlight(code, { language: validLanguage }).value;
-            return `
-                <div class="code-container">
-                    <div class="code-header">
-                        <span>${validLanguage}</span>
-                        <button class="copy-code-btn" onclick="copyRawCode(this)"><i class="fas fa-copy"></i> Copy code</button>
-                    </div>
-                    <pre><code class="hljs ${validLanguage}">${highlighted}</code></pre>
-                </div>
-            `;
+        window.updateThemePreference = async (themeValue) => {
+            if (themeValue === "light") {
+                document.body.classList.add("light-theme");
+            } else {
+                document.body.classList.remove("light-theme");
+            }
+            localStorage.setItem("theme", themeValue); 
+            
+            if (user) {
+                userProfile.theme = themeValue;
+                try {
+                    await setDoc(doc(db, "users", user.uid), { theme: themeValue }, { merge: true });
+                } catch (e) { console.error("Could not save theme to database.", e); }
+            }
         };
-        marked.setOptions({ renderer: renderer, breaks: true });
 
-        // Global Utility Functions
-        window.updateThemePreference = async (val) => {
-            if (val === "light") document.body.classList.add("light-theme");
-            else document.body.classList.remove("light-theme");
-            localStorage.setItem("theme", val); 
-            if (user) await setDoc(doc(db, "users", user.uid), { theme: val }, { merge: true });
-        };
-        window.autoResize = (ta) => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+        window.autoResize = (textarea) => { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
         window.handleEnter = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendMsg(); } }
         window.toggleSidebar = () => { const s = document.getElementById('sidebar'); s.style.left = s.style.left === '0px' ? '-260px' : '0px'; }
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
-        window.openSettingsModal = () => { document.getElementById('settings-groq-key').value = userProfile.groqKey || ""; document.getElementById('settings-theme').value = userProfile.theme || localStorage.getItem("theme") || "dark"; document.getElementById('settings-modal').classList.remove('hidden'); }
-        window.openProfileModal = () => { document.getElementById('profile-name').value = userProfile.name || user.displayName; document.getElementById('profile-persona').value = userProfile.persona || ""; document.getElementById('profile-modal').classList.remove('hidden'); }
-        window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
-        window.logout = () => signOut(auth);
+        
+        window.openSettingsModal = () => {
+            document.getElementById('settings-groq-key').value = userProfile.groqKey || "";
+            document.getElementById('settings-theme').value = userProfile.theme || localStorage.getItem("theme") || "dark";
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
 
-        // UI Interactions
-        window.copyToClipboard = (text) => {
-            navigator.clipboard.writeText(decodeURIComponent(text));
-            alert("Copied to clipboard!");
-        };
-        window.copyRawCode = (btn) => {
-            const pre = btn.parentElement.nextElementSibling;
-            navigator.clipboard.writeText(pre.innerText);
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = `<i class="fas fa-check"></i> Copied!`;
-            setTimeout(() => btn.innerHTML = originalHTML, 2000);
-        };
-        window.editUserMessage = (text) => {
-            const input = document.getElementById('userInput');
-            input.value = decodeURIComponent(text);
-            input.focus();
-            window.autoResize(input);
-        };
-        window.regenerateMessage = () => {
-            if(isGenerating) return;
-            const lastMsg = allUserChats.filter(m => (m.sessionId || "old-legacy-chat") === currentSessionId).pop();
-            if(lastMsg) {
-                document.getElementById('userInput').value = lastMsg.prompt;
-                window.sendMsg();
-            }
-        };
-        window.feedback = (type) => { alert(`Feedback recorded: ${type}`); };
+        window.openProfileModal = () => {
+            document.getElementById('profile-name').value = userProfile.name || user.displayName;
+            document.getElementById('profile-persona').value = userProfile.persona || "";
+            document.getElementById('profile-modal').classList.remove('hidden');
+        }
 
         const feedBox = document.getElementById('chat-limit-box');
         
         function appendUserMsg(text) {
-            const safeText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, '<br>');
-            const rawUri = encodeURIComponent(text);
-            const html = `
-                <div class="msg-row user">
-                    <div class="msg-content-wrapper">
-                        <div class="msg-bubble user">${safeText}</div>
-                    </div>
-                    <div class="action-menu" style="justify-content: flex-end; padding-right: 15px;">
-                        <button onclick="editUserMessage('${rawUri}')" title="Edit"><i class="fas fa-pen"></i></button>
-                        <button onclick="copyToClipboard('${rawUri}')" title="Copy"><i class="fas fa-copy"></i></button>
-                    </div>
-                </div>`;
-            feedBox.innerHTML += html;
+            feedBox.innerHTML += `<div class="msg-row user"><div class="msg-bubble user">${text.replace(/\n/g, '<br>')}</div></div>`;
             scrollToBottom();
         }
 
-        // Setup AI bubble container (we will stream text into its content area)
-        function createAIBubble(id) {
-            const html = `
-                <div class="msg-row ai" id="${id}">
-                    <div class="msg-content-wrapper" style="width: 100%;">
-                        <div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png"></div>
-                        <div class="msg-bubble ai" id="content-${id}">
-                            <div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-                        </div>
-                    </div>
-                    <div class="action-menu" style="padding-left: 50px;">
-                        <button onclick="copyToClipboard(encodeURIComponent(document.getElementById('raw-${id}').innerText))" title="Copy"><i class="fas fa-copy"></i></button>
-                        <button onclick="regenerateMessage()" title="Regenerate"><i class="fas fa-sync"></i></button>
-                        <button onclick="feedback('like')" title="Good response"><i class="far fa-thumbs-up"></i></button>
-                        <button onclick="feedback('dislike')" title="Bad response"><i class="far fa-thumbs-down"></i></button>
-                    </div>
-                    <div id="raw-${id}" style="display:none;"></div>
-                </div>`;
-            feedBox.innerHTML += html;
+        function appendAIMsg(text, id = null) {
+            feedBox.innerHTML += `<div class="msg-row ai" ${id ? `id="${id}"` : ""}><div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png"></div><div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div></div>`;
             scrollToBottom();
         }
 
         function scrollToBottom() { const feed = document.getElementById('chat-feed'); feed.scrollTop = feed.scrollHeight; }
 
-        window.startNewChat = () => { currentSessionId = "session-" + Date.now(); renderActiveSession(); };
-        window.loadSession = (sessionId) => { currentSessionId = sessionId; renderActiveSession(); if(window.innerWidth <= 768) toggleSidebar(); };
+        window.startNewChat = () => {
+            currentSessionId = "session-" + Date.now();
+            renderActiveSession();
+        };
+
+        window.loadSession = (sessionId) => {
+            currentSessionId = sessionId;
+            renderActiveSession();
+            if(window.innerWidth <= 768) toggleSidebar(); 
+        };
+
+        window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
+        window.logout = () => signOut(auth);
 
         onAuthStateChanged(auth, async (u) => {
             if (u) {
@@ -376,9 +335,13 @@
                 document.getElementById('auth-screen').classList.add('hidden');
                 document.getElementById('side-profile-pic').style.display = 'block';
                 document.getElementById('side-profile-pic').src = u.photoURL;
+                document.getElementById('side-user-name').innerText = "Log out";
+                
                 await loadUserProfile();
                 listenToChats();
-            } else document.getElementById('auth-screen').classList.remove('hidden');
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+            }
         });
 
         async function loadUserProfile() {
@@ -386,22 +349,49 @@
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
                     userProfile = { ...userProfile, ...docSnap.data() };
-                    if (userProfile.theme) updateThemePreference(userProfile.theme);
+                    
+                    if (userProfile.theme) {
+                        document.getElementById('settings-theme').value = userProfile.theme;
+                        updateThemePreference(userProfile.theme);
+                    }
                 }
                 if (!userProfile.groqKey) openSettingsModal(); 
-            } catch (e) {}
+            } catch (e) { console.error("Error loading profile:", e); }
         }
-        
-        window.saveProfile = async () => { /* Standard Save */
+
+        window.saveProfile = async () => {
             const name = document.getElementById('profile-name').value.trim();
             const persona = document.getElementById('profile-persona').value.trim();
-            try { await setDoc(doc(db, "users", user.uid), { name, persona }, { merge: true }); userProfile.name = name; userProfile.persona = persona; closeModal('profile-modal'); alert("Profile saved!"); } catch (err) {}
+            try {
+                await setDoc(doc(db, "users", user.uid), { name, persona }, { merge: true });
+                userProfile.name = name;
+                userProfile.persona = persona;
+                closeModal('profile-modal');
+                alert("Profile saved successfully la!");
+            } catch (err) { alert("Error saving profile."); }
         };
-        window.saveApiKey = async () => { /* Standard Key Save */
+
+        window.saveApiKey = async () => {
             const key = document.getElementById('settings-groq-key').value.trim();
-            if (!key) return;
-            try { await setDoc(doc(db, "users", user.uid), { groqKey: key }, { merge: true }); userProfile.groqKey = key; closeModal('settings-modal'); alert("API Key updated!"); } catch (err) {}
+            if (!key) return alert("Please enter a valid key la.");
+            try {
+                await setDoc(doc(db, "users", user.uid), { groqKey: key }, { merge: true });
+                userProfile.groqKey = key;
+                closeModal('settings-modal');
+                alert("API Key updated securely!");
+            } catch (err) { alert("Error saving API key."); }
         };
+
+        window.clearAllHistory = async () => {
+            if (!confirm("Are you sure you want to delete ALL chat history? This cannot be undone la!")) return;
+            try {
+                for (let chat of allUserChats) {
+                    await deleteDoc(doc(db, "chats", chat.docId));
+                }
+                startNewChat();
+                closeModal('settings-modal');
+            } catch (e) { alert("Error clearing history la."); }
+        }
 
         function listenToChats() {
             const q = query(collection(db, "chats"), where("uid", "==", user.uid));
@@ -409,17 +399,23 @@
                 let msgs = [];
                 snap.forEach(d => msgs.push({ docId: d.id, ...d.data() }));
                 msgs.sort((a, b) => (a.time ? a.time.toMillis() : Date.now()) - (b.time ? b.time.toMillis() : Date.now()));
+                
                 allUserChats = msgs;
                 buildSidebarHistory();
-                if(!isGenerating) renderActiveSession();
+                renderActiveSession();
             });
         }
 
         function buildSidebarHistory() {
             const historyList = document.getElementById('history-list');
             historyList.innerHTML = "";
+            
             let sessions = {};
-            allUserChats.forEach(msg => { let sId = msg.sessionId || "old"; if (!sessions[sId]) sessions[sId] = msg.prompt; });
+            allUserChats.forEach(msg => {
+                let sId = msg.sessionId || "old-legacy-chat"; 
+                if (!sessions[sId]) sessions[sId] = msg.prompt; 
+            });
+
             Object.keys(sessions).reverse().forEach(sId => {
                 const title = sessions[sId].length > 25 ? sessions[sId].substring(0, 25) + "..." : sessions[sId];
                 const isActive = (sId === currentSessionId) ? "active" : "";
@@ -430,125 +426,77 @@
         function renderActiveSession() {
             feedBox.innerHTML = "";
             let currentName = userProfile.name || user?.displayName?.split(' ')[0] || "friend";
+            appendAIMsg(`Kuzuzangpo la, ${currentName}! How can DrukTalk AI help you today?`);
             
-            // Welcome AI Message
-            createAIBubble("welcome");
-            document.getElementById("content-welcome").innerHTML = `Kuzuzangpo la, ${currentName}! How can DrukTalk AI help you today?`;
-            
-            const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old") === currentSessionId);
-            sessionMsgs.forEach((data, index) => {
+            const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old-legacy-chat") === currentSessionId);
+            sessionMsgs.forEach(data => {
                 appendUserMsg(data.prompt);
-                createAIBubble(`hist-${index}`);
-                document.getElementById(`content-hist-${index}`).innerHTML = marked.parse(data.response);
-                document.getElementById(`raw-hist-${index}`).innerText = data.response;
+                appendAIMsg(data.response);
             });
-            setTimeout(() => { MathJax.typesetPromise(); }, 100);
             buildSidebarHistory(); 
         }
 
-        window.stopGenerating = () => {
-            if(abortController) {
-                abortController.abort();
-                isGenerating = false;
-                document.getElementById('sendBtn').style.display = 'flex';
-                document.getElementById('stopBtn').style.display = 'none';
-            }
-        };
-
         window.sendMsg = async () => {
-            if (isGenerating) return;
             const input = document.getElementById('userInput');
+            const btn = document.getElementById('sendBtn');
             const val = input.value.trim();
+            
             if (!val || !user) return;
             if (!userProfile.groqKey) return openSettingsModal();
 
-            // Setup UI for generation
             appendUserMsg(val);
+            const tempId = "thinking-" + Date.now();
+            appendAIMsg('<div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>', tempId);
+
             input.value = "";
             input.style.height = "auto";
-            document.getElementById('sendBtn').style.display = 'none';
-            document.getElementById('stopBtn').style.display = 'flex';
-            isGenerating = true;
+            btn.disabled = true;
 
-            const tempId = "msg-" + Date.now();
-            createAIBubble(tempId);
-            const contentBox = document.getElementById(`content-${tempId}`);
-            const rawBox = document.getElementById(`raw-${tempId}`);
-            let aiFullText = "";
-
-            // Prepare context
             const userName = userProfile.name || user.displayName;
-            let systemInstruction = `You are DrukTalk AI from Bhutan. Creator: Jigdral Namgyel from Trashi Yangtse. You are talking to ${userName}. Format your math using $$ for blocks and $ for inline.`;
-            if (userProfile.persona) systemInstruction += ` STRICT INSTRUCTIONS: ${userProfile.persona}`;
+            
+            let systemInstruction = `You are DrukTalk AI from Bhutan. Your founder and creator is Jigdral Namgyel from Trashi Yangtse, Bhutan. You are talking to a user named ${userName}. Answer intelligently.`;
+            
+            if (userProfile.persona) {
+                systemInstruction += ` You MUST strictly follow these custom instructions: ${userProfile.persona}`;
+            }
 
             let messagesPayload = [{"role": "system", "content": systemInstruction}];
-            const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old") === currentSessionId);
-            sessionMsgs.forEach(m => { messagesPayload.push({"role": "user", "content": m.prompt}); messagesPayload.push({"role": "assistant", "content": m.response}); });
+            const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old-legacy-chat") === currentSessionId);
+            sessionMsgs.forEach(m => {
+                messagesPayload.push({"role": "user", "content": m.prompt});
+                messagesPayload.push({"role": "assistant", "content": m.response});
+            });
             messagesPayload.push({"role": "user", "content": val});
 
-            // Stream from Groq API
-            abortController = new AbortController();
             try {
                 const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: { "Authorization": `Bearer ${userProfile.groqKey}`, "Content-Type": "application/json" },
-                    signal: abortController.signal,
                     body: JSON.stringify({
                         "model": "llama-3.3-70b-versatile",
-                        "messages": messagesPayload,
-                        "stream": true // Enable Streaming!
+                        "messages": messagesPayload
                     })
                 });
 
-                if (!response.ok) throw new Error("API Error");
+                const data = await response.json();
+                if (!response.ok || data.error) throw new Error(data.error?.message || "Invalid API response.");
+                const aiText = data.choices[0].message.content;
 
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder("utf-8");
-                contentBox.innerHTML = ""; // Clear typing dots
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
-                    
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split("\n");
-                    
-                    for (let line of lines) {
-                        if (line.startsWith("data: ") && line !== "data: [DONE]") {
-                            try {
-                                const data = JSON.parse(line.slice(6));
-                                if (data.choices[0].delta.content) {
-                                    aiFullText += data.choices[0].delta.content;
-                                    // Parse markdown and math continuously
-                                    contentBox.innerHTML = marked.parse(aiFullText);
-                                    rawBox.innerText = aiFullText;
-                                    scrollToBottom();
-                                }
-                            } catch (e) {}
-                        }
-                    }
-                }
-                
-                // Finalize Math Rendering
-                MathJax.typesetPromise([contentBox]);
-
-                // Save to Firebase
-                await addDoc(collection(db, "chats"), { uid: user.uid, sessionId: currentSessionId, prompt: val, response: aiFullText, time: serverTimestamp() });
+                await addDoc(collection(db, "chats"), {
+                    uid: user.uid, 
+                    sessionId: currentSessionId, 
+                    prompt: val, 
+                    response: aiText, 
+                    time: serverTimestamp()
+                });
 
             } catch (err) {
-                if (err.name === 'AbortError') {
-                    aiFullText += "\n\n*[You stopped the response]*";
-                    contentBox.innerHTML = marked.parse(aiFullText);
-                    rawBox.innerText = aiFullText;
-                    // Save partial response to DB
-                    await addDoc(collection(db, "chats"), { uid: user.uid, sessionId: currentSessionId, prompt: val, response: aiFullText, time: serverTimestamp() });
-                } else {
-                    contentBox.innerHTML = `<span style="color:#ef4444;">Error la: Check your API Key or connection.</span>`;
-                }
+                console.error("Groq Error:", err);
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Error la: ${err.message}</div>`;
             } finally {
-                isGenerating = false;
-                document.getElementById('sendBtn').style.display = 'flex';
-                document.getElementById('stopBtn').style.display = 'none';
+                btn.disabled = false;
             }
         };
     </script>
