@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrukLink AI</title>
+    <title>DrukTalk AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* True ChatGPT / Gemini Modern UI */
@@ -29,6 +29,9 @@
         /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; }
         
+        .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: white; }
+        .sidebar-brand img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+
         .new-chat-btn { display: flex; align-items: center; gap: 10px; padding: 12px 15px; width: 100%; border-radius: 8px; cursor: pointer; background: transparent; color: var(--text-main); border: none; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: left; margin-bottom: 20px;}
         .new-chat-btn:hover { background: var(--user-msg-bg); }
         
@@ -49,7 +52,9 @@
 
         .msg-bubble.user { background: var(--user-msg-bg); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-size: 16px; line-height: 1.5; max-width: 70%; word-wrap: break-word; }
         
-        .ai-avatar { width: 32px; height: 32px; border-radius: 50%; background: white; color: #10a37f; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+        .ai-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; overflow: hidden; background: #fff;}
+        .ai-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
         .msg-bubble.ai { background: transparent; color: var(--text-main); font-size: 16px; line-height: 1.6; max-width: 85%; word-wrap: break-word; padding-top: 5px;}
 
         /* Input Area */
@@ -81,7 +86,10 @@
 
     <div id="auth-screen">
         <div class="login-card">
-            <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Welcome to DrukLink AI</h2>
+            <div style="margin-bottom: 20px;">
+                <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+            </div>
+            <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Welcome to DrukTalk AI</h2>
             <p style="color: var(--text-muted); font-size: 14px;">Log in with your Google account to continue</p>
             <button class="google-btn" onclick="login()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
@@ -90,6 +98,12 @@
     </div>
 
     <aside class="sidebar" id="sidebar">
+        <!-- New Sidebar Branding -->
+        <div class="sidebar-brand">
+            <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="Logo">
+            DrukTalk AI
+        </div>
+
         <button class="new-chat-btn" onclick="location.reload()">
             <i class="fas fa-pen"></i> New chat
         </button>
@@ -107,22 +121,24 @@
         
         <div class="mobile-header">
             <i class="fas fa-bars" onclick="toggleSidebar()" style="cursor: pointer; font-size: 18px;"></i>
-            <span>DrukLink AI</span>
+            <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+            <span>DrukTalk AI</span>
         </div>
 
         <div id="chat-screen" class="screen">
             <div id="chat-feed">
                 <div class="chat-content-limit" id="chat-limit-box">
-                    </div>
+                    <!-- Messages go here -->
+                </div>
             </div>
             
             <div class="input-wrap">
                 <div class="input-box">
-                    <textarea id="userInput" placeholder="Message DrukLink AI..." rows="1" oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
+                    <textarea id="userInput" placeholder="Message DrukTalk AI..." rows="1" oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
                     <button id="sendBtn" onclick="sendMsg()" class="send-btn"><i class="fas fa-arrow-up"></i></button>
                 </div>
                 <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px;">
-                    DrukLink AI can make mistakes. Consider verifying important information.
+                    DrukTalk AI can make mistakes. Consider verifying important information.
                 </div>
             </div>
         </div>
@@ -201,7 +217,7 @@
             const idAttr = id ? `id="${id}"` : "";
             feedBox.innerHTML += `
                 <div class="msg-row ai" ${idAttr}>
-                    <div class="ai-avatar">D</div>
+                    <div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div>
                     <div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div>
                 </div>`;
             scrollToBottom();
@@ -258,12 +274,12 @@
                         "Authorization": `Bearer ${openRouterKey}`,
                         "Content-Type": "application/json",
                         "HTTP-Referer": window.location.href, 
-                        "X-Title": "DrukLink AI"
+                        "X-Title": "DrukTalk AI"
                     },
                     body: JSON.stringify({
                         "model": "google/gemini-1.5-flash", 
                         "messages": [
-                            {"role": "system", "content": "You are DrukLink AI from Bhutan. Answer concisely."},
+                            {"role": "system", "content": "You are DrukTalk AI from Bhutan. Answer concisely."},
                             {"role": "user", "content": val}
                         ]
                     })
@@ -279,7 +295,7 @@
                 const aiText = data.choices[0].message.content;
 
                 // Update UI directly so you don't wait for Firebase!
-                document.getElementById(tempId).innerHTML = `<div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
                 // Save to Firebase silently in the background
                 await addDoc(collection(db, "chats"), {
@@ -288,7 +304,7 @@
 
             } catch (err) {
                 console.error("OpenRouter Error:", err);
-                document.getElementById(tempId).innerHTML = `<div class="msg-bubble ai" style="color:#ef4444;">Connection Error la: Check if your API Key is an OpenRouter key, not a Google key!</div>`;
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Connection Error la: Check if your API Key is an OpenRouter key, not a Google key!</div>`;
             } finally {
                 btn.disabled = false;
             }
@@ -307,7 +323,7 @@
                 });
 
                 feedBox.innerHTML = "";
-                appendAIMsg("Kuzuzangpo la! I am DrukLink AI. How can I help you today?");
+                appendAIMsg("Kuzuzangpo la! I am DrukTalk AI. How can I help you today?");
                 
                 msgs.forEach(data => {
                     appendUserMsg(data.prompt);
