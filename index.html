@@ -255,7 +255,6 @@
         let currentSessionId = "session-" + Date.now();
         let allUserChats = []; 
 
-        // --- Theme Management ---
         window.updateThemePreference = async (themeValue) => {
             if (themeValue === "light") {
                 document.body.classList.add("light-theme");
@@ -272,7 +271,6 @@
             }
         };
 
-        // --- UI & Modal Helpers ---
         window.autoResize = (textarea) => { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
         window.handleEnter = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendMsg(); } }
         window.toggleSidebar = () => { const s = document.getElementById('sidebar'); s.style.left = s.style.left === '0px' ? '-260px' : '0px'; }
@@ -290,7 +288,6 @@
             document.getElementById('profile-modal').classList.remove('hidden');
         }
 
-        // --- Chat Rendering Logic ---
         const feedBox = document.getElementById('chat-limit-box');
         
         function appendUserMsg(text) {
@@ -299,7 +296,6 @@
         }
 
         function appendAIMsg(text, id = null) {
-            // UPDATED NEW IMAGE LINK FOR AVATAR
             feedBox.innerHTML += `<div class="msg-row ai" ${id ? `id="${id}"` : ""}><div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png"></div><div class="msg-bubble ai">${text.replace(/\n/g, '<br>')}</div></div>`;
             scrollToBottom();
         }
@@ -317,7 +313,6 @@
             if(window.innerWidth <= 768) toggleSidebar(); 
         };
 
-        // --- Firebase Auth & User Data ---
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -385,7 +380,6 @@
             } catch (e) { alert("Error clearing history la."); }
         }
 
-        // --- Fetching & Organizing History ---
         function listenToChats() {
             const q = query(collection(db, "chats"), where("uid", "==", user.uid));
             onSnapshot(q, (snap) => {
@@ -429,7 +423,7 @@
             buildSidebarHistory(); 
         }
 
-        // --- THE AI SEND FUNCTION ---
+        // --- THE AI SEND FUNCTION WITH FOUNDER KNOWLEDGE ADDED ---
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
@@ -447,7 +441,10 @@
             btn.disabled = true;
 
             const userName = userProfile.name || user.displayName;
-            let systemInstruction = `You are DrukTalk AI from Bhutan. You are talking to a user named ${userName}. Answer intelligently.`;
+            
+            // ---> FOUNDER DETAILS ADDED HERE <---
+            let systemInstruction = `You are DrukTalk AI from Bhutan. Your founder and creator is Jigdral Namgyel from Trashi Yangtse, Bhutan. You are talking to a user named ${userName}. Answer intelligently.`;
+            
             if (userProfile.persona) {
                 systemInstruction += ` You MUST strictly follow these custom instructions: ${userProfile.persona}`;
             }
@@ -474,7 +471,6 @@
                 if (!response.ok || data.error) throw new Error(data.error?.message || "Invalid API response.");
                 const aiText = data.choices[0].message.content;
 
-                // UPDATED NEW IMAGE LINK FOR AVATAR
                 document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
                 await addDoc(collection(db, "chats"), {
@@ -487,7 +483,6 @@
 
             } catch (err) {
                 console.error("Groq Error:", err);
-                // UPDATED NEW IMAGE LINK FOR AVATAR
                 document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/RPD5045T.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Error la: ${err.message}</div>`;
             } finally {
                 btn.disabled = false;
