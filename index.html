@@ -152,7 +152,7 @@
                     <button id="sendBtn" onclick="sendMsg()" class="send-btn"><i class="fas fa-arrow-up"></i></button>
                 </div>
                 <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px;">
-                    Powered by Groq Llama 3 • DrukTalk AI can make mistakes.
+                    Powered by Groq Llama 3.3 • DrukTalk AI can make mistakes.
                 </div>
             </div>
         </div>
@@ -161,7 +161,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        // Added doc, getDoc, setDoc to manage the user's specific database file
         import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         // Firebase Config
@@ -304,7 +303,7 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        "model": "llama3-8b-8192", // Fast Llama 3 model on Groq
+                        "model": "llama-3.3-70b-versatile", // THE NEW DEFAULT MODEL!
                         "messages": [
                             {"role": "system", "content": "You are DrukTalk AI from Bhutan. Answer intelligently and nicely."},
                             {"role": "user", "content": val}
@@ -348,7 +347,7 @@
                 });
 
                 feedBox.innerHTML = "";
-                appendAIMsg("Kuzuzangpo la! I am DrukTalk AI. My brain is now powered by Groq Llama 3. How can I help you today?");
+                appendAIMsg("Kuzuzangpo la! I am DrukTalk AI. How can I help you today?");
                 
                 msgs.forEach(data => {
                     appendUserMsg(data.prompt);
