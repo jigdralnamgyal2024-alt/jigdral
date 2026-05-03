@@ -15,108 +15,114 @@
             --secondary: #a8a8a8;
         }
 
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-top: 70px; }
         .hidden { display: none !important; }
         
-        /* Navigation */
-        nav { 
-            background: var(--bg); border-bottom: 1px solid var(--border);
-            padding: 15px 20px; display: flex; justify-content: space-between;
-            align-items: center; position: sticky; top: 0; z-index: 100;
+        /* Top Navigation Bar */
+        .top-nav { 
+            background: rgba(0, 0, 0, 0.95); 
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center; 
+            position: fixed; 
+            top: 0; 
+            left: 0;
+            right: 0;
+            height: 60px;
+            z-index: 1000;
         }
-        .logo { font-family: 'Brush Script MT', cursive; font-size: 2rem; }
+        
+        .logo { font-family: 'Brush Script MT', cursive; font-size: 2.2rem; cursor: pointer; }
 
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: var(--bg);
-            border-top: 1px solid var(--border); display: flex; 
-            justify-content: space-around; padding: 15px 0; z-index: 100;
-        }
-        .nav-item { font-size: 1.4rem; cursor: pointer; color: var(--secondary); }
+        .nav-links { display: flex; gap: 25px; align-items: center; }
+        .nav-item { font-size: 1.3rem; cursor: pointer; color: var(--secondary); transition: 0.2s; }
+        .nav-item:hover { color: var(--accent); }
         .nav-item.active { color: var(--text); }
 
         /* Screens */
-        .screen { max-width: 500px; margin: 0 auto; padding: 20px; }
-        .page-title { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; }
+        .screen { max-width: 500px; margin: 20px auto; padding: 10px; }
+        .page-title { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+        /* Post Creator */
+        .post-creator { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 30px; }
+        textarea { width: 100%; background: #000; color: white; border: 1px solid var(--border); padding: 10px; border-radius: 5px; resize: none; margin-bottom: 10px; }
 
         /* Post Cards */
-        .post { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
-        .post-header { padding: 10px; display: flex; align-items: center; gap: 10px; }
-        .post-header img { width: 30px; height: 30px; border-radius: 50%; }
-        .post-img { width: 100%; display: block; }
+        .post { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px; overflow: hidden; }
+        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
+        .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
+        .post-img { width: 100%; display: block; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
         .post-content { padding: 12px; }
 
-        /* Placeholder Lists (Friends, Notifs, Messages) */
-        .list-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        /* Lists */
+        .list-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .list-item img { width: 45px; height: 45px; border-radius: 50%; }
-        .list-info b { display: block; font-size: 0.9rem; }
-        .list-info span { color: var(--secondary); font-size: 0.8rem; }
-
-        /* Profile */
-        .profile-top { text-align: center; padding: 20px 0; }
-        .profile-top img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); }
-
-        button { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
+        
+        button { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
+        button:hover { opacity: 0.8; }
+        button.secondary { background: #262626; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h1 style="font-family: 'Brush Script MT', cursive; font-size: 4rem;">DrukLink</h1>
-        <button onclick="login()" style="width: auto; padding: 10px 30px;">Login with Google</button>
+    <div id="auth-screen" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 0;">
+        <h1 style="font-family: 'Brush Script MT', cursive; font-size: 5rem; margin-bottom: 10px;">DrukLink</h1>
+        <p style="color: var(--secondary); margin-bottom: 30px;">Connect with friends in Bhutan and beyond.</p>
+        <button onclick="login()" style="font-size: 1.1rem; padding: 12px 40px;"><i class="fab fa-google"></i> Sign in with Google</button>
     </div>
 
     <div id="app" class="hidden">
-        <nav>
-            <div class="logo">DrukLink</div>
-            <i class="fas fa-sign-out-alt" onclick="logout()" style="color: var(--secondary); cursor: pointer;"></i>
-        </nav>
+        <header class="top-nav">
+            <div class="logo" onclick="showScreen('home', document.querySelector('.fa-home'))">DrukLink</div>
+            
+            <div class="nav-links">
+                <i class="fas fa-home nav-item active" title="Home" onclick="showScreen('home', this)"></i>
+                <i class="far fa-search nav-item" title="Explore" onclick="showScreen('friends', this)"></i>
+                <i class="far fa-heart nav-item" title="Activity" onclick="showScreen('notif', this)"></i>
+                <i class="far fa-comment nav-item" title="Messages" onclick="showScreen('msg', this)"></i>
+                <i class="far fa-user nav-item" title="Profile" onclick="showScreen('profile', this)"></i>
+                <i class="fas fa-sign-out-alt nav-item" style="font-size: 1.1rem; margin-left: 10px;" title="Logout" onclick="logout()"></i>
+            </div>
+        </header>
 
         <div id="home-screen" class="screen">
-            <div class="post-creator" style="margin-bottom: 30px;">
-                <input type="file" id="post-file" class="hidden" accept="image/*">
-                <button onclick="document.getElementById('post-file').click()" style="background: #262626; margin-bottom: 10px;">Select Photo</button>
-                <textarea id="post-caption" placeholder="Write a caption..." style="width:100%; background: #121212; color:white; border: 1px solid #262626; padding: 10px; border-radius: 5px;"></textarea>
-                <button id="upload-btn" onclick="uploadPost()" style="margin-top: 10px;">Share Post</button>
+            <div class="post-creator">
+                <textarea id="post-caption" rows="2" placeholder="What's happening, la?"></textarea>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <input type="file" id="post-file" class="hidden" accept="image/*">
+                    <button class="secondary" onclick="document.getElementById('post-file').click()"><i class="fas fa-camera"></i> Photo</button>
+                    <button id="upload-btn" onclick="uploadPost()">Post</button>
+                </div>
+                <div id="file-name" style="font-size: 0.8rem; color: var(--accent); margin-top: 5px;"></div>
             </div>
             <div id="main-feed"></div>
+        </div>
+
+        <div id="friends-screen" class="screen hidden">
+            <div class="page-title">Explore Users</div>
+            <div id="users-list"></div>
         </div>
 
         <div id="notif-screen" class="screen hidden">
             <div class="page-title">Notifications</div>
             <div id="notif-list">
-                <div class="list-item">
-                    <img src="https://via.placeholder.com/45" alt="">
-                    <div class="list-info"><b>Welcome!</b><span>Welcome to DrukLink! Start following friends.</span></div>
-                </div>
+                <p style="color: var(--secondary); text-align: center;">No new notifications la.</p>
             </div>
-        </div>
-
-        <div id="friends-screen" class="screen hidden">
-            <div class="page-title">Find Friends</div>
-            <div id="users-list"></div>
         </div>
 
         <div id="msg-screen" class="screen hidden">
-            <div class="page-title">Messages</div>
-            <p style="color: var(--secondary); text-align: center;">Your direct messages will appear here.</p>
+            <div class="page-title">Direct Messages</div>
+            <p style="color: var(--secondary); text-align: center;">Choose a friend to start chatting.</p>
         </div>
 
         <div id="profile-screen" class="screen hidden">
-            <div class="profile-top">
-                <img id="my-avatar" src="">
-                <h2 id="my-name" style="margin-top: 10px;"></h2>
-                <p style="color: var(--secondary);">@druklink_user</p>
+            <div class="page-title">My Profile</div>
+            <div style="text-align: center; padding: 20px;">
+                <img id="my-avatar" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent);">
+                <h2 id="my-name" style="margin-top: 15px;"></h2>
             </div>
-            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
-            <div id="my-posts-grid"></div>
-        </div>
-
-        <div class="bottom-nav">
-            <i class="fas fa-home nav-item active" onclick="showScreen('home', this)"></i>
-            <i class="fas fa-search nav-item" onclick="showScreen('friends', this)"></i>
-            <i class="far fa-heart nav-item" onclick="showScreen('notif', this)"></i>
-            <i class="far fa-comment nav-item" onclick="showScreen('msg', this)"></i>
-            <i class="far fa-user nav-item" onclick="showScreen('profile', this)"></i>
         </div>
     </div>
 
@@ -125,6 +131,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+        // CONFIG (Using your keys)
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -135,12 +142,12 @@
         };
         const imgBBKey = "b5f2098fa836fe7090138a418d294866";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        const firebaseApp = initializeApp(firebaseConfig);
+        const auth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp);
         let user = null;
 
-        // AUTH FUNCTIONS
+        // AUTH
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -151,68 +158,92 @@
             if(u) {
                 document.getElementById('my-avatar').src = u.photoURL;
                 document.getElementById('my-name').innerText = u.displayName;
-                // Save user to DB
                 await setDoc(doc(db, "users", u.uid), { name: u.displayName, pic: u.photoURL }, { merge: true });
                 loadFeed();
                 loadUsers();
             }
         });
 
-        // SCREEN SWITCHER
+        // SCREEN NAV
         window.showScreen = (screenId, el) => {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
             document.getElementById(screenId + '-screen').classList.remove('hidden');
+            
             document.querySelectorAll('.nav-item').forEach(i => {
                 i.classList.remove('active', 'fas');
                 i.classList.add('far');
             });
-            el.classList.add('active', 'fas');
-            el.classList.remove('far');
+            
+            if(el) {
+                el.classList.add('active', 'fas');
+                el.classList.remove('far');
+            }
+            window.scrollTo(0,0);
         };
 
-        // POSTING
+        // IMAGE PREVIEW UI
+        document.getElementById('post-file').onchange = (e) => {
+            const name = e.target.files[0]?.name;
+            document.getElementById('file-name').innerText = name ? "Selected: " + name : "";
+        }
+
+        // UPLOAD
         window.uploadPost = async () => {
             const file = document.getElementById('post-file').files[0];
             const caption = document.getElementById('post-caption').value;
-            if(!file) return alert("Select a photo first!");
+            if(!file || !caption) return alert("Please add both a photo and a caption, la!");
 
-            document.getElementById('upload-btn').innerText = "Uploading...";
+            const btn = document.getElementById('upload-btn');
+            btn.innerText = "Posting...";
+            btn.disabled = true;
+
             const formData = new FormData();
             formData.append("image", file);
             
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: formData });
-            const data = await res.json();
+            try {
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: formData });
+                const data = await res.json();
 
-            await addDoc(collection(db, "posts"), {
-                uid: user.uid,
-                name: user.displayName,
-                pic: user.photoURL,
-                img: data.data.url,
-                caption: caption,
-                likes: [],
-                time: serverTimestamp()
-            });
+                await addDoc(collection(db, "posts"), {
+                    uid: user.uid,
+                    name: user.displayName,
+                    pic: user.photoURL,
+                    img: data.data.url,
+                    caption: caption,
+                    likes: [],
+                    time: serverTimestamp()
+                });
 
-            document.getElementById('upload-btn').innerText = "Share Post";
-            document.getElementById('post-caption').value = "";
+                document.getElementById('post-caption').value = "";
+                document.getElementById('post-file').value = "";
+                document.getElementById('file-name').innerText = "";
+                showScreen('home', document.querySelector('.fa-home'));
+            } catch (e) {
+                alert("Upload failed!");
+            }
+            btn.innerText = "Post";
+            btn.disabled = false;
         };
 
-        // LOAD FEED
+        // FEED & LIKES
         function loadFeed() {
             onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
                 const feed = document.getElementById('main-feed');
                 feed.innerHTML = "";
                 snap.forEach(d => {
                     const p = d.data();
-                    const liked = p.likes.includes(user.uid);
+                    const liked = p.likes?.includes(user.uid);
                     feed.innerHTML += `
                         <div class="post">
                             <div class="post-header"><img src="${p.pic}"> <b>${p.name}</b></div>
-                            <img src="${p.img}" class="post-img">
+                            <img src="${p.img}" class="post-img" ondblclick="likePost('${d.id}')">
                             <div class="post-content">
-                                <i class="${liked ? 'fas' : 'far'} fa-heart" onclick="likePost('${d.id}')" style="color:${liked ? 'red' : 'white'}; cursor:pointer; font-size: 1.2rem;"></i>
-                                <div style="margin-top:5px;"><b>${p.likes.length} likes</b></div>
-                                <div><b>${p.name}</b> ${p.caption}</div>
+                                <div style="display: flex; gap: 15px; margin-bottom: 8px;">
+                                    <i class="${liked ? 'fas' : 'far'} fa-heart" onclick="likePost('${d.id}')" style="color:${liked ? '#ff3040' : 'white'}; cursor:pointer; font-size: 1.4rem;"></i>
+                                    <i class="far fa-comment" style="font-size: 1.4rem; cursor:pointer;"></i>
+                                </div>
+                                <b>${p.likes?.length || 0} likes</b>
+                                <div style="margin-top: 5px;"><b>${p.name}</b> ${p.caption}</div>
                             </div>
                         </div>`;
                 });
@@ -221,8 +252,9 @@
 
         window.likePost = async (id) => {
             const ref = doc(db, "posts", id);
-            const docSnap = await getDoc(ref);
-            if(docSnap.data().likes.includes(user.uid)) {
+            const snap = await getDoc(ref);
+            const likes = snap.data().likes || [];
+            if(likes.includes(user.uid)) {
                 await updateDoc(ref, { likes: arrayRemove(user.uid) });
             } else {
                 await updateDoc(ref, { likes: arrayUnion(user.uid) });
@@ -239,8 +271,8 @@
                         list.innerHTML += `
                             <div class="list-item">
                                 <img src="${u.pic}">
-                                <div class="list-info"><b>${u.name}</b><span>Active now</span></div>
-                                <button style="width: auto; margin-left: auto; padding: 5px 15px;">Follow</button>
+                                <div style="flex-grow: 1;"><b>${u.name}</b></div>
+                                <button class="secondary" style="padding: 5px 12px;">Follow</button>
                             </div>`;
                     }
                 });
