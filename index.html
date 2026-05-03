@@ -124,10 +124,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile as firebaseUpdateProfile } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // 1. Hardcoded Firebase Config
+        // 1. Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -142,9 +142,9 @@
         const db = getFirestore(app);
         
         let user = null;
-        let aiModel = null; // Will hold our AI brain once we get the key
+        let aiModel = null;
 
-        // 2. Fetch Gemini Key from Vercel
+        // 2. Load API Key securely
         async function startAI() {
             try {
                 const response = await fetch('/api/config');
@@ -154,25 +154,19 @@
                     const genAI = new GoogleGenerativeAI(data.apiKey);
                     aiModel = genAI.getGenerativeModel({ 
                         model: "gemini-1.5-flash",
-                        systemInstruction: "You are DrukLink AI, a helpful, polite assistant from Bhutan. Always greet users with 'Kuzuzangpo la'. Answer clearly and concisely."
+                        systemInstruction: "You are DrukLink AI, a helpful assistant from Bhutan. Always greet users with 'Kuzuzangpo la'."
                     });
                     document.getElementById('ai-status').innerText = "Connected";
-                    document.getElementById('ai-status').style.color = "#22c55e"; // Green
-                    console.log("DrukLink AI is ready la!");
-                } else {
-                    throw new Error("No API key returned from server");
+                    document.getElementById('ai-status').style.color = "#22c55e";
                 }
             } catch (err) {
-                console.error("Could not load AI key:", err);
-                document.getElementById('ai-status').innerText = "Disconnected (Check Server)";
-                document.getElementById('ai-status').style.color = "#ef4444"; // Red
+                console.error("AI Error:", err);
+                document.getElementById('ai-status').innerText = "Failed to Connect";
+                document.getElementById('ai-status').style.color = "#ef4444";
             }
         }
-
-        // Initialize the AI fetch immediately
         startAI();
 
-        // 3. App Logic & Navigation
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -184,6 +178,7 @@
                 document.getElementById('profile-pic').src = u.photoURL;
                 document.getElementById('display-name-input').value = u.displayName || "User";
                 document.getElementById('side-logo').innerText = "Hello, " + (u.displayName ? u.displayName.split(' ')[0] : "User");
+                
                 loadMessages();
                 loadHistory();
             } else {
@@ -199,30 +194,37 @@
             el.classList.add('active');
         };
 
-        // 4. Send Message Function
+        // 3. FIXED SEND FUNCTION - SHOWS IMMEDIATELY
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
+            const feed = document.getElementById('chat-feed');
             const val = input.value.trim();
             
             if (!val || !user) return;
 
-            // Safety check in case Vercel API didn't load the key
             if (!aiModel) {
-                alert("Please wait a moment la, the AI is still connecting to the server!");
+                alert("Please wait la, the AI is still connecting!");
                 return;
             }
 
+            // --- INSTANT VISUAL UPDATE ---
+            // Put user message on screen immediately
+            feed.innerHTML += `<div class="msg user">${val}</div>`;
+            // Add a temporary "Thinking" message
+            const tempId = "thinking-" + Date.now();
+            feed.innerHTML += `<div class="msg ai" id="${tempId}"><i class="fas fa-circle-notch fa-spin"></i> DrukLink AI is thinking...</div>`;
+            feed.scrollTop = feed.scrollHeight; // Scroll to bottom
+
             input.value = "";
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
 
             try {
-                // Get AI Response
+                // Wait for AI to reply
                 const result = await aiModel.generateContent(val);
                 const aiText = result.response.text();
 
-                // Save to Firestore
+                // Save to Firebase (this will refresh the screen automatically)
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid,
                     prompt: val,
@@ -231,43 +233,63 @@
                 });
             } catch (err) {
                 console.error(err);
-                await addDoc(collection(db, "chats"), {
-                    uid: user.uid,
-                    prompt: val,
-                    response: "System Error la: Could not generate response. Please check if the API key is active.",
-                    time: serverTimestamp()
-                });
+                document.getElementById(tempId).innerHTML = "System Error la: Could not generate response.";
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
         };
 
-        // 5. Load Real-time Feeds
+        // 4. FIXED LOADING - REMOVED FIREBASE SORTING ERROR
         function loadMessages() {
-            const q = query(collection(db, "chats"), where("uid", "==", user.uid), orderBy("time", "asc"));
+            // Notice: orderBy is REMOVED to prevent Firebase Index errors
+            const q = query(collection(db, "chats"), where("uid", "==", user.uid));
+            
             onSnapshot(q, (snap) => {
                 const feed = document.getElementById('chat-feed');
+                
+                // Get all messages into an array
+                let msgs = [];
+                snap.forEach(d => msgs.push(d.data()));
+
+                // Sort them using JavaScript instead of Firebase
+                msgs.sort((a, b) => {
+                    let timeA = a.time ? a.time.toMillis() : Date.now();
+                    let timeB = b.time ? b.time.toMillis() : Date.now();
+                    return timeA - timeB; // Oldest to newest
+                });
+
+                // Clear feed and rebuild
                 feed.innerHTML = '<div class="msg ai">Kuzuzangpo la! I am DrukLink AI. How can I help you today?</div>';
-                snap.forEach(d => {
-                    const data = d.data();
+                msgs.forEach(data => {
                     feed.innerHTML += `<div class="msg user">${data.prompt}</div>`;
                     feed.innerHTML += `<div class="msg ai">${data.response}</div>`;
                 });
+                
                 feed.scrollTop = feed.scrollHeight;
             });
         }
 
         function loadHistory() {
-            const q = query(collection(db, "chats"), where("uid", "==", user.uid), orderBy("time", "desc"));
+            const q = query(collection(db, "chats"), where("uid", "==", user.uid));
+            
             onSnapshot(q, (snap) => {
                 const list = document.getElementById('history-list');
+                
+                let msgs = [];
+                snap.forEach(d => msgs.push(d.data()));
+
+                // Sort newest to oldest
+                msgs.sort((a, b) => {
+                    let timeA = a.time ? a.time.toMillis() : Date.now();
+                    let timeB = b.time ? b.time.toMillis() : Date.now();
+                    return timeB - timeA; 
+                });
+
                 list.innerHTML = "";
-                snap.forEach(d => {
-                    const data = d.data();
+                msgs.forEach(data => {
                     list.innerHTML += `
                         <div class="card">
-                            <small>${data.time?.toDate().toLocaleString() || 'Syncing...'}</small>
+                            <small>${data.time?.toDate().toLocaleString() || 'Just now'}</small>
                             <p><b>Prompt:</b> ${data.prompt}</p>
                             <p><b>AI:</b> ${data.response}</p>
                         </div>`;
