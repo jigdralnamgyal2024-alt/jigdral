@@ -7,90 +7,124 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0b0b0b;
-            --card: #161616;
+            --bg: #000000;
+            --card: #121212;
             --border: #262626;
             --accent: #0095f6;
             --text: #ffffff;
+            --secondary: #a8a8a8;
         }
 
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 70px; }
         .hidden { display: none !important; }
         
-        /* Nav */
+        /* Navigation */
         nav { 
-            background: rgba(0,0,0,0.8); border-bottom: 1px solid var(--border);
-            padding: 10px 20px; display: flex; justify-content: space-between;
+            background: var(--bg); border-bottom: 1px solid var(--border);
+            padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; position: sticky; top: 0; z-index: 100;
         }
-        .logo { font-family: 'Brush Script MT', cursive; font-size: 2rem; cursor: pointer; }
+        .logo { font-family: 'Brush Script MT', cursive; font-size: 2rem; }
 
-        /* Login Section */
-        #auth-screen { 
-            height: 90vh; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; 
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: var(--bg);
+            border-top: 1px solid var(--border); display: flex; 
+            justify-content: space-around; padding: 15px 0; z-index: 100;
         }
-        .btn-google { 
-            background: var(--accent); color: white; padding: 12px 24px; 
-            border-radius: 8px; cursor: pointer; font-weight: bold; border: none;
-        }
+        .nav-item { font-size: 1.4rem; cursor: pointer; color: var(--secondary); }
+        .nav-item.active { color: var(--text); }
 
-        /* Post Creator */
-        .create-box {
-            background: var(--card); border: 1px solid var(--border);
-            max-width: 500px; margin: 20px auto; padding: 15px; border-radius: 12px;
-        }
-        textarea { 
-            width: 100%; background: none; color: white; border: none; 
-            resize: none; font-size: 1rem; padding: 10px 0;
-        }
-        .controls { display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Feed */
-        #feed { max-width: 500px; margin: 0 auto; padding-bottom: 50px; }
-        .post { background: var(--card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
-        .post-header img { width: 32px; height: 32px; border-radius: 50%; }
-        .post-img { width: 100%; display: block; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .post-info { padding: 12px; }
-        .like-btn { font-size: 1.5rem; cursor: pointer; transition: 0.2s; }
-        .like-btn.active { color: #ff3040; }
+        /* Screens */
+        .screen { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .page-title { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; }
+
+        /* Post Cards */
+        .post { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; }
+        .post-header { padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .post-header img { width: 30px; height: 30px; border-radius: 50%; }
+        .post-img { width: 100%; display: block; }
+        .post-content { padding: 12px; }
+
+        /* Placeholder Lists (Friends, Notifs, Messages) */
+        .list-item { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .list-item img { width: 45px; height: 45px; border-radius: 50%; }
+        .list-info b { display: block; font-size: 0.9rem; }
+        .list-info span { color: var(--secondary); font-size: 0.8rem; }
+
+        /* Profile */
+        .profile-top { text-align: center; padding: 20px 0; }
+        .profile-top img { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--border); }
+
+        button { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <nav id="nav-bar" class="hidden">
-        <div class="logo">DrukLink</div>
-        <button id="logout-btn" style="color: #a8a8a8; cursor: pointer; background:none; border:none;">Logout</button>
-    </nav>
-
-    <div id="auth-screen">
+    <div id="auth-screen" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <h1 style="font-family: 'Brush Script MT', cursive; font-size: 4rem;">DrukLink</h1>
-        <button class="btn-google" id="login-btn"><i class="fab fa-google"></i> Login with Google</button>
+        <button onclick="login()" style="width: auto; padding: 10px 30px;">Login with Google</button>
     </div>
 
-    <main id="app" class="hidden">
-        <div class="create-box">
-            <textarea id="caption" placeholder="What's on your mind?"></textarea>
-            <div id="preview-container" style="margin-bottom:10px;"></div>
-            <div class="controls">
-                <label style="cursor:pointer; color: var(--accent);">
-                    <i class="fas fa-image"></i> Add Photo
-                    <input type="file" id="file-input" accept="image/*" class="hidden">
-                </label>
-                <button id="share-btn" class="btn-google" style="padding: 8px 16px;">Post</button>
+    <div id="app" class="hidden">
+        <nav>
+            <div class="logo">DrukLink</div>
+            <i class="fas fa-sign-out-alt" onclick="logout()" style="color: var(--secondary); cursor: pointer;"></i>
+        </nav>
+
+        <div id="home-screen" class="screen">
+            <div class="post-creator" style="margin-bottom: 30px;">
+                <input type="file" id="post-file" class="hidden" accept="image/*">
+                <button onclick="document.getElementById('post-file').click()" style="background: #262626; margin-bottom: 10px;">Select Photo</button>
+                <textarea id="post-caption" placeholder="Write a caption..." style="width:100%; background: #121212; color:white; border: 1px solid #262626; padding: 10px; border-radius: 5px;"></textarea>
+                <button id="upload-btn" onclick="uploadPost()" style="margin-top: 10px;">Share Post</button>
+            </div>
+            <div id="main-feed"></div>
+        </div>
+
+        <div id="notif-screen" class="screen hidden">
+            <div class="page-title">Notifications</div>
+            <div id="notif-list">
+                <div class="list-item">
+                    <img src="https://via.placeholder.com/45" alt="">
+                    <div class="list-info"><b>Welcome!</b><span>Welcome to DrukLink! Start following friends.</span></div>
+                </div>
             </div>
         </div>
 
-        <div id="feed"></div>
-    </main>
+        <div id="friends-screen" class="screen hidden">
+            <div class="page-title">Find Friends</div>
+            <div id="users-list"></div>
+        </div>
+
+        <div id="msg-screen" class="screen hidden">
+            <div class="page-title">Messages</div>
+            <p style="color: var(--secondary); text-align: center;">Your direct messages will appear here.</p>
+        </div>
+
+        <div id="profile-screen" class="screen hidden">
+            <div class="profile-top">
+                <img id="my-avatar" src="">
+                <h2 id="my-name" style="margin-top: 10px;"></h2>
+                <p style="color: var(--secondary);">@druklink_user</p>
+            </div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+            <div id="my-posts-grid"></div>
+        </div>
+
+        <div class="bottom-nav">
+            <i class="fas fa-home nav-item active" onclick="showScreen('home', this)"></i>
+            <i class="fas fa-search nav-item" onclick="showScreen('friends', this)"></i>
+            <i class="far fa-heart nav-item" onclick="showScreen('notif', this)"></i>
+            <i class="far fa-comment nav-item" onclick="showScreen('msg', this)"></i>
+            <i class="far fa-user nav-item" onclick="showScreen('profile', this)"></i>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-        // CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -106,90 +140,109 @@
         const db = getFirestore(app);
         let user = null;
 
-        // AUTH
-        document.getElementById('login-btn').onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
-        document.getElementById('logout-btn').onclick = () => signOut(auth);
+        // AUTH FUNCTIONS
+        window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
+        window.logout = () => signOut(auth);
 
-        onAuthStateChanged(auth, (u) => {
+        onAuthStateChanged(auth, async (u) => {
             user = u;
             document.getElementById('auth-screen').classList.toggle('hidden', !!u);
             document.getElementById('app').classList.toggle('hidden', !u);
-            document.getElementById('nav-bar').classList.toggle('hidden', !u);
-            if(u) loadFeed();
+            if(u) {
+                document.getElementById('my-avatar').src = u.photoURL;
+                document.getElementById('my-name').innerText = u.displayName;
+                // Save user to DB
+                await setDoc(doc(db, "users", u.uid), { name: u.displayName, pic: u.photoURL }, { merge: true });
+                loadFeed();
+                loadUsers();
+            }
         });
 
-        // IMAGE HANDLING
-        let selectedFile = null;
-        document.getElementById('file-input').onchange = e => {
-            selectedFile = e.target.files[0];
-            if(selectedFile) document.getElementById('preview-container').innerHTML = `<p style="color:var(--accent)">Image selected: ${selectedFile.name}</p>`;
+        // SCREEN SWITCHER
+        window.showScreen = (screenId, el) => {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenId + '-screen').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(i => {
+                i.classList.remove('active', 'fas');
+                i.classList.add('far');
+            });
+            el.classList.add('active', 'fas');
+            el.classList.remove('far');
         };
 
         // POSTING
-        document.getElementById('share-btn').onclick = async () => {
-            const cap = document.getElementById('caption').value;
-            if(!selectedFile || !cap) return alert("Add a photo and a caption!");
-            
-            document.getElementById('share-btn').innerText = "Posting...";
-            
-            // Upload to ImgBB
+        window.uploadPost = async () => {
+            const file = document.getElementById('post-file').files[0];
+            const caption = document.getElementById('post-caption').value;
+            if(!file) return alert("Select a photo first!");
+
+            document.getElementById('upload-btn').innerText = "Uploading...";
             const formData = new FormData();
-            formData.append("image", selectedFile);
+            formData.append("image", file);
+            
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: formData });
             const data = await res.json();
 
-            // Save to Firestore
             await addDoc(collection(db, "posts"), {
                 uid: user.uid,
-                userName: user.displayName,
-                userPic: user.photoURL,
-                imageUrl: data.data.url,
-                caption: cap,
+                name: user.displayName,
+                pic: user.photoURL,
+                img: data.data.url,
+                caption: caption,
                 likes: [],
-                createdAt: serverTimestamp()
+                time: serverTimestamp()
             });
 
-            // Reset
-            document.getElementById('caption').value = "";
-            document.getElementById('preview-container').innerHTML = "";
-            document.getElementById('share-btn').innerText = "Post";
-            selectedFile = null;
+            document.getElementById('upload-btn').innerText = "Share Post";
+            document.getElementById('post-caption').value = "";
         };
 
-        // LIKE LOGIC
-        window.toggleLike = async (postId) => {
-            const postRef = doc(db, "posts", postId);
-            const snap = await getDoc(postRef);
-            if(snap.data().likes.includes(user.uid)) {
-                await updateDoc(postRef, { likes: arrayRemove(user.uid) });
+        // LOAD FEED
+        function loadFeed() {
+            onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
+                const feed = document.getElementById('main-feed');
+                feed.innerHTML = "";
+                snap.forEach(d => {
+                    const p = d.data();
+                    const liked = p.likes.includes(user.uid);
+                    feed.innerHTML += `
+                        <div class="post">
+                            <div class="post-header"><img src="${p.pic}"> <b>${p.name}</b></div>
+                            <img src="${p.img}" class="post-img">
+                            <div class="post-content">
+                                <i class="${liked ? 'fas' : 'far'} fa-heart" onclick="likePost('${d.id}')" style="color:${liked ? 'red' : 'white'}; cursor:pointer; font-size: 1.2rem;"></i>
+                                <div style="margin-top:5px;"><b>${p.likes.length} likes</b></div>
+                                <div><b>${p.name}</b> ${p.caption}</div>
+                            </div>
+                        </div>`;
+                });
+            });
+        }
+
+        window.likePost = async (id) => {
+            const ref = doc(db, "posts", id);
+            const docSnap = await getDoc(ref);
+            if(docSnap.data().likes.includes(user.uid)) {
+                await updateDoc(ref, { likes: arrayRemove(user.uid) });
             } else {
-                await updateDoc(postRef, { likes: arrayUnion(user.uid) });
+                await updateDoc(ref, { likes: arrayUnion(user.uid) });
             }
         };
 
-        // FEED
-        function loadFeed() {
-            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-            onSnapshot(q, (snapshot) => {
-                const feed = document.getElementById('feed');
-                feed.innerHTML = "";
-                snapshot.forEach(d => {
-                    const post = d.data();
-                    const isLiked = post.likes.includes(user.uid);
-                    feed.innerHTML += `
-                        <div class="post">
-                            <div class="post-header">
-                                <img src="${post.userPic}">
-                                <strong>${post.userName}</strong>
-                            </div>
-                            <img src="${post.imageUrl}" class="post-img">
-                            <div class="post-info">
-                                <i class="fa-heart ${isLiked ? 'fas active' : 'far'} like-btn" onclick="toggleLike('${d.id}')"></i>
-                                <p><strong>${post.likes.length} likes</strong></p>
-                                <p><strong>${post.userName}</strong> ${post.caption}</p>
-                            </div>
-                        </div>
-                    `;
+        function loadUsers() {
+            onSnapshot(collection(db, "users"), snap => {
+                const list = document.getElementById('users-list');
+                list.innerHTML = "";
+                snap.forEach(d => {
+                    if(d.id !== user.uid) {
+                        const u = d.data();
+                        list.innerHTML += `
+                            <div class="list-item">
+                                <img src="${u.pic}">
+                                <div class="list-info"><b>${u.name}</b><span>Active now</span></div>
+                                <button style="width: auto; margin-left: auto; padding: 5px 15px;">Follow</button>
+                            </div>`;
+                    }
                 });
             });
         }
