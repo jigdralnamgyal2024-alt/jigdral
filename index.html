@@ -130,10 +130,11 @@
     <div id="auth-screen" class="overlay-screen">
         <div class="card-box" style="text-align: center;">
             <div style="margin-bottom: 20px;">
-                <img src="https://i.imghippo.com/files/RPD5045T.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));">
+                <img src="https://i.imghippo.com/files/PR9518Yw.webp" alt="DrukTalk Login Banner" style="width: 100%; max-height: 160px; object-fit: contain; border-radius: 8px;">
             </div>
             <h2>Welcome to DrukTalk AI</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Log in with your Google account</p>
+            
             <button class="primary-btn" onclick="login()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
             </button>
@@ -423,7 +424,6 @@
             buildSidebarHistory(); 
         }
 
-        // --- THE AI SEND FUNCTION WITH FOUNDER KNOWLEDGE ADDED ---
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
@@ -442,7 +442,6 @@
 
             const userName = userProfile.name || user.displayName;
             
-            // ---> FOUNDER DETAILS ADDED HERE <---
             let systemInstruction = `You are DrukTalk AI from Bhutan. Your founder and creator is Jigdral Namgyel from Trashi Yangtse, Bhutan. You are talking to a user named ${userName}. Answer intelligently.`;
             
             if (userProfile.persona) {
