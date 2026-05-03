@@ -14,20 +14,25 @@
             --text-main: #ececec;
             --text-muted: #9b9b9b;
             --border-color: rgba(255,255,255,0.1);
+            --accent: #10a37f;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background: var(--main-bg); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
         .hidden { display: none !important; }
 
-        /* Auth Screen */
-        #auth-screen { background: var(--main-bg); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; }
-        .login-card { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 16px; text-align: center; width: 100%; max-width: 360px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .google-btn { width: 100%; padding: 12px; background: white; color: #171717; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 25px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
-        .google-btn:hover { background: #f1f1f1; }
+        /* Modals & Screens */
+        .overlay-screen { background: rgba(0,0,0,0.8); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; backdrop-filter: blur(5px); }
+        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: 16px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        /* Buttons & Inputs */
+        .primary-btn { width: 100%; padding: 12px; background: white; color: #171717; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 25px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
+        .primary-btn:hover { background: #f1f1f1; }
+        .styled-input { width: 100%; padding: 12px; margin-top: 20px; background: var(--main-bg); border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 15px; outline: none;}
+        .styled-input:focus { border-color: var(--accent); }
 
         /* Sidebar */
-        .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; border-right: 1px solid var(--border-color);}
         
         .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: white; }
         .sidebar-brand img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
@@ -84,21 +89,30 @@
 </head>
 <body>
 
-    <div id="auth-screen">
-        <div class="login-card">
+    <div id="auth-screen" class="overlay-screen">
+        <div class="card-box">
             <div style="margin-bottom: 20px;">
                 <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
             </div>
             <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Welcome to DrukTalk AI</h2>
             <p style="color: var(--text-muted); font-size: 14px;">Log in with your Google account to continue</p>
-            <button class="google-btn" onclick="login()">
+            <button class="primary-btn" onclick="login()">
                 <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
             </button>
         </div>
     </div>
 
+    <div id="api-modal" class="overlay-screen hidden">
+        <div class="card-box">
+            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 10px;">Groq API Required la</h2>
+            <p style="color: var(--text-muted); font-size: 14px;">Please enter your free Groq API Key to start chatting.</p>
+            <input type="password" id="groq-input" class="styled-input" placeholder="gsk_...">
+            <button class="primary-btn" onclick="saveApiKey()" style="background: var(--accent); color: white;">Save Key securely</button>
+            <a href="https://console.groq.com/keys" target="_blank" style="display: block; margin-top: 15px; color: var(--accent); font-size: 13px; text-decoration: none;">Get a Groq key here</a>
+        </div>
+    </div>
+
     <aside class="sidebar" id="sidebar">
-        <!-- New Sidebar Branding -->
         <div class="sidebar-brand">
             <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="Logo">
             DrukTalk AI
@@ -108,8 +122,9 @@
             <i class="fas fa-pen"></i> New chat
         </button>
         <div style="flex: 1;"></div>
-        <div class="nav-item" style="color: var(--text-muted); font-size: 12px; margin-bottom: 10px;">
-            API Status: <span id="ai-status" style="color: #eab308; margin-left: 5px;">Connecting...</span>
+        
+        <div class="nav-item" onclick="document.getElementById('api-modal').classList.remove('hidden')" style="color: var(--text-muted); font-size: 12px; margin-bottom: 5px;">
+            <i class="fas fa-key"></i> Update API Key
         </div>
         <div class="nav-item" onclick="logout()" style="cursor: pointer;">
             <img id="side-profile-pic" src="" style="width: 24px; height: 24px; border-radius: 50%; display: none;"> 
@@ -128,8 +143,7 @@
         <div id="chat-screen" class="screen">
             <div id="chat-feed">
                 <div class="chat-content-limit" id="chat-limit-box">
-                    <!-- Messages go here -->
-                </div>
+                    </div>
             </div>
             
             <div class="input-wrap">
@@ -138,7 +152,7 @@
                     <button id="sendBtn" onclick="sendMsg()" class="send-btn"><i class="fas fa-arrow-up"></i></button>
                 </div>
                 <div style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 10px;">
-                    DrukTalk AI can make mistakes. Consider verifying important information.
+                    Powered by Groq Llama 3 • DrukTalk AI can make mistakes.
                 </div>
             </div>
         </div>
@@ -147,9 +161,10 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        // Added doc, getDoc, setDoc to manage the user's specific database file
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-        // 1. Firebase Config
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -164,39 +179,19 @@
         const db = getFirestore(app);
         
         let user = null;
-        let openRouterKey = null;
-
-        // Fetch OpenRouter API Key
-        async function fetchAPIKey() {
-            try {
-                const response = await fetch('/api/config');
-                const data = await response.json();
-                
-                if (data.apiKey) {
-                    openRouterKey = data.apiKey;
-                    document.getElementById('ai-status').innerText = "Ready";
-                    document.getElementById('ai-status').style.color = "#10a37f";
-                }
-            } catch (err) {
-                document.getElementById('ai-status').innerText = "Failed";
-                document.getElementById('ai-status').style.color = "#ef4444";
-            }
-        }
-        fetchAPIKey();
+        let userGroqKey = null;
 
         // UI Helpers
         window.autoResize = (textarea) => {
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
         }
-
         window.handleEnter = (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 window.sendMsg();
             }
         }
-
         window.toggleSidebar = () => {
             const sidebar = document.getElementById('sidebar');
             sidebar.style.left = sidebar.style.left === '0px' ? '-260px' : '0px';
@@ -228,7 +223,7 @@
             feed.scrollTop = feed.scrollHeight;
         }
 
-        // Authentication
+        // Authentication & Key Loading
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -239,25 +234,59 @@
                 document.getElementById('side-profile-pic').style.display = 'block';
                 document.getElementById('side-profile-pic').src = u.photoURL;
                 document.getElementById('side-user-name').innerText = "Log out (" + u.displayName.split(' ')[0] + ")";
+                
+                // Check if they have a saved Groq Key
+                await checkAndLoadApiKey();
                 loadMessages();
             } else {
                 document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('api-modal').classList.add('hidden');
             }
         });
 
-        // 🌟 THE FIXED SEND FUNCTION 🌟
+        // Database logic for API Key
+        async function checkAndLoadApiKey() {
+            try {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists() && userDoc.data().groqKey) {
+                    userGroqKey = userDoc.data().groqKey;
+                } else {
+                    // Show API modal if no key is found
+                    document.getElementById('api-modal').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("Error checking key:", err);
+            }
+        }
+
+        window.saveApiKey = async () => {
+            const inputKey = document.getElementById('groq-input').value.trim();
+            if (!inputKey) return alert("Please enter a valid key la.");
+            
+            try {
+                // Save key to Firestore database
+                await setDoc(doc(db, "users", user.uid), { groqKey: inputKey }, { merge: true });
+                userGroqKey = inputKey;
+                document.getElementById('api-modal').classList.add('hidden');
+            } catch (err) {
+                alert("Error saving key to database la.");
+                console.error(err);
+            }
+        };
+
+        // 🌟 THE GROQ SEND FUNCTION 🌟
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
             const val = input.value.trim();
             
             if (!val || !user) return;
-            if (!openRouterKey) {
-                alert("API Key missing! Check Vercel Environment Variables la.");
+            
+            if (!userGroqKey) {
+                document.getElementById('api-modal').classList.remove('hidden');
                 return;
             }
 
-            // Instantly show user message & typing indicator
             appendUserMsg(val);
             const tempId = "thinking-" + Date.now();
             appendAIMsg('<div class="typing-indicator"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>', tempId);
@@ -267,19 +296,17 @@
             btn.disabled = true;
 
             try {
-                // OpenRouter API Fetch with REQUIRED headers
-                const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                // Groq API Endpoint
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${openRouterKey}`,
-                        "Content-Type": "application/json",
-                        "HTTP-Referer": window.location.href, 
-                        "X-Title": "DrukTalk AI"
+                        "Authorization": `Bearer ${userGroqKey}`,
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        "model": "google/gemini-1.5-flash", 
+                        "model": "llama3-8b-8192", // Fast Llama 3 model on Groq
                         "messages": [
-                            {"role": "system", "content": "You are DrukTalk AI from Bhutan. Answer concisely."},
+                            {"role": "system", "content": "You are DrukTalk AI from Bhutan. Answer intelligently and nicely."},
                             {"role": "user", "content": val}
                         ]
                     })
@@ -287,30 +314,28 @@
 
                 const data = await response.json();
                 
-                // Catch API errors explicitly!
                 if (!response.ok || data.error) {
-                    throw new Error(data.error?.message || "Invalid API response.");
+                    throw new Error(data.error?.message || "Invalid API response. Check if your Groq key is correct.");
                 }
 
                 const aiText = data.choices[0].message.content;
 
-                // Update UI directly so you don't wait for Firebase!
                 document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
-                // Save to Firebase silently in the background
+                // Save Chat to Firebase
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid, prompt: val, response: aiText, time: serverTimestamp()
                 });
 
             } catch (err) {
-                console.error("OpenRouter Error:", err);
-                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Connection Error la: Check if your API Key is an OpenRouter key, not a Google key!</div>`;
+                console.error("Groq Error:", err);
+                document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai" style="color:#ef4444;">Error la: ${err.message}</div>`;
             } finally {
                 btn.disabled = false;
             }
         };
 
-        // Load History cleanly
+        // Load Chat History
         function loadMessages() {
             const q = query(collection(db, "chats"), where("uid", "==", user.uid));
             onSnapshot(q, (snap) => {
@@ -323,7 +348,7 @@
                 });
 
                 feedBox.innerHTML = "";
-                appendAIMsg("Kuzuzangpo la! I am DrukTalk AI. How can I help you today?");
+                appendAIMsg("Kuzuzangpo la! I am DrukTalk AI. My brain is now powered by Groq Llama 3. How can I help you today?");
                 
                 msgs.forEach(data => {
                     appendUserMsg(data.prompt);
