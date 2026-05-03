@@ -3,149 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Druk Link | Home</title>
+    <title>DrukLink AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --accent-color: #e67e22;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --text-secondary: #666666;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
+            --primary: #6366f1;
+            --dark: #0f172a;
+            --sidebar-bg: #0b0f1a;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text: #f8fafc;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--dark); color: var(--text); font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; }
+        .hidden { display: none !important; }
 
-        /* Navigation */
-        nav {
-            background: var(--card-bg);
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: sticky; top: 0; z-index: 1000;
+        #auth-screen {
+            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+            height: 100vh; display: flex; justify-content: center; align-items: center;
         }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
-        .logo img { height: 40px; width: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; }
-        .logo span { color: var(--accent-color); }
-        .nav-links { display: flex; gap: 2rem; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--text-secondary); font-weight: 500; transition: var(--transition); }
-        .nav-links a:hover { color: var(--accent-color); }
+        .login-card {
+            background: var(--glass); backdrop-filter: blur(15px);
+            border: 1px solid var(--border); padding: 50px; border-radius: 30px; text-align: center; width: 100%; max-width: 400px;
+        }
+
+        #app { display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 25px; }
+        .main-container { flex: 1; display: flex; flex-direction: column; position: relative; }
+
+        .nav-item { padding: 12px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s; margin-bottom: 8px; color: #94a3b8; }
+        .nav-item:hover { background: var(--glass); color: white; }
+        .nav-item.active { background: var(--primary); color: white; }
+
+        .screen { flex: 1; display: flex; flex-direction: column; height: 100%; overflow-y: auto; padding: 40px 15%; }
         
-        /* Highlighted Nav Button */
-        .nav-btn {
-            background-color: var(--primary-color);
-            color: white !important;
-            padding: 8px 20px;
-            border-radius: 20px;
-        }
-        .nav-btn:hover { background-color: var(--accent-color); }
+        #chat-feed { flex: 1; display: flex; flex-direction: column; gap: 20px; padding-bottom: 20px; }
+        .msg { max-width: 85%; padding: 15px 20px; border-radius: 18px; line-height: 1.6; word-wrap: break-word; }
+        .msg.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+        .msg.ai { align-self: flex-start; background: var(--glass); border: 1px solid var(--border); border-bottom-left-radius: 2px; }
 
-        /* Hero Section */
-        header { max-width: 1000px; margin: 4rem auto; padding: 0 20px; text-align: center; }
-        .profile-img-container {
-            width: 180px; height: 180px; margin: 0 auto 2rem; border-radius: 50%; overflow: hidden;
-            border: 4px solid var(--card-bg); box-shadow: var(--shadow); background-color: #fff;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .profile-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        h1 { font-size: 3rem; color: var(--primary-color); margin-bottom: 0.5rem; letter-spacing: -1px; }
-        h2 { font-size: 1.5rem; color: var(--accent-color); font-weight: 500; margin-bottom: 1.5rem; }
-        .bio { max-width: 700px; margin: 0 auto 1.5rem auto; color: var(--text-secondary); font-size: 1.1rem; }
+        .input-wrap { padding: 20px 15%; background: var(--dark); border-top: 1px solid var(--border); position: sticky; bottom: 0; }
+        .input-box { background: var(--glass); border: 1px solid var(--border); padding: 12px 20px; border-radius: 15px; display: flex; align-items: center; gap: 10px; }
+        input { flex: 1; background: transparent; border: none; color: white; outline: none; }
 
-        /* Main CTA Button */
-        .yt-btn {
-            display: inline-block; background-color: var(--primary-color); color: white;
-            padding: 12px 30px; border-radius: 30px; text-decoration: none; font-weight: 600;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3); transition: var(--transition); margin-top: 1rem;
-        }
-        .yt-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4); background-color: var(--accent-color); }
+        .card { background: var(--glass); border: 1px solid var(--border); padding: 25px; border-radius: 20px; margin-top: 20px; }
+        .styled-input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 10px; color: white; }
 
-        /* Grid */
-        .container {
-            max-width: 1200px; margin: 0 auto 4rem; padding: 0 20px;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;
-        }
-        .card { background: var(--card-bg); padding: 2rem; border-radius: 15px; box-shadow: var(--shadow); transition: var(--transition); }
-        .card:hover { transform: translateY(-5px); }
-        .card h3 { color: var(--primary-color); margin-bottom: 1rem; font-size: 1.4rem; border-bottom: 2px solid var(--bg-color); padding-bottom: 0.5rem; display: inline-block; }
-        .card ul { list-style: none; }
-        .card li { margin-bottom: 0.8rem; padding-left: 1.5rem; position: relative; color: var(--text-secondary); }
-        .card li::before { content: "•"; color: var(--accent-color); font-weight: bold; position: absolute; left: 0; }
+        button { cursor: pointer; border: none; transition: 0.3s; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .primary-btn { background: var(--primary); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; }
+        .google-btn { width: 100%; padding: 14px; background: white; color: black; border-radius: 12px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
 
-        footer { text-align: center; padding: 2rem; background: var(--card-bg); border-top: 1px solid #eee; margin-top: auto; color: var(--text-secondary); }
+        @media (max-width: 768px) { .sidebar { width: 70px; } .nav-text { display: none; } .screen { padding: 20px; } .input-wrap { padding: 15px; } }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">
-            <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
-            Druk <span>Link</span>
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="#features">Features</a>
-            <a href="chatbot.html" class="nav-btn">Try QuanTra</a>
-        </div>
-    </nav>
-
-    <header>
-        <div class="profile-img-container">
-            <img src="https://image2url.com/images/1765884159788-bc1c21a5-81da-4741-8773-8fe7485d81e4.png" alt="Logo">
-        </div>
-        
-        <h1>Druk Link</h1>
-        <h2>Empowering the Future with QuanTra</h2>
-        
-        <p class="bio">
-            Welcome to <strong>Druk Link</strong>. We are proud to introduce 
-            <strong>QuanTra</strong>, your intelligent AI companion designed for 
-            speed, creativity, and deep cultural understanding.
-        </p>
-
-        <a href="chatbot.html" class="yt-btn">
-            Chat with QuanTra Now
-        </a>
-    </header>
-
-    <div class="container" id="features">
-        <div class="card">
-            <h3>QuanTra Intelligence</h3>
-            <p>A smart assistant built to understand your needs.</p>
-            <ul>
-                <li>Instant answers to complex queries.</li>
-                <li>Creative writing and brainstorming.</li>
-                <li>Data analysis and summarization.</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3>Druk Link Ecosystem</h3>
-            <p>Deeply rooted in cultural values and connection.</p>
-            <ul>
-                <li>Bhutanese history and culture insights.</li>
-                <li>Preserving local traditions through tech.</li>
-                <li>Bridging the gap between heritage and AI.</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3>Always Available</h3>
-            <p>QuanTra is ready whenever you are.</p>
-            <ul>
-                <li>24/7 Operational time.</li>
-                <li>Fast response speed.</li>
-                <li>Secure and private conversations.</li>
-            </ul>
+    <div id="auth-screen">
+        <div class="login-card">
+            <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--primary);">DrukLink AI</h1>
+            <p style="color: #94a3b8; margin-bottom: 20px;">Built by Jigdral Namgyel</p>
+            <button class="google-btn" onclick="login()">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="20"> Sign in with Google
+            </button>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Druk Link AI. All Rights Reserved.</p>
-    </footer>
+    <div id="app" class="hidden">
+        <aside class="sidebar">
+            <div id="side-logo" style="font-weight: 800; font-size: 1.4rem; margin-bottom: 40px; color: var(--primary);">DrukLink AI</div>
+            <nav>
+                <div class="nav-item active" onclick="switchTab('chat', this)"><i class="fas fa-comment"></i> <span class="nav-text">Chat</span></div>
+                <div class="nav-item" onclick="switchTab('history', this)"><i class="fas fa-history"></i> <span class="nav-text">History</span></div>
+                <div class="nav-item" onclick="switchTab('profile', this)"><i class="fas fa-user-circle"></i> <span class="nav-text">Profile</span></div>
+                <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i> <span class="nav-text">Settings</span></div>
+            </nav>
+            <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
+                <button onclick="logout()" style="width: 100%; background: #ef4444; padding: 10px; border-radius: 10px; color: white; font-weight: bold;">Logout</button>
+            </div>
+        </aside>
 
+        <main class="main-container">
+            <div id="chat-screen" class="screen">
+                <div id="chat-feed"></div>
+                <div class="input-wrap">
+                    <div class="input-box">
+                        <input type="text" id="userInput" placeholder="Message DrukLink AI..." onkeypress="if(event.key === 'Enter') sendMsg()">
+                        <button id="sendBtn" onclick="sendMsg()" class="primary-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="history-screen" class="screen hidden">
+                <h2>Chat History</h2>
+                <div id="history-list"></div>
+            </div>
+
+            <div id="profile-screen" class="screen hidden">
+                <h2>My Profile</h2>
+                <div class="card">
+                    <center><img id="profile-pic" style="width: 100px; border-radius: 50%; margin-bottom:15px; border: 2px solid var(--primary);"></center>
+                    <label>Display Name</label>
+                    <input type="text" id="display-name-input" class="styled-input" style="margin-bottom:15px;">
+                    <button class="primary-btn" onclick="updateProfile()">Update Name</button>
+                </div>
+            </div>
+
+            <div id="settings-screen" class="screen hidden">
+                <h2>Settings</h2>
+                <div class="card">
+                    <p>AI Engine: <b>Gemini 1.5 Flash</b></p>
+                    <p>Status: <b id="ai-status" style="color: #eab308;">Connecting...</b></p>
+                    <p>Location: <b>Paro, Bhutan</b></p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile as firebaseUpdateProfile } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        // 1. Hardcoded Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
+            authDomain: "druklink-24fa1.firebaseapp.com",
+            projectId: "druklink-24fa1",
+            storageBucket: "druklink-24fa1.firebasestorage.app",
+            messagingSenderId: "183615496366",
+            appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let user = null;
+        let aiModel = null; // Will hold our AI brain once we get the key
+
+        // 2. Fetch Gemini Key from Vercel
+        async function startAI() {
+            try {
+                const response = await fetch('/api/config');
+                const data = await response.json();
+                
+                if (data.apiKey) {
+                    const genAI = new GoogleGenerativeAI(data.apiKey);
+                    aiModel = genAI.getGenerativeModel({ 
+                        model: "gemini-1.5-flash",
+                        systemInstruction: "You are DrukLink AI, a helpful, polite assistant from Bhutan. Always greet users with 'Kuzuzangpo la'. Answer clearly and concisely."
+                    });
+                    document.getElementById('ai-status').innerText = "Connected";
+                    document.getElementById('ai-status').style.color = "#22c55e"; // Green
+                    console.log("DrukLink AI is ready la!");
+                } else {
+                    throw new Error("No API key returned from server");
+                }
+            } catch (err) {
+                console.error("Could not load AI key:", err);
+                document.getElementById('ai-status').innerText = "Disconnected (Check Server)";
+                document.getElementById('ai-status').style.color = "#ef4444"; // Red
+            }
+        }
+
+        // Initialize the AI fetch immediately
+        startAI();
+
+        // 3. App Logic & Navigation
+        window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
+        window.logout = () => signOut(auth);
+
+        onAuthStateChanged(auth, async (u) => {
+            if (u) {
+                user = u;
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                document.getElementById('profile-pic').src = u.photoURL;
+                document.getElementById('display-name-input').value = u.displayName || "User";
+                document.getElementById('side-logo').innerText = "Hello, " + (u.displayName ? u.displayName.split(' ')[0] : "User");
+                loadMessages();
+                loadHistory();
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('app').classList.add('hidden');
+            }
+        });
+
+        window.switchTab = (tabId, el) => {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(tabId + '-screen').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        };
+
+        // 4. Send Message Function
+        window.sendMsg = async () => {
+            const input = document.getElementById('userInput');
+            const btn = document.getElementById('sendBtn');
+            const val = input.value.trim();
+            
+            if (!val || !user) return;
+
+            // Safety check in case Vercel API didn't load the key
+            if (!aiModel) {
+                alert("Please wait a moment la, the AI is still connecting to the server!");
+                return;
+            }
+
+            input.value = "";
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+            try {
+                // Get AI Response
+                const result = await aiModel.generateContent(val);
+                const aiText = result.response.text();
+
+                // Save to Firestore
+                await addDoc(collection(db, "chats"), {
+                    uid: user.uid,
+                    prompt: val,
+                    response: aiText,
+                    time: serverTimestamp()
+                });
+            } catch (err) {
+                console.error(err);
+                await addDoc(collection(db, "chats"), {
+                    uid: user.uid,
+                    prompt: val,
+                    response: "System Error la: Could not generate response. Please check if the API key is active.",
+                    time: serverTimestamp()
+                });
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+        };
+
+        // 5. Load Real-time Feeds
+        function loadMessages() {
+            const q = query(collection(db, "chats"), where("uid", "==", user.uid), orderBy("time", "asc"));
+            onSnapshot(q, (snap) => {
+                const feed = document.getElementById('chat-feed');
+                feed.innerHTML = '<div class="msg ai">Kuzuzangpo la! I am DrukLink AI. How can I help you today?</div>';
+                snap.forEach(d => {
+                    const data = d.data();
+                    feed.innerHTML += `<div class="msg user">${data.prompt}</div>`;
+                    feed.innerHTML += `<div class="msg ai">${data.response}</div>`;
+                });
+                feed.scrollTop = feed.scrollHeight;
+            });
+        }
+
+        function loadHistory() {
+            const q = query(collection(db, "chats"), where("uid", "==", user.uid), orderBy("time", "desc"));
+            onSnapshot(q, (snap) => {
+                const list = document.getElementById('history-list');
+                list.innerHTML = "";
+                snap.forEach(d => {
+                    const data = d.data();
+                    list.innerHTML += `
+                        <div class="card">
+                            <small>${data.time?.toDate().toLocaleString() || 'Syncing...'}</small>
+                            <p><b>Prompt:</b> ${data.prompt}</p>
+                            <p><b>AI:</b> ${data.response}</p>
+                        </div>`;
+                });
+            });
+        }
+
+        window.updateProfile = async () => {
+            const newName = document.getElementById('display-name-input').value;
+            if(!newName) return;
+            try {
+                await firebaseUpdateProfile(auth.currentUser, { displayName: newName });
+                await setDoc(doc(db, "users", user.uid), { name: newName }, { merge: true });
+                alert("Profile Updated la!");
+                location.reload();
+            } catch (e) { alert("Error updating profile!"); }
+        };
+    </script>
 </body>
 </html>
