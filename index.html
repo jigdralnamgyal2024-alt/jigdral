@@ -6,7 +6,7 @@
     <title>DrukTalk AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* True ChatGPT / Gemini Modern UI */
+        /* True ChatGPT / Gemini Modern UI - DARK MODE (Default) */
         :root {
             --sidebar-bg: #171717;
             --main-bg: #212121;
@@ -18,32 +18,43 @@
             --hover-bg: rgba(255,255,255,0.05);
         }
 
+        /* LIGHT MODE VARIABLES */
+        body.light-theme {
+            --sidebar-bg: #f9f9f9;
+            --main-bg: #ffffff;
+            --user-msg-bg: #f4f4f4;
+            --text-main: #0d0d0d;
+            --text-muted: #6b6b6b;
+            --border-color: rgba(0,0,0,0.1);
+            --hover-bg: rgba(0,0,0,0.05);
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background: var(--main-bg); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; }
+        body { background: var(--main-bg); color: var(--text-main); height: 100vh; overflow: hidden; display: flex; transition: background 0.3s, color 0.3s; }
         .hidden { display: none !important; }
 
         /* Modals & Screens */
-        .overlay-screen { background: rgba(0,0,0,0.8); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; backdrop-filter: blur(5px); }
-        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 16px; text-align: left; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .overlay-screen { background: rgba(0,0,0,0.6); width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center; position: absolute; z-index: 100; backdrop-filter: blur(5px); }
+        .card-box { background: var(--sidebar-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: 16px; text-align: left; width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .card-box h2 { text-align: center; margin-bottom: 20px; font-size: 20px;}
         .close-modal { float: right; cursor: pointer; color: var(--text-muted); font-size: 18px; }
-        .close-modal:hover { color: white; }
+        .close-modal:hover { color: var(--text-main); }
 
         /* Buttons & Inputs */
-        .primary-btn { width: 100%; padding: 12px; background: white; color: #171717; border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
-        .primary-btn:hover { background: #f1f1f1; }
+        .primary-btn { width: 100%; padding: 12px; background: var(--text-main); color: var(--main-bg); border-radius: 8px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 15px; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;}
+        .primary-btn:hover { opacity: 0.8; }
         .danger-btn { background: #ef4444; color: white; }
-        .danger-btn:hover { background: #dc2626; }
+        .danger-btn:hover { background: #dc2626; opacity: 1; }
         
-        .styled-input, .styled-textarea { width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px; background: var(--main-bg); border: 1px solid var(--border-color); color: white; border-radius: 8px; font-size: 14px; outline: none;}
-        .styled-input:focus, .styled-textarea:focus { border-color: var(--accent); }
+        .styled-input, .styled-textarea, select.styled-input { width: 100%; padding: 12px; margin-top: 8px; margin-bottom: 15px; background: var(--main-bg); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; font-size: 14px; outline: none;}
+        .styled-input:focus, .styled-textarea:focus, select.styled-input:focus { border-color: var(--accent); }
         .styled-textarea { resize: vertical; min-height: 80px; font-family: inherit;}
         label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
 
         /* Sidebar */
         .sidebar { width: 260px; background: var(--sidebar-bg); display: flex; flex-direction: column; padding: 15px 10px; flex-shrink: 0; transition: transform 0.3s ease; border-right: 1px solid var(--border-color);}
         
-        .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: white; }
+        .sidebar-brand { padding: 5px 15px 25px; display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-main); }
         .sidebar-brand img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
 
         .new-chat-btn { display: flex; align-items: center; gap: 10px; padding: 12px 15px; width: 100%; border-radius: 8px; cursor: pointer; background: transparent; color: var(--text-main); border: none; font-size: 14px; font-weight: 500; transition: 0.2s; text-align: left; margin-bottom: 15px;}
@@ -75,18 +86,18 @@
         .msg-row.ai { justify-content: flex-start; gap: 16px; }
 
         .msg-bubble.user { background: var(--user-msg-bg); color: var(--text-main); padding: 10px 20px; border-radius: 20px; font-size: 16px; line-height: 1.5; max-width: 70%; word-wrap: break-word; }
-        .ai-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; overflow: hidden; background: #fff;}
+        .ai-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; overflow: hidden; background: #fff; border: 1px solid var(--border-color);}
         .ai-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .msg-bubble.ai { background: transparent; color: var(--text-main); font-size: 16px; line-height: 1.6; max-width: 85%; word-wrap: break-word; padding-top: 5px;}
 
         /* Input Area */
         .input-wrap { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
-        .input-box { background: var(--user-msg-bg); border-radius: 26px; padding: 10px 15px 10px 20px; display: flex; align-items: flex-end; gap: 10px; }
+        .input-box { background: var(--user-msg-bg); border-radius: 26px; padding: 10px 15px 10px 20px; display: flex; align-items: flex-end; gap: 10px; border: 1px solid var(--border-color);}
         textarea { flex: 1; background: transparent; border: none; color: var(--text-main); outline: none; font-size: 16px; padding: 8px 0; resize: none; max-height: 200px; line-height: 1.5; min-height: 40px; font-family: inherit;}
-        button.send-btn { background: white; color: black; border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; margin-bottom: 4px;}
+        button.send-btn { background: var(--text-main); color: var(--main-bg); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; margin-bottom: 4px;}
         button.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        .mobile-header { display: none; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: white; font-weight: 600; font-size: 16px; align-items: center; gap: 15px;}
+        .mobile-header { display: none; padding: 15px 20px; border-bottom: 1px solid var(--border-color); color: var(--text-main); font-weight: 600; font-size: 16px; align-items: center; gap: 15px; background: var(--sidebar-bg);}
         @media (max-width: 768px) { 
             .sidebar { position: absolute; left: -260px; z-index: 50; height: 100%; } 
             .mobile-header { display: flex; }
@@ -103,10 +114,16 @@
 </head>
 <body>
 
+    <script>
+        if(localStorage.getItem("theme") === "light") {
+            document.body.classList.add("light-theme");
+        }
+    </script>
+
     <div id="auth-screen" class="overlay-screen">
         <div class="card-box" style="text-align: center;">
             <div style="margin-bottom: 20px;">
-                <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.4);">
+                <img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="DrukTalk Logo" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
             </div>
             <h2>Welcome to DrukTalk AI</h2>
             <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 10px;">Log in with your Google account</p>
@@ -135,6 +152,12 @@
         <div class="card-box">
             <i class="fas fa-times close-modal" onclick="closeModal('settings-modal')"></i>
             <h2>Settings</h2>
+
+            <label>App Theme</label>
+            <select id="settings-theme" class="styled-input" onchange="updateThemePreference(this.value)">
+                <option value="dark">Dark Mode</option>
+                <option value="light">Light Mode</option>
+            </select>
             
             <label>Groq API Key</label>
             <input type="password" id="settings-groq-key" class="styled-input" placeholder="gsk_...">
@@ -221,9 +244,26 @@
         const db = getFirestore(app);
         
         let user = null;
-        let userProfile = { name: "", persona: "", groqKey: "" };
-        let currentSessionId = "session-" + Date.now(); // Create a session ID for tracking current chat
-        let allUserChats = []; // Holds all chat messages for history building
+        let userProfile = { name: "", persona: "", groqKey: "", theme: "dark" };
+        let currentSessionId = "session-" + Date.now();
+        let allUserChats = []; 
+
+        // --- Theme Management ---
+        window.updateThemePreference = async (themeValue) => {
+            if (themeValue === "light") {
+                document.body.classList.add("light-theme");
+            } else {
+                document.body.classList.remove("light-theme");
+            }
+            localStorage.setItem("theme", themeValue); // Save locally for instant load
+            
+            if (user) {
+                userProfile.theme = themeValue;
+                try {
+                    await setDoc(doc(db, "users", user.uid), { theme: themeValue }, { merge: true });
+                } catch (e) { console.error("Could not save theme to database.", e); }
+            }
+        };
 
         // --- UI & Modal Helpers ---
         window.autoResize = (textarea) => { textarea.style.height = 'auto'; textarea.style.height = textarea.scrollHeight + 'px'; }
@@ -233,6 +273,7 @@
         
         window.openSettingsModal = () => {
             document.getElementById('settings-groq-key').value = userProfile.groqKey || "";
+            document.getElementById('settings-theme').value = userProfile.theme || localStorage.getItem("theme") || "dark";
             document.getElementById('settings-modal').classList.remove('hidden');
         }
 
@@ -265,7 +306,7 @@
         window.loadSession = (sessionId) => {
             currentSessionId = sessionId;
             renderActiveSession();
-            if(window.innerWidth <= 768) toggleSidebar(); // Close sidebar on mobile after clicking
+            if(window.innerWidth <= 768) toggleSidebar(); 
         };
 
         // --- Firebase Auth & User Data ---
@@ -291,9 +332,15 @@
             try {
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
-                    userProfile = docSnap.data();
+                    userProfile = { ...userProfile, ...docSnap.data() };
+                    
+                    // Apply saved theme from Database
+                    if (userProfile.theme) {
+                        document.getElementById('settings-theme').value = userProfile.theme;
+                        updateThemePreference(userProfile.theme);
+                    }
                 }
-                if (!userProfile.groqKey) openSettingsModal(); // Ask for key if missing
+                if (!userProfile.groqKey) openSettingsModal(); 
             } catch (e) { console.error("Error loading profile:", e); }
         }
 
@@ -323,7 +370,6 @@
         window.clearAllHistory = async () => {
             if (!confirm("Are you sure you want to delete ALL chat history? This cannot be undone la!")) return;
             try {
-                // Delete all documents in the user's chat history array
                 for (let chat of allUserChats) {
                     await deleteDoc(doc(db, "chats", chat.docId));
                 }
@@ -350,14 +396,12 @@
             const historyList = document.getElementById('history-list');
             historyList.innerHTML = "";
             
-            // Group messages by sessionId to find unique chats
             let sessions = {};
             allUserChats.forEach(msg => {
-                let sId = msg.sessionId || "old-legacy-chat"; // For messages saved before this update
-                if (!sessions[sId]) sessions[sId] = msg.prompt; // Save the first prompt as the title
+                let sId = msg.sessionId || "old-legacy-chat"; 
+                if (!sessions[sId]) sessions[sId] = msg.prompt; 
             });
 
-            // Render list (newest first)
             Object.keys(sessions).reverse().forEach(sId => {
                 const title = sessions[sId].length > 25 ? sessions[sId].substring(0, 25) + "..." : sessions[sId];
                 const isActive = (sId === currentSessionId) ? "active" : "";
@@ -375,7 +419,7 @@
                 appendUserMsg(data.prompt);
                 appendAIMsg(data.response);
             });
-            buildSidebarHistory(); // update the active gray highlight
+            buildSidebarHistory(); 
         }
 
         // --- THE AI SEND FUNCTION ---
@@ -395,14 +439,12 @@
             input.style.height = "auto";
             btn.disabled = true;
 
-            // Prepare the System prompt with custom Profile settings
             const userName = userProfile.name || user.displayName;
             let systemInstruction = `You are DrukTalk AI from Bhutan. You are talking to a user named ${userName}. Answer intelligently.`;
             if (userProfile.persona) {
                 systemInstruction += ` You MUST strictly follow these custom instructions: ${userProfile.persona}`;
             }
 
-            // Build conversation history for context
             let messagesPayload = [{"role": "system", "content": systemInstruction}];
             const sessionMsgs = allUserChats.filter(m => (m.sessionId || "old-legacy-chat") === currentSessionId);
             sessionMsgs.forEach(m => {
@@ -427,7 +469,6 @@
 
                 document.getElementById(tempId).innerHTML = `<div class="ai-avatar"><img src="https://i.imghippo.com/files/Xcgv3652BwY.png" alt="AI"></div><div class="msg-bubble ai">${aiText.replace(/\n/g, '<br>')}</div>`;
 
-                // Save to Firebase WITH the sessionId
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid, 
                     sessionId: currentSessionId, 
