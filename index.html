@@ -114,7 +114,7 @@
                 <h2>Settings</h2>
                 <div class="card">
                     <p>AI Engine: <b>Gemini 1.5 Flash</b></p>
-                    <p>Status: <b style="color: #22c55e;">Connected</b></p>
+                    <p>Status: <b id="ai-status" style="color: #eab308;">Connecting...</b></p>
                     <p>Location: <b>Paro, Bhutan</b></p>
                 </div>
             </div>
@@ -127,7 +127,7 @@
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
         import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-        // Firebase Configuration
+        // 1. Hardcoded Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -137,18 +137,42 @@
             appId: "1:183615496366:web:fcfb4f88f3223044924d3f"
         };
 
-        // Initialize AI with your NEW key
-        const genAI = new GoogleGenerativeAI("AIzaSyCm3HIfkxyN7uItsed8h8Pdbb8rSn6G4v4");
-        const aiModel = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
-            systemInstruction: "You are DrukLink AI, a helpful, polite assistant from Bhutan. Always greet users with 'Kuzuzangpo la'. Answer clearly and concisely."
-        });
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
         let user = null;
+        let aiModel = null; // Will hold our AI brain once we get the key
 
+        // 2. Fetch Gemini Key from Vercel
+        async function startAI() {
+            try {
+                const response = await fetch('/api/config');
+                const data = await response.json();
+                
+                if (data.apiKey) {
+                    const genAI = new GoogleGenerativeAI(data.apiKey);
+                    aiModel = genAI.getGenerativeModel({ 
+                        model: "gemini-1.5-flash",
+                        systemInstruction: "You are DrukLink AI, a helpful, polite assistant from Bhutan. Always greet users with 'Kuzuzangpo la'. Answer clearly and concisely."
+                    });
+                    document.getElementById('ai-status').innerText = "Connected";
+                    document.getElementById('ai-status').style.color = "#22c55e"; // Green
+                    console.log("DrukLink AI is ready la!");
+                } else {
+                    throw new Error("No API key returned from server");
+                }
+            } catch (err) {
+                console.error("Could not load AI key:", err);
+                document.getElementById('ai-status').innerText = "Disconnected (Check Server)";
+                document.getElementById('ai-status').style.color = "#ef4444"; // Red
+            }
+        }
+
+        // Initialize the AI fetch immediately
+        startAI();
+
+        // 3. App Logic & Navigation
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -175,11 +199,19 @@
             el.classList.add('active');
         };
 
+        // 4. Send Message Function
         window.sendMsg = async () => {
             const input = document.getElementById('userInput');
             const btn = document.getElementById('sendBtn');
             const val = input.value.trim();
+            
             if (!val || !user) return;
+
+            // Safety check in case Vercel API didn't load the key
+            if (!aiModel) {
+                alert("Please wait a moment la, the AI is still connecting to the server!");
+                return;
+            }
 
             input.value = "";
             btn.disabled = true;
@@ -199,11 +231,10 @@
                 });
             } catch (err) {
                 console.error(err);
-                // Display the specific error in the chat so you can see what's wrong
                 await addDoc(collection(db, "chats"), {
                     uid: user.uid,
                     prompt: val,
-                    response: "System Error la: " + err.message + ". Please check your API key settings.",
+                    response: "System Error la: Could not generate response. Please check if the API key is active.",
                     time: serverTimestamp()
                 });
             } finally {
@@ -212,6 +243,7 @@
             }
         };
 
+        // 5. Load Real-time Feeds
         function loadMessages() {
             const q = query(collection(db, "chats"), where("uid", "==", user.uid), orderBy("time", "asc"));
             onSnapshot(q, (snap) => {
