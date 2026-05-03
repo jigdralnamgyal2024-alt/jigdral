@@ -13,117 +13,148 @@
             --accent: #0095f6;
             --text: #ffffff;
             --secondary: #a8a8a8;
+            --hover: #1a1a1a;
         }
 
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; padding-top: 70px; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; display: flex; }
         .hidden { display: none !important; }
         
-        /* Top Navigation Bar */
-        .top-nav { 
-            background: rgba(0, 0, 0, 0.95); 
-            border-bottom: 1px solid var(--border);
-            padding: 0 20px; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center; 
-            position: fixed; 
-            top: 0; 
+        /* Sidebar Navigation (Instagram Style) */
+        .sidebar { 
+            width: 240px;
+            height: 100vh;
+            border-right: 1px solid var(--border);
+            padding: 20px 12px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
             left: 0;
-            right: 0;
-            height: 60px;
+            top: 0;
+            background: var(--bg);
             z-index: 1000;
         }
-        
-        .logo { font-family: 'Brush Script MT', cursive; font-size: 2.2rem; cursor: pointer; }
 
-        .nav-links { display: flex; gap: 25px; align-items: center; }
-        .nav-item { font-size: 1.3rem; cursor: pointer; color: var(--secondary); transition: 0.2s; }
-        .nav-item:hover { color: var(--accent); }
-        .nav-item.active { color: var(--text); }
+        .logo { 
+            font-family: 'Brush Script MT', cursive; 
+            font-size: 2rem; 
+            padding: 20px 12px 30px;
+            cursor: pointer; 
+        }
+
+        .nav-links { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        
+        .nav-item { 
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            color: var(--text);
+            border-radius: 8px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-item:hover { background: var(--hover); }
+        .nav-item i { font-size: 1.5rem; width: 30px; text-align: center; }
+        .nav-item.active { font-weight: bold; }
+
+        /* Main Content Area */
+        main { 
+            flex-grow: 1;
+            margin-left: 240px; /* Same as sidebar width */
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .content-container { width: 100%; max-width: 600px; padding: 20px; }
 
         /* Screens */
-        .screen { max-width: 500px; margin: 20px auto; padding: 10px; }
-        .page-title { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .screen { width: 100%; }
+        .page-title { font-size: 1.5rem; margin-bottom: 20px; font-weight: bold; }
 
         /* Post Creator */
-        .post-creator { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 30px; }
-        textarea { width: 100%; background: #000; color: white; border: 1px solid var(--border); padding: 10px; border-radius: 5px; resize: none; margin-bottom: 10px; }
+        .post-creator { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 30px; }
+        textarea { width: 100%; background: transparent; color: white; border: none; font-size: 1rem; resize: none; outline: none; margin-bottom: 10px; }
 
         /* Post Cards */
-        .post { background: var(--card); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px; overflow: hidden; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; }
+        .post { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px; }
+        .post-header { padding: 10px 0; display: flex; align-items: center; gap: 10px; }
         .post-header img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .post-img { width: 100%; display: block; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-        .post-content { padding: 12px; }
-
-        /* Lists */
-        .list-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .list-item img { width: 45px; height: 45px; border-radius: 50%; }
+        .post-img { width: 100%; border-radius: 4px; border: 1px solid var(--border); }
         
-        button { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: opacity 0.2s; }
-        button:hover { opacity: 0.8; }
-        button.secondary { background: #262626; }
+        button.post-btn { background: var(--accent); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .sidebar { width: 72px; padding: 20px 8px; }
+            .nav-text, .logo { display: none; }
+            main { margin-left: 72px; }
+            .logo-icon { display: block !important; font-size: 1.8rem; margin-bottom: 20px; text-align: center;}
+        }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" style="height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding-top: 0;">
-        <h1 style="font-family: 'Brush Script MT', cursive; font-size: 5rem; margin-bottom: 10px;">DrukLink</h1>
-        <p style="color: var(--secondary); margin-bottom: 30px;">Connect with friends in Bhutan and beyond.</p>
-        <button onclick="login()" style="font-size: 1.1rem; padding: 12px 40px;"><i class="fab fa-google"></i> Sign in with Google</button>
+    <div id="auth-screen" style="width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h1 style="font-family: 'Brush Script MT', cursive; font-size: 5rem;">DrukLink</h1>
+        <button onclick="login()" class="post-btn" style="padding: 12px 40px; font-size: 1rem;">Login with Google</button>
     </div>
 
-    <div id="app" class="hidden">
-        <header class="top-nav">
-            <div class="logo" onclick="showScreen('home', document.querySelector('.fa-home'))">DrukLink</div>
+    <div id="app" class="hidden" style="display: flex; width: 100%;">
+        <aside class="sidebar">
+            <div class="logo">DrukLink</div>
+            <div class="logo-icon hidden"><i class="fab fa-instagram"></i></div>
             
-            <div class="nav-links">
-                <i class="fas fa-home nav-item active" title="Home" onclick="showScreen('home', this)"></i>
-                <i class="far fa-search nav-item" title="Explore" onclick="showScreen('friends', this)"></i>
-                <i class="far fa-heart nav-item" title="Activity" onclick="showScreen('notif', this)"></i>
-                <i class="far fa-comment nav-item" title="Messages" onclick="showScreen('msg', this)"></i>
-                <i class="far fa-user nav-item" title="Profile" onclick="showScreen('profile', this)"></i>
-                <i class="fas fa-sign-out-alt nav-item" style="font-size: 1.1rem; margin-left: 10px;" title="Logout" onclick="logout()"></i>
-            </div>
-        </header>
+            <nav class="nav-links">
+                <div class="nav-item active" onclick="showScreen('home', this)"><i class="fas fa-home"></i><span class="nav-text">Home</span></div>
+                <div class="nav-item" onclick="showScreen('friends', this)"><i class="fas fa-search"></i><span class="nav-text">Explore</span></div>
+                <div class="nav-item" onclick="showScreen('notif', this)"><i class="far fa-heart"></i><span class="nav-text">Notifications</span></div>
+                <div class="nav-item" onclick="showScreen('msg', this)"><i class="far fa-comment"></i><span class="nav-text">Messages</span></div>
+                <div class="nav-item" onclick="showScreen('profile', this)"><i class="far fa-user"></i><span class="nav-text">Profile</span></div>
+            </nav>
 
-        <div id="home-screen" class="screen">
-            <div class="post-creator">
-                <textarea id="post-caption" rows="2" placeholder="What's happening, la?"></textarea>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <input type="file" id="post-file" class="hidden" accept="image/*">
-                    <button class="secondary" onclick="document.getElementById('post-file').click()"><i class="fas fa-camera"></i> Photo</button>
-                    <button id="upload-btn" onclick="uploadPost()">Post</button>
+            <div class="nav-item" onclick="logout()" style="margin-top: auto; color: #ff3040;">
+                <i class="fas fa-sign-out-alt"></i><span class="nav-text">Logout</span>
+            </div>
+        </aside>
+
+        <main>
+            <div class="content-container">
+                <div id="home-screen" class="screen">
+                    <div class="post-creator">
+                        <textarea id="post-caption" placeholder="What's on your mind, la?"></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label style="cursor: pointer; color: var(--accent);">
+                                <i class="fas fa-image"></i> Photo
+                                <input type="file" id="post-file" class="hidden" accept="image/*">
+                            </label>
+                            <span id="file-name" style="font-size: 0.8rem; color: var(--secondary);"></span>
+                            <button id="upload-btn" class="post-btn" onclick="uploadPost()">Post</button>
+                        </div>
+                    </div>
+                    <div id="main-feed"></div>
                 </div>
-                <div id="file-name" style="font-size: 0.8rem; color: var(--accent); margin-top: 5px;"></div>
+
+                <div id="friends-screen" class="screen hidden">
+                    <div class="page-title">Explore People</div>
+                    <div id="users-list"></div>
+                </div>
+
+                <div id="profile-screen" class="screen hidden">
+                    <div style="text-align: center; padding: 40px 0;">
+                        <img id="my-avatar" src="" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--border);">
+                        <h2 id="my-name" style="margin-top: 15px;"></h2>
+                        <p style="color: var(--secondary);">Kuzuzangpo la!</p>
+                    </div>
+                </div>
+                
+                <div id="notif-screen" class="screen hidden"><div class="page-title">Notifications</div></div>
+                <div id="msg-screen" class="screen hidden"><div class="page-title">Messages</div></div>
             </div>
-            <div id="main-feed"></div>
-        </div>
-
-        <div id="friends-screen" class="screen hidden">
-            <div class="page-title">Explore Users</div>
-            <div id="users-list"></div>
-        </div>
-
-        <div id="notif-screen" class="screen hidden">
-            <div class="page-title">Notifications</div>
-            <div id="notif-list">
-                <p style="color: var(--secondary); text-align: center;">No new notifications la.</p>
-            </div>
-        </div>
-
-        <div id="msg-screen" class="screen hidden">
-            <div class="page-title">Direct Messages</div>
-            <p style="color: var(--secondary); text-align: center;">Choose a friend to start chatting.</p>
-        </div>
-
-        <div id="profile-screen" class="screen hidden">
-            <div class="page-title">My Profile</div>
-            <div style="text-align: center; padding: 20px;">
-                <img id="my-avatar" src="" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent);">
-                <h2 id="my-name" style="margin-top: 15px;"></h2>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script type="module">
@@ -131,7 +162,6 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, updateDoc, doc, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-        // CONFIG (Using your keys)
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
             authDomain: "druklink-24fa1.firebaseapp.com",
@@ -142,12 +172,11 @@
         };
         const imgBBKey = "b5f2098fa836fe7090138a418d294866";
 
-        const firebaseApp = initializeApp(firebaseConfig);
-        const auth = getAuth(firebaseApp);
-        const db = getFirestore(firebaseApp);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
         let user = null;
 
-        // AUTH
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
 
@@ -164,70 +193,41 @@
             }
         });
 
-        // SCREEN NAV
-        window.showScreen = (screenId, el) => {
+        window.showScreen = (id, el) => {
             document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-            document.getElementById(screenId + '-screen').classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-item').forEach(i => {
-                i.classList.remove('active', 'fas');
-                i.classList.add('far');
-            });
-            
-            if(el) {
-                el.classList.add('active', 'fas');
-                el.classList.remove('far');
-            }
-            window.scrollTo(0,0);
+            document.getElementById(id + '-screen').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
         };
 
-        // IMAGE PREVIEW UI
         document.getElementById('post-file').onchange = (e) => {
-            const name = e.target.files[0]?.name;
-            document.getElementById('file-name').innerText = name ? "Selected: " + name : "";
-        }
+            document.getElementById('file-name').innerText = e.target.files[0]?.name || "";
+        };
 
-        // UPLOAD
         window.uploadPost = async () => {
             const file = document.getElementById('post-file').files[0];
             const caption = document.getElementById('post-caption').value;
-            if(!file || !caption) return alert("Please add both a photo and a caption, la!");
+            if(!file || !caption) return alert("Select a photo and write a caption!");
 
             const btn = document.getElementById('upload-btn');
-            btn.innerText = "Posting...";
-            btn.disabled = true;
-
-            const formData = new FormData();
-            formData.append("image", file);
+            btn.innerText = "...";
             
-            try {
-                const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: formData });
-                const data = await res.json();
+            const fd = new FormData(); fd.append("image", file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${imgBBKey}`, { method: 'POST', body: fd });
+            const data = await res.json();
 
-                await addDoc(collection(db, "posts"), {
-                    uid: user.uid,
-                    name: user.displayName,
-                    pic: user.photoURL,
-                    img: data.data.url,
-                    caption: caption,
-                    likes: [],
-                    time: serverTimestamp()
-                });
+            await addDoc(collection(db, "posts"), {
+                uid: user.uid, name: user.displayName, pic: user.photoURL,
+                img: data.data.url, caption: caption, likes: [], time: serverTimestamp()
+            });
 
-                document.getElementById('post-caption').value = "";
-                document.getElementById('post-file').value = "";
-                document.getElementById('file-name').innerText = "";
-                showScreen('home', document.querySelector('.fa-home'));
-            } catch (e) {
-                alert("Upload failed!");
-            }
+            document.getElementById('post-caption').value = "";
+            document.getElementById('file-name').innerText = "";
             btn.innerText = "Post";
-            btn.disabled = false;
         };
 
-        // FEED & LIKES
         function loadFeed() {
-            onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), (snap) => {
+            onSnapshot(query(collection(db, "posts"), orderBy("time", "desc")), snap => {
                 const feed = document.getElementById('main-feed');
                 feed.innerHTML = "";
                 snap.forEach(d => {
@@ -237,13 +237,10 @@
                         <div class="post">
                             <div class="post-header"><img src="${p.pic}"> <b>${p.name}</b></div>
                             <img src="${p.img}" class="post-img" ondblclick="likePost('${d.id}')">
-                            <div class="post-content">
-                                <div style="display: flex; gap: 15px; margin-bottom: 8px;">
-                                    <i class="${liked ? 'fas' : 'far'} fa-heart" onclick="likePost('${d.id}')" style="color:${liked ? '#ff3040' : 'white'}; cursor:pointer; font-size: 1.4rem;"></i>
-                                    <i class="far fa-comment" style="font-size: 1.4rem; cursor:pointer;"></i>
-                                </div>
-                                <b>${p.likes?.length || 0} likes</b>
-                                <div style="margin-top: 5px;"><b>${p.name}</b> ${p.caption}</div>
+                            <div style="padding: 10px 0;">
+                                <i class="${liked ? 'fas' : 'far'} fa-heart" onclick="likePost('${d.id}')" style="color:${liked ? 'red' : 'white'}; font-size: 1.5rem; cursor: pointer;"></i>
+                                <div style="margin-top: 8px;"><b>${p.likes?.length || 0} likes</b></div>
+                                <div><b>${p.name}</b> ${p.caption}</div>
                             </div>
                         </div>`;
                 });
@@ -252,13 +249,9 @@
 
         window.likePost = async (id) => {
             const ref = doc(db, "posts", id);
-            const snap = await getDoc(ref);
-            const likes = snap.data().likes || [];
-            if(likes.includes(user.uid)) {
-                await updateDoc(ref, { likes: arrayRemove(user.uid) });
-            } else {
-                await updateDoc(ref, { likes: arrayUnion(user.uid) });
-            }
+            const s = await getDoc(ref);
+            if(s.data().likes.includes(user.uid)) await updateDoc(ref, { likes: arrayRemove(user.uid) });
+            else await updateDoc(ref, { likes: arrayUnion(user.uid) });
         };
 
         function loadUsers() {
@@ -267,13 +260,10 @@
                 list.innerHTML = "";
                 snap.forEach(d => {
                     if(d.id !== user.uid) {
-                        const u = d.data();
-                        list.innerHTML += `
-                            <div class="list-item">
-                                <img src="${u.pic}">
-                                <div style="flex-grow: 1;"><b>${u.name}</b></div>
-                                <button class="secondary" style="padding: 5px 12px;">Follow</button>
-                            </div>`;
+                        list.innerHTML += `<div style="display:flex; align-items:center; gap:10px; margin-bottom:15px;">
+                            <img src="${d.data().pic}" style="width:40px; height:40px; border-radius:50%;">
+                            <b>${d.data().name}</b>
+                        </div>`;
                     }
                 });
             });
