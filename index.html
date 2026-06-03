@@ -168,9 +168,12 @@
             </div>
             <h2 style="color: #ececec;">Welcome to DrukTalk AI</h2>
             <p style="color: #9b9b9b; font-size: 14px; margin-bottom: 20px;">Log in with your Google account</p>
+            
             <button class="primary-btn" onclick="login()" style="background: #ececec; color: #171717;">
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18"> Continue with Google
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="20" alt="Google Logo"> 
+                Continue with Google
             </button>
+            
         </div>
     </div>
 
@@ -246,7 +249,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, where, serverTimestamp, doc, getDoc, setDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCxPbybzZwn1GbzwMqJ-6zRyI7TRSKvgs0",
@@ -302,6 +305,38 @@
         window.openProfileModal = () => { document.getElementById('profile-name').value = userProfile.name || user.displayName; document.getElementById('profile-persona').value = userProfile.persona || ""; document.getElementById('profile-modal').classList.remove('hidden'); }
         window.login = () => signInWithPopup(auth, new GoogleAuthProvider());
         window.logout = () => signOut(auth);
+
+        window.clearAllHistory = async () => {
+            if(!user) return;
+            if(!confirm("Are you sure you want to delete all chat history? This cannot be undone la.")) return;
+            
+            try {
+                // Query all chat documents for this user
+                const q = query(collection(db, "chats"), where("uid", "==", user.uid));
+                const snap = await getDocs(q);
+                
+                const deletePromises = [];
+                snap.forEach(documentSnapshot => {
+                    deletePromises.push(deleteDoc(doc(db, "chats", documentSnapshot.id)));
+                });
+                
+                // Wait for all deletions to finish
+                await Promise.all(deletePromises);
+                
+                alert("History deleted successfully!");
+                closeModal('settings-modal');
+                
+                // Clear local memory and start a fresh session
+                allUserChats = [];
+                currentSessionId = "session-" + Date.now();
+                renderActiveSession();
+                buildSidebarHistory();
+                
+            } catch (err) {
+                console.error(err);
+                alert("Error deleting history. Check console for details.");
+            }
+        };
 
         window.copyToClipboard = (text) => { navigator.clipboard.writeText(decodeURIComponent(text)); alert("Copied to clipboard!"); };
         window.copyRawCode = (btn) => {
@@ -449,10 +484,8 @@
             });
             lucide.createIcons();
             setTimeout(() => { MathJax.typesetPromise(); }, 100);
-            buildSidebarHistory(); 
         }
 
-        // --- INSTANT STOP FUNCTION ---
         window.stopGenerating = () => {
             if(abortController) {
                 abortController.abort(); // Kills the fetch stream instantly
